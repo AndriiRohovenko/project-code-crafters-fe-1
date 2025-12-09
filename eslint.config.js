@@ -6,16 +6,27 @@ import react from 'eslint-plugin-react';
 import tseslint from 'typescript-eslint';
 import prettierPlugin from 'eslint-plugin-prettier';
 import prettierConfig from 'eslint-config-prettier';
+import { defineConfig } from 'eslint/config';
 
-export default tseslint.config(
+export default defineConfig([
   { ignores: ['dist', 'vite.config.d.ts'] },
   {
-    extends: [
-      js.configs.recommended,
-      ...tseslint.configs.recommended,
-      react.configs.flat.recommended,
-      react.configs.flat['jsx-runtime'],
-    ],
+    ...js.configs.recommended,
+    files: ['**/*.{ts,tsx}'],
+  },
+  ...tseslint.configs.recommended.map((c) => ({
+    ...c,
+    files: ['**/*.{ts,tsx}'],
+  })),
+  {
+    ...react.configs.flat.recommended,
+    files: ['**/*.{ts,tsx}'],
+  },
+  {
+    ...react.configs.flat['jsx-runtime'],
+    files: ['**/*.{ts,tsx}'],
+  },
+  {
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2020,
@@ -40,5 +51,5 @@ export default tseslint.config(
       'prettier/prettier': 'error',
     },
   },
-  prettierConfig
-);
+  prettierConfig,
+]);
