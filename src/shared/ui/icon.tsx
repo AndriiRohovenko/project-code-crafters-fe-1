@@ -1,6 +1,6 @@
 import React, { lazy, Suspense, useMemo } from 'react';
 
-import { IconName } from '../shared/types/icons.types';
+import { IconName } from '@/shared/types/icons.types';
 
 interface IconProps extends React.SVGProps<SVGSVGElement> {
   name: IconName;
@@ -11,7 +11,7 @@ export const Icon: React.FC<IconProps> = ({ name, size = 32, ...props }) => {
   const LazyIcon = useMemo(
     () =>
       lazy(() =>
-        import(`../assets/icons/${name}.svg?react`).catch(() => ({
+        import(`@/assets/icons/${name}.svg?react`).catch(() => ({
           default: () => null,
         }))
       ),
