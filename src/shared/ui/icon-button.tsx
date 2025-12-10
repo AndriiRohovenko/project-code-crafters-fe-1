@@ -42,9 +42,8 @@ export const IconButton: React.FC<IconButtonProps> = ({
   const baseClasses = `
     inline-flex items-center justify-center
     rounded-full border
-    transition-all duration-200 ease-in-out
+    transition-all duration-200 ease-in-out cursor-pointer
     ${sizeClasses[size]}
-    ${type === 'button' ? 'cursor-pointer' : 'cursor-default'}
     ${className}
   `.trim();
 
