@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 
-import { Icon, IconName } from '../uikit/icon';
+import { IconName } from '../shared/types/icons.types';
+import { Icon } from '../uikit/icon';
 
 const allIconNames: IconName[] = [
   'arrow-up-right',

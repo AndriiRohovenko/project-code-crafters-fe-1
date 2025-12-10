@@ -4,10 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently \"vite\" \"npm run icons:watch\"",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "icons:generate": "node scripts/generate-icon-types.js",
+    "icons:watch": "node scripts/generate-icon-types.js --watch"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.11.1",
@@ -28,6 +30,8 @@
     "@typescript-eslint/parser": "^8.49.0",
     "@vitejs/plugin-react": "^4.7.0",
     "autoprefixer": "^10.4.22",
+    "chokidar": "^5.0.0",
+    "concurrently": "^9.2.1",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
