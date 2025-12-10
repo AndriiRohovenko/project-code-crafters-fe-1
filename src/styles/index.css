@@ -1,11 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
+@font-face {
+  font-family: 'Mulish';
+  src: url('/fonts/Mulish-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* Color Palette */
+  --color-black: #050505;
+  --color-dark-grey: #1a1a1a;
+  --color-light-grey: #bfbebe;
+  --color-white: #ffffff;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   body {
-    @apply font-sans antialiased text-slate-900 bg-slate-50;
+    @apply bg-slate-50 font-sans text-slate-900 antialiased;
   }
 }

@@ -4,12 +4,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#3b82f6',
-        secondary: '#64748b',
-        accent: '#8b5cf6',
+        black: 'var(--color-black)',
+        'dark-grey': 'var(--color-dark-grey)',
+        'light-grey': 'var(--color-light-grey)',
+        white: 'var(--color-white)',
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+        sans: ['Mulish', 'sans-serif'],
       },
     },
   },
