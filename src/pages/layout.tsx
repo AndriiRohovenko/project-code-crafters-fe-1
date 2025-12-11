@@ -1,8 +1,13 @@
 import { Outlet } from 'react-router-dom';
 
+import { useIsMobile } from '@/shared/hooks/use-is-mobile.hook';
 import { IconButton } from '@/shared/ui/icon-button';
 
 const Layout = () => {
+  const isMobile = useIsMobile();
+
+  console.log(isMobile);
+
   return (
     <div>
       <header>Header</header>
