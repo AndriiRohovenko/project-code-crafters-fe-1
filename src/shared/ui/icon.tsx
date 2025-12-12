@@ -7,16 +7,26 @@ interface IconProps extends React.SVGProps<SVGSVGElement> {
   size?: number;
 }
 
+const iconCache = new Map<
+  IconName,
+  React.LazyExoticComponent<React.ComponentType<React.SVGProps<SVGSVGElement>>>
+>();
+
 export const Icon: React.FC<IconProps> = ({ name, size = 32, ...props }) => {
-  const LazyIcon = useMemo(
-    () =>
-      lazy(() =>
-        import(`@/assets/icons/${name}.svg?react`).catch(() => ({
-          default: () => null,
-        }))
-      ),
-    [name]
-  );
+  const LazyIcon = useMemo(() => {
+    if (iconCache.has(name)) {
+      return iconCache.get(name)!;
+    }
+
+    const LazyIconComponent = lazy(() =>
+      import(`@/assets/icons/${name}.svg?react`).catch(() => ({
+        default: () => null,
+      }))
+    );
+
+    iconCache.set(name, LazyIconComponent);
+    return LazyIconComponent;
+  }, [name]);
 
   return (
     <Suspense fallback={<div style={{ width: size, height: size }} />}>
