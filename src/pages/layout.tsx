@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom';
 
 import { useIsMobile } from '@/shared/hooks/use-is-mobile.hook';
 import { BaseInput } from '@/shared/ui/base-input';
+import { BaseSelect } from '@/shared/ui/base-select';
 import { IconButton } from '@/shared/ui/icon-button';
 import { PasswordInput } from '@/shared/ui/password-input';
 
@@ -48,6 +49,78 @@ const Layout = () => {
           <PasswordInput />
           <PasswordInput label="Confirm Password" />
           <PasswordInput error="Password is required" />
+        </div>
+
+        {/* BaseSelect Demo */}
+        <div
+          style={{
+            padding: '40px',
+            backgroundColor: '#fff',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+            maxWidth: '400px',
+          }}
+        >
+          <BaseSelect
+            label="Category"
+            options={[
+              { value: 'beef', label: 'Beef' },
+              { value: 'breakfast', label: 'Breakfast' },
+              { value: 'desserts', label: 'Desserts' },
+              { value: 'lamb', label: 'Lamb' },
+              { value: 'miscellaneous', label: 'Miscellaneous' },
+              { value: 'pasta', label: 'Pasta' },
+              { value: 'pork', label: 'Pork' },
+              { value: 'seafood', label: 'Seafood' },
+              { value: 'side', label: 'Side' },
+              { value: 'starter', label: 'Starter' },
+            ]}
+          />
+          <BaseSelect
+            label="Area"
+            placeholder="Select area"
+            options={[
+              { value: 'american', label: 'American' },
+              { value: 'british', label: 'British' },
+              { value: 'canadian', label: 'Canadian' },
+              { value: 'chinese', label: 'Chinese' },
+              { value: 'croatian', label: 'Croatian' },
+              { value: 'dutch', label: 'Dutch' },
+              { value: 'egyptian', label: 'Egyptian' },
+              { value: 'french', label: 'French' },
+              { value: 'greek', label: 'Greek' },
+              { value: 'indian', label: 'Indian' },
+            ]}
+            defaultValue="french"
+          />
+          <BaseSelect
+            label="Category"
+            required
+            options={[
+              { value: 'beef', label: 'Beef' },
+              { value: 'breakfast', label: 'Breakfast' },
+              { value: 'desserts', label: 'Desserts' },
+            ]}
+          />
+          <BaseSelect
+            label="Category"
+            options={[
+              { value: 'beef', label: 'Beef' },
+              { value: 'breakfast', label: 'Breakfast' },
+              { value: 'desserts', label: 'Desserts' },
+            ]}
+            error="Please select a category"
+          />
+          <BaseSelect
+            label="Category"
+            options={[
+              { value: 'beef', label: 'Beef' },
+              { value: 'breakfast', label: 'Breakfast' },
+              { value: 'desserts', label: 'Desserts' },
+            ]}
+            disabled
+          />
         </div>
 
         {/* IconButton Demo */}
