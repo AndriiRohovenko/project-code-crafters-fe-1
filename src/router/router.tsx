@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 
+import Categories from '@/pages/categories';
 import Home from '@/pages/home';
 import Layout from '@/pages/layout';
 
@@ -8,6 +9,7 @@ const AppRouter = () => {
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
+        <Route path="/categories" element={<Categories />} />
         <Route
           path="*"
           element={
