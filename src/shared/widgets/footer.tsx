@@ -8,7 +8,7 @@ import { useScreenDimensions } from '../hooks/use-screen-dimensions.hook';
 
 const SMALL_LOGO_SIZE = 69;
 const LARGE_LOGO_SIZE = 83;
-const MAX_CONTENT_WIDTH = 1280;
+const MAX_CONTENT_WIDTH_CLASS = 'max-w-[1280px]';
 
 interface SocialMediaConfig {
   iconName: IconName;
@@ -42,7 +42,7 @@ export const Footer: React.FC = () => {
   return (
     <footer className="pb-4 md:pb-8 2xl:pb-10">
       <div
-        className={`max-w-[${MAX_CONTENT_WIDTH}px] mx-auto mb-10 flex items-center justify-between px-4 md:px-8 2xl:px-0`}
+        className={`${MAX_CONTENT_WIDTH_CLASS} mx-auto mb-10 flex items-center justify-between px-4 md:px-8 2xl:px-0`}
       >
         <LogoIcon
           width={isMobile ? SMALL_LOGO_SIZE : LARGE_LOGO_SIZE}
