@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { LogoutModal } from '@/features/auth/auth-logout-modal';
 import { SignInModal } from '@/features/auth/auth-sign-in-modal';
 import { SignUpModal } from '@/features/auth/auth-sign-up-modal';
 import { NavigationModal } from '@/shared/widgets/header/header-mobile-nav-modal';
@@ -25,11 +26,17 @@ export const Modals = () => {
     [modals]
   );
 
+  const shouldShowLogoutModal = useMemo(
+    () => modals.includes(MODAL_TYPES.LOG_OUT),
+    [modals]
+  );
+
   return (
     <div>
       {shouldShowNavigationModal && <NavigationModal />}
       {shouldShowSignInModal && <SignInModal />}
       {shouldShowSignUpModal && <SignUpModal />}
+      {shouldShowLogoutModal && <LogoutModal />}
     </div>
   );
 };
