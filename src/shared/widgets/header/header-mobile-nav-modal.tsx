@@ -90,14 +90,14 @@ export const NavigationModal: React.FC = () => {
               <img
                 src="/images/hero/hero-dish-2-1x.png"
                 alt="Dessert"
-                width={97}
+                width={80}
                 className="mt-[80px] inline-block"
               />
 
               <img
                 src="/images/hero/hero-dish-1x.png"
                 alt="Featured dish"
-                width={240}
+                width={205}
                 className="inline-block"
               />
             </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import LogoIcon from '@/assets/icons/logo.svg?react';
 import { IconName } from '@/shared/types/icons.types';
@@ -19,17 +20,17 @@ interface SocialMediaConfig {
 const SOCIAL_MEDIA_CONFIG: SocialMediaConfig[] = [
   {
     iconName: 'facebook',
-    href: 'https://www.facebook.com',
+    href: 'https://www.facebook.com/goITclub/',
     target: '_blank',
   },
   {
     iconName: 'instagram',
-    href: 'https://www.instagram.com',
+    href: 'https://www.instagram.com/goitclub/',
     target: '_blank',
   },
   {
     iconName: 'youtube',
-    href: 'https://www.youtube.com',
+    href: 'https://www.youtube.com/c/GoIT',
     target: '_blank',
   },
 ];
@@ -44,23 +45,26 @@ export const Footer: React.FC = () => {
       <div
         className={`${MAX_CONTENT_WIDTH_CLASS} mx-auto mb-10 flex items-center justify-between px-4 md:px-8 2xl:px-0`}
       >
-        <LogoIcon
-          width={isMobile ? SMALL_LOGO_SIZE : LARGE_LOGO_SIZE}
-          className="text-black"
-        />
+        <Link to="/" aria-label="Go to homepage">
+          <LogoIcon
+            width={isMobile ? SMALL_LOGO_SIZE : LARGE_LOGO_SIZE}
+            className="text-black"
+          />
+        </Link>
 
-        <div className="flex items-center gap-3">
+        <ul className="flex items-center gap-3">
           {SOCIAL_MEDIA_CONFIG.map((social) => (
-            <IconButton
-              key={social.iconName}
-              iconName={social.iconName}
-              type="link"
-              size={iconButtonSize}
-              href={social.href}
-              target={social.target}
-            />
+            <li key={social.iconName}>
+              <IconButton
+                iconName={social.iconName}
+                type="link"
+                size={iconButtonSize}
+                href={social.href}
+                target={social.target}
+              />
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
 
       <div className="mb-10 border-t border-light-grey"></div>
