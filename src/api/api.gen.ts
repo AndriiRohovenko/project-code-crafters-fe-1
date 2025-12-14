@@ -87,8 +87,6 @@ export interface Testimonial {
   owner?: string;
   /** Текст відгука */
   comment?: string;
-  /** URL аватара автора */
-  avatar?: string;
 }
 
 export interface RegisterRequest {
@@ -230,10 +228,34 @@ export const getRecipesPopular = async (params?: {
 };
 
 /**
+ * Отримати власні рецепти користувача
+ */
+export const getRecipesMyRecipes = async (params?: {
+  page?: number;
+  limit?: number;
+}): Promise<{
+  recipes?: Recipe[];
+  total?: number;
+  page?: number;
+  totalPages?: number;
+}> => {
+  const response = await apiClient.get('/recipes/my-recipes', { params });
+  return response.data;
+};
+
+/**
  * Отримати рецепт по ID
  */
 export const getRecipesByid = async (id: number): Promise<Recipe> => {
   const response = await apiClient.get(`/recipes/${id}`);
+  return response.data;
+};
+
+/**
+ * Видалити власний рецепт
+ */
+export const deleteRecipesByid = async (id: number): Promise<void> => {
+  const response = await apiClient.delete(`/recipes/${id}`);
   return response.data;
 };
 
