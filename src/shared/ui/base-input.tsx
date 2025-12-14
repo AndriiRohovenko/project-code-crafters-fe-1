@@ -41,7 +41,7 @@ export const BaseInput = React.forwardRef<HTMLInputElement, BaseInputProps>(
             defaultValue={defaultValue}
             placeholder={inputPlaceholder}
             onChange={handleChange}
-            className={`placeholder:text-black/70 w-full rounded-full border bg-white px-6 py-[15px] text-base text-black focus:border-black focus:outline-none focus:ring-1 focus:ring-black disabled:cursor-not-allowed disabled:opacity-50 ${rightSlot ? 'pr-14' : ''} ${hasValue ? 'border-black' : 'border-light-grey'} ${error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''} ${className} `}
+            className={`placeholder:text-black/70 w-full rounded-full border bg-white px-6 py-3 text-base text-black focus:border-black focus:outline-none focus:ring-1 focus:ring-black disabled:cursor-not-allowed disabled:opacity-50 md:py-[15px] ${rightSlot ? 'pr-14' : ''} ${hasValue ? 'border-black' : 'border-light-grey'} ${error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''} ${className} `}
             {...props}
           />
           {rightSlot && (

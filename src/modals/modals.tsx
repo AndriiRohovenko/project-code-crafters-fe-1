@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
+import { SignInModal } from '@/features/auth/auth-sign-in-modal';
+import { SignUpModal } from '@/features/auth/auth-sign-up-modal';
 import { NavigationModal } from '@/shared/widgets/header/header-mobile-nav-modal';
-import { SignInModal } from '@/shared/widgets/header/header-sign-in-modal';
-import { SignUpModal } from '@/shared/widgets/header/header-sign-up-modal';
 
 import { MODAL_TYPES } from './modals.const';
 import { useModals } from './use-modals.hook';
