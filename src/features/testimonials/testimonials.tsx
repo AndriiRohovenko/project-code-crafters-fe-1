@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
+
 import { getTestimonials, Testimonial } from '../../api/api.gen';
 
 const AUTO_SLIDE_INTERVAL = 5000;
@@ -8,8 +9,6 @@ export const Testimonials = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const indexRef = useRef(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,26 +30,25 @@ export const Testimonials = () => {
 
   useEffect(() => {
     setCurrentIndex(0);
-    indexRef.current = 0;
   }, [testimonials]);
 
   useEffect(() => {
+    let intervalId: ReturnType<typeof setInterval>;
+
     if (testimonials.length > 1) {
-      intervalRef.current = setInterval(() => {
-        const next = (indexRef.current + 1) % testimonials.length;
+      intervalId = setInterval(() => {
+        const next = (currentIndex + 1) % testimonials.length;
         setCurrentIndex(next);
-        indexRef.current = next;
       }, AUTO_SLIDE_INTERVAL);
     }
+
     return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (intervalId) clearInterval(intervalId);
     };
-  }, [testimonials.length]);
+  }, [testimonials.length, currentIndex]);
 
   const handleDotClick = (idx: number) => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
     setCurrentIndex(idx);
-    indexRef.current = idx;
   };
 
   if (loading) {
@@ -115,7 +113,7 @@ export const Testimonials = () => {
           </div>
         </div>
 
-        <div>
+        <div role="group" aria-label="Testimonial navigation">
           {testimonials.map((_, idx) => (
             <button
               key={idx}
@@ -124,6 +122,7 @@ export const Testimonials = () => {
               }`}
               onClick={() => handleDotClick(idx)}
               aria-label={`Go to testimonial ${idx + 1}`}
+              aria-current={currentIndex === idx ? 'true' : 'false'}
             />
           ))}
         </div>
