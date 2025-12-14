@@ -14,9 +14,11 @@ export const NavigationModal: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    requestAnimationFrame(() => {
+    const frameId = requestAnimationFrame(() => {
       setIsVisible(true);
     });
+
+    return () => cancelAnimationFrame(frameId);
   }, []);
 
   const close = useCallback(() => {
@@ -39,6 +41,7 @@ export const NavigationModal: React.FC = () => {
         className={`absolute right-0 top-0 h-full w-full bg-black text-white transition-transform duration-300 ease-out ${
           isVisible ? 'translate-x-0' : 'translate-x-full'
         }`}
+        onClick={(e) => e.stopPropagation()}
       >
         <div className="relative flex h-full w-full flex-col px-4 pb-10 pt-6">
           <div className="flex items-center justify-between">
