@@ -3,11 +3,11 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 type User = Record<string, unknown>;
 
 interface UserState {
-  user: User | undefined;
+  user: User | null;
 }
 
 const initialState: UserState = {
-  user: undefined,
+  user: null,
 };
 
 export const userSlice = createSlice({
@@ -18,7 +18,7 @@ export const userSlice = createSlice({
       state.user = action.payload;
     },
     cleanUser: (state) => {
-      state.user = undefined;
+      state.user = null;
     },
   },
 });
