@@ -1,115 +1,92 @@
-import React, {
-  forwardRef,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from 'react';
+import React, { useRef, useState } from 'react';
 
 import { BaseInput } from './base-input';
 import { Icon } from './icon';
 
-interface PasswordInputProps extends Omit<
-  React.InputHTMLAttributes<HTMLInputElement>,
-  'type' | 'value' | 'onChange'
-> {
+interface PasswordInputProps {
   label?: string;
   error?: string;
-  value?: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  value: string;
+  onChange: (value: string) => void;
+  onBlur?: () => void;
 }
 
-export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
-  ({ label = 'Password', value, onChange, ...props }, ref) => {
-    const [showPassword, setShowPassword] = useState(false);
-    const [internalValue, setInternalValue] = useState('');
-    const inputRef = useRef<HTMLInputElement>(null);
+export const PasswordInput: React.FC<PasswordInputProps> = ({
+  label = 'Password',
+  value,
+  onChange,
+  onBlur,
+  ...props
+}) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-    // Expose the input ref to parent components
-    useImperativeHandle(ref, () => inputRef.current as HTMLInputElement);
+  const toggleVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
 
-    const actualValue = value !== undefined ? value : internalValue;
-    const maskedValue = '*'.repeat(actualValue.length);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+    const cursorPosition = e.target.selectionStart || 0;
 
-    const toggleVisibility = () => {
-      setShowPassword((prev) => !prev);
-    };
+    let newPassword: string;
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newValue = e.target.value;
+    if (showPassword) {
+      newPassword = inputValue;
+    } else {
+      const prevMasked = '*'.repeat(value.length);
+      const lengthDiff = inputValue.length - prevMasked.length;
 
-      if (showPassword) {
-        if (value === undefined) {
-          setInternalValue(newValue);
-        }
-        if (onChange) {
-          onChange(e);
-        }
+      if (lengthDiff > 0) {
+        // Characters added
+        const addedChars = inputValue.slice(
+          cursorPosition - lengthDiff,
+          cursorPosition
+        );
+        newPassword =
+          value.slice(0, cursorPosition - lengthDiff) +
+          addedChars +
+          value.slice(cursorPosition - lengthDiff);
+      } else if (lengthDiff < 0) {
+        // Characters deleted
+        newPassword =
+          value.slice(0, cursorPosition) +
+          value.slice(cursorPosition - lengthDiff);
       } else {
-        const cursorPosition = e.target.selectionStart || 0;
-        const lengthDiff = newValue.length - maskedValue.length;
-
-        let newActualValue: string;
-
-        if (lengthDiff > 0) {
-          const addedChars = newValue.slice(
-            cursorPosition - lengthDiff,
-            cursorPosition
-          );
-          newActualValue =
-            actualValue.slice(0, cursorPosition - lengthDiff) +
-            addedChars +
-            actualValue.slice(cursorPosition - lengthDiff);
-        } else if (lengthDiff < 0) {
-          newActualValue =
-            actualValue.slice(0, cursorPosition) +
-            actualValue.slice(cursorPosition - lengthDiff);
-        } else {
-          const replacedChar = newValue[cursorPosition - 1] || '';
-          newActualValue =
-            actualValue.slice(0, cursorPosition - 1) +
-            replacedChar +
-            actualValue.slice(cursorPosition);
-        }
-
-        if (value === undefined) {
-          setInternalValue(newActualValue);
-        }
-
-        if (onChange) {
-          const syntheticEvent = {
-            ...e,
-            target: {
-              ...e.target,
-              value: newActualValue,
-            },
-          } as React.ChangeEvent<HTMLInputElement>;
-          onChange(syntheticEvent);
-        }
+        // Character replaced
+        const replacedChar = inputValue[cursorPosition - 1] || '';
+        newPassword =
+          value.slice(0, cursorPosition - 1) +
+          replacedChar +
+          value.slice(cursorPosition);
       }
-    };
+    }
 
-    return (
-      <BaseInput
-        ref={inputRef}
-        type="text"
-        autoComplete="off"
-        label={label}
-        value={showPassword ? actualValue : maskedValue}
-        onChange={handleChange}
-        rightSlot={
-          <button
-            type="button"
-            onClick={toggleVisibility}
-            className="flex items-center justify-center text-black transition-opacity hover:opacity-70 focus:outline-none"
-            aria-label={showPassword ? 'Hide password' : 'Show password'}
-          >
-            <Icon name={showPassword ? 'eye' : 'eye-off'} size={20} />
-          </button>
-        }
-        {...props}
-      />
-    );
-  }
-);
+    onChange(newPassword);
+  };
+
+  return (
+    <BaseInput
+      ref={inputRef}
+      type="text"
+      autoComplete="off"
+      label={label}
+      value={showPassword ? value : '*'.repeat(value.length)}
+      onChange={handleChange}
+      onBlur={onBlur}
+      rightSlot={
+        <button
+          type="button"
+          onClick={toggleVisibility}
+          className="flex items-center justify-center text-black transition-opacity hover:opacity-70 focus:outline-none"
+          aria-label={showPassword ? 'Hide password' : 'Show password'}
+        >
+          <Icon name={showPassword ? 'eye' : 'eye-off'} size={20} />
+        </button>
+      }
+      {...props}
+    />
+  );
+};
 
 PasswordInput.displayName = 'PasswordInput';

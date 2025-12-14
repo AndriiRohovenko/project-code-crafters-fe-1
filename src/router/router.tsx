@@ -5,12 +5,16 @@ import Layout from '@/pages/base-layout';
 import Categories from '@/pages/categories';
 import Home from '@/pages/home';
 
+import { PrivateRouteGuard } from './PrivateRoutGuard';
+
 const AppRouter = () => {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
-        <Route path="/add-recipe" element={<AddRecipe />} />
+        <Route element={<PrivateRouteGuard />}>
+          <Route path="/add-recipe" element={<AddRecipe />} />
+        </Route>
         <Route path="/categories" element={<Categories />} />
         <Route
           path="*"

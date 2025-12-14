@@ -9,7 +9,7 @@ interface ButtonProps extends Omit<
 }
 
 const baseStyles =
-  'inline-flex items-center justify-center rounded-full px-10 py-3 text-sm font-bold uppercase tracking-wide transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
+  'inline-flex items-center justify-center rounded-full px-10 py-3 text-sm font-bold uppercase tracking-wide transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none disabled:bg-light-grey disabled:text-white';
 
 const variants = {
   base: 'bg-black text-white hover:bg-dark-grey focus:ring-black',
