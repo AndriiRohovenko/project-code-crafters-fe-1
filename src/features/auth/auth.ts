@@ -7,7 +7,7 @@ import {
 } from '@/api/api.gen';
 import { getAccessToken, setAccessToken } from '@/api/bootstrap-fetch-client';
 import { store } from '@/redux/store';
-import { addUser } from '@/redux/user.slice';
+import { addUser, cleanUser } from '@/redux/user.slice';
 
 const fetchAndSetCurrentUser = async (): Promise<void> => {
   const user = await getUsersCurrent();
@@ -36,7 +36,7 @@ export const signIn = async (credentials: LoginRequest): Promise<void> => {
 
 export const signOut = (): void => {
   setAccessToken(null);
-  store.dispatch(addUser(null as never));
+  store.dispatch(cleanUser());
 };
 
 export const refreshUser = async (): Promise<void> => {
