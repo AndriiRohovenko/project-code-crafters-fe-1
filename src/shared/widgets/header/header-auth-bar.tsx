@@ -1,7 +1,7 @@
 import { MODAL_TYPES } from '@/modals/modals.const';
 import { useModals } from '@/modals/use-modals.hook';
 
-export const HeaderAuthButtons = () => {
+export const HeaderAuthBar = () => {
   const { openModal } = useModals();
 
   const baseButtonClasses =
