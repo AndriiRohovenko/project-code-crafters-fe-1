@@ -12,9 +12,14 @@ const AppRouter = () => {
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
-        <Route element={<PrivateRouteGuard />}>
-          <Route path="/add-recipe" element={<AddRecipe />} />
-        </Route>
+        <Route
+          path="/add-recipe"
+          element={
+            <PrivateRouteGuard>
+              <AddRecipe />
+            </PrivateRouteGuard>
+          }
+        />
         <Route path="/categories" element={<Categories />} />
         <Route
           path="*"
