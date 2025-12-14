@@ -1,12 +1,16 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 import { MODAL_TYPES } from '@/modals/modals.const';
 import { useModals } from '@/modals/use-modals.hook';
 import { RootState } from '@/redux/store';
 
-export const PrivateRouteGuard = () => {
+export const PrivateRouteGuard = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const user = useSelector((state: RootState) => state.user);
   const { openModal } = useModals();
 
@@ -20,5 +24,5 @@ export const PrivateRouteGuard = () => {
     return <Navigate to="/" replace />;
   }
 
-  return <Outlet />;
+  return children;
 };
