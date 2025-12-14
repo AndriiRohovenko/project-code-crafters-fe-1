@@ -1,5 +1,6 @@
+import { yupResolver } from '@hookform/resolvers/yup';
 import React, { useCallback } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 
 import { MODAL_TYPES } from '@/modals/modals.const';
 import { useModals } from '@/modals/use-modals.hook';
@@ -8,10 +9,7 @@ import { Button } from '@/shared/ui/button';
 import { Icon } from '@/shared/ui/icon';
 import { PasswordInput } from '@/shared/ui/password-input';
 
-interface SignInFormData {
-  email: string;
-  password: string;
-}
+import { SignInFormData, signInSchema } from './auth-validation';
 
 export const SignInModal: React.FC = () => {
   const { closeModal, openModal } = useModals();
@@ -20,14 +18,18 @@ export const SignInModal: React.FC = () => {
     register,
     control,
     handleSubmit,
-    formState: { isValid },
+    formState: { errors },
   } = useForm<SignInFormData>({
-    mode: 'onChange',
+    mode: 'onSubmit',
+    resolver: yupResolver(signInSchema),
     defaultValues: {
       email: '',
       password: '',
     },
   });
+
+  const { email, password } = useWatch({ control });
+  const isFormEmpty = !email || !password;
 
   const close = useCallback(() => {
     closeModal(MODAL_TYPES.SIGN_IN);
@@ -68,19 +70,20 @@ export const SignInModal: React.FC = () => {
             label="Email"
             type="email"
             required
-            {...register('email', { required: true })}
+            error={errors.email?.message}
+            {...register('email')}
           />
 
           <Controller
             name="password"
             control={control}
-            rules={{ required: true }}
             render={({ field: { value, onChange, onBlur } }) => (
               <PasswordInput
                 label="Password"
                 value={value}
                 onChange={onChange}
                 onBlur={onBlur}
+                error={errors.password?.message}
               />
             )}
           />
@@ -88,7 +91,7 @@ export const SignInModal: React.FC = () => {
           <Button
             type="submit"
             label="Sign in"
-            disabled={!isValid}
+            disabled={isFormEmpty}
             className="mt-4 w-full py-[14px] md:py-[18px]"
           />
         </form>

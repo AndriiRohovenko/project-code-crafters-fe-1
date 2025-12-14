@@ -1,5 +1,6 @@
+import { yupResolver } from '@hookform/resolvers/yup';
 import React, { useCallback } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 
 import { MODAL_TYPES } from '@/modals/modals.const';
 import { useModals } from '@/modals/use-modals.hook';
@@ -8,11 +9,7 @@ import { Button } from '@/shared/ui/button';
 import { Icon } from '@/shared/ui/icon';
 import { PasswordInput } from '@/shared/ui/password-input';
 
-interface SignUpFormData {
-  name: string;
-  email: string;
-  password: string;
-}
+import { SignUpFormData, signUpSchema } from './auth-validation';
 
 export const SignUpModal: React.FC = () => {
   const { closeModal, openModal } = useModals();
@@ -21,15 +18,19 @@ export const SignUpModal: React.FC = () => {
     register,
     control,
     handleSubmit,
-    formState: { isValid },
+    formState: { errors },
   } = useForm<SignUpFormData>({
-    mode: 'onChange',
+    mode: 'onSubmit',
+    resolver: yupResolver(signUpSchema),
     defaultValues: {
       name: '',
       email: '',
       password: '',
     },
   });
+
+  const { name, email, password } = useWatch({ control });
+  const isFormEmpty = !name || !email || !password;
 
   const close = useCallback(() => {
     closeModal(MODAL_TYPES.SIGN_UP);
@@ -69,26 +70,28 @@ export const SignUpModal: React.FC = () => {
           <BaseInput
             label="Name"
             required
-            {...register('name', { required: true })}
+            error={errors.name?.message}
+            {...register('name')}
           />
 
           <BaseInput
             label="Email"
             type="email"
             required
-            {...register('email', { required: true })}
+            error={errors.email?.message}
+            {...register('email')}
           />
 
           <Controller
             name="password"
             control={control}
-            rules={{ required: true }}
             render={({ field: { value, onChange, onBlur } }) => (
               <PasswordInput
                 label="Password"
                 value={value}
                 onChange={onChange}
                 onBlur={onBlur}
+                error={errors.password?.message}
               />
             )}
           />
@@ -96,7 +99,7 @@ export const SignUpModal: React.FC = () => {
           <Button
             type="submit"
             label="Create"
-            disabled={!isValid}
+            disabled={isFormEmpty}
             className="mt-4 w-full py-[14px] md:py-[18px]"
           />
         </form>

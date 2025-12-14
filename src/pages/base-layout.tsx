@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
 
 import { Footer } from '@/shared/widgets/footer';
-import { Header } from '@/shared/widgets/header';
+import { Header } from '@/shared/widgets/header/header';
 
 const Layout = () => {
   return (
