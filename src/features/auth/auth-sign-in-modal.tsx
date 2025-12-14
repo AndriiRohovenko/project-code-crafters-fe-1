@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 
 import { MODAL_TYPES } from '@/modals/modals.const';
@@ -9,6 +9,7 @@ import { Button } from '@/shared/ui/button';
 import { Icon } from '@/shared/ui/icon';
 import { PasswordInput } from '@/shared/ui/password-input';
 
+import { signIn } from './auth';
 import { SignInFormData, signInSchema } from './auth-validation';
 
 export const SignInModal: React.FC = () => {
@@ -30,6 +31,7 @@ export const SignInModal: React.FC = () => {
 
   const { email, password } = useWatch({ control });
   const isFormEmpty = !email || !password;
+  const [isLoading, setIsLoading] = useState(false);
 
   const close = useCallback(() => {
     closeModal(MODAL_TYPES.SIGN_IN);
@@ -40,8 +42,16 @@ export const SignInModal: React.FC = () => {
     openModal(MODAL_TYPES.SIGN_UP);
   }, [closeModal, openModal]);
 
-  const onSubmit = (data: SignInFormData) => {
-    console.log('Sign in data:', data);
+  const onSubmit = async (data: SignInFormData) => {
+    setIsLoading(true);
+    try {
+      await signIn(data);
+      close();
+    } catch (error) {
+      console.error('Sign in error:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -90,8 +100,8 @@ export const SignInModal: React.FC = () => {
 
           <Button
             type="submit"
-            label="Sign in"
-            disabled={isFormEmpty}
+            label={isLoading ? 'Signing in...' : 'Sign in'}
+            disabled={isFormEmpty || isLoading}
             className="mt-4 w-full py-[14px] md:py-[18px]"
           />
         </form>

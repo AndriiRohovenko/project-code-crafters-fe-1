@@ -7,7 +7,7 @@ import { useModals } from '@/modals/use-modals.hook';
 import { RootState } from '@/redux/store';
 
 export const PrivateRouteGuard = () => {
-  const user = useSelector((state: RootState) => state.user.user);
+  const user = useSelector((state: RootState) => state.user);
   const { openModal } = useModals();
 
   useEffect(() => {

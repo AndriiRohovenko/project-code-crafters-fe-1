@@ -1,24 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-type User = Record<string, unknown>;
+import { User } from '@/api/api.gen';
 
-interface UserState {
-  user: User | null;
-}
-
-const initialState: UserState = {
-  user: null,
-};
+const initialState = null as User | null;
 
 export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    addUser: (state, action: PayloadAction<User>) => {
-      state.user = action.payload;
+    addUser: (_state, action: PayloadAction<User>) => {
+      return action.payload;
     },
-    cleanUser: (state) => {
-      state.user = null;
+    cleanUser: () => {
+      return null;
     },
   },
 });

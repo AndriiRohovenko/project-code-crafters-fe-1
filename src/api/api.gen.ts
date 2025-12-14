@@ -275,16 +275,13 @@ export const getUsers = async (params?: {
   page?: number;
   limit?: number;
   search?: string;
-}): Promise<User[]> => {
+}): Promise<{
+  users?: User[];
+  page?: number;
+  limit?: number;
+  total?: number;
+}> => {
   const response = await apiClient.get('/users', { params });
-  return response.data;
-};
-
-/**
- * Отримати користувача по ID
- */
-export const getUsersByid = async (id: number): Promise<User> => {
-  const response = await apiClient.get(`/users/${id}`);
   return response.data;
 };
 
@@ -293,14 +290,6 @@ export const getUsersByid = async (id: number): Promise<User> => {
  */
 export const getUsersCurrent = async (): Promise<User> => {
   const response = await apiClient.get('/users/current');
-  return response.data;
-};
-
-/**
- * Отримати список підписників користувача
- */
-export const getUsersByidFollowers = async (id: number): Promise<User[]> => {
-  const response = await apiClient.get(`/users/${id}/followers`);
   return response.data;
 };
 
@@ -315,7 +304,11 @@ export const getUsersCurrentFollowing = async (): Promise<User[]> => {
 /**
  * Підписатися на користувача
  */
-export const createUsersFollow = async (data: FollowRequest): Promise<void> => {
+export const createUsersFollow = async (
+  data: FollowRequest
+): Promise<{
+  message?: string;
+}> => {
   const response = await apiClient.post('/users/follow', data);
   return response.data;
 };
@@ -325,7 +318,9 @@ export const createUsersFollow = async (data: FollowRequest): Promise<void> => {
  */
 export const deleteUsersUnfollow = async (
   data: FollowRequest
-): Promise<void> => {
+): Promise<{
+  message?: string;
+}> => {
   const response = await apiClient.delete('/users/unfollow', { data });
   return response.data;
 };
@@ -333,9 +328,25 @@ export const deleteUsersUnfollow = async (
 /**
  * Upload user avatar
  */
-export const updateUsersAvatar = async (data: FormData): Promise<void> => {
+export const updateUsersAvatar = async (data: FormData): Promise<User> => {
   const response = await apiClient.put('/users/avatar', data, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
+  return response.data;
+};
+
+/**
+ * Отримати користувача по ID
+ */
+export const getUsersByid = async (id: number): Promise<User> => {
+  const response = await apiClient.get(`/users/${id}`);
+  return response.data;
+};
+
+/**
+ * Отримати список підписників користувача
+ */
+export const getUsersByidFollowers = async (id: number): Promise<User[]> => {
+  const response = await apiClient.get(`/users/${id}/followers`);
   return response.data;
 };

@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 
 import { MODAL_TYPES } from '@/modals/modals.const';
@@ -9,6 +9,7 @@ import { Button } from '@/shared/ui/button';
 import { Icon } from '@/shared/ui/icon';
 import { PasswordInput } from '@/shared/ui/password-input';
 
+import { signUp } from './auth';
 import { SignUpFormData, signUpSchema } from './auth-validation';
 
 export const SignUpModal: React.FC = () => {
@@ -31,6 +32,7 @@ export const SignUpModal: React.FC = () => {
 
   const { name, email, password } = useWatch({ control });
   const isFormEmpty = !name || !email || !password;
+  const [isLoading, setIsLoading] = useState(false);
 
   const close = useCallback(() => {
     closeModal(MODAL_TYPES.SIGN_UP);
@@ -41,8 +43,16 @@ export const SignUpModal: React.FC = () => {
     openModal(MODAL_TYPES.SIGN_IN);
   }, [closeModal, openModal]);
 
-  const onSubmit = (data: SignUpFormData) => {
-    console.log('Sign up data:', data);
+  const onSubmit = async (data: SignUpFormData) => {
+    setIsLoading(true);
+    try {
+      await signUp(data);
+      close();
+    } catch (error) {
+      console.error('Sign up error:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -98,8 +108,8 @@ export const SignUpModal: React.FC = () => {
 
           <Button
             type="submit"
-            label="Create"
-            disabled={isFormEmpty}
+            label={isLoading ? 'Creating...' : 'Create'}
+            disabled={isFormEmpty || isLoading}
             className="mt-4 w-full py-[14px] md:py-[18px]"
           />
         </form>
