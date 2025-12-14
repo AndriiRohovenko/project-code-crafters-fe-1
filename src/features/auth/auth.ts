@@ -5,9 +5,14 @@ import {
   LoginRequest,
   RegisterRequest,
 } from '@/api/api.gen';
-import { setAccessToken } from '@/api/bootstrap-fetch-client';
+import { getAccessToken, setAccessToken } from '@/api/bootstrap-fetch-client';
 import { store } from '@/redux/store';
 import { addUser } from '@/redux/user.slice';
+
+const fetchAndSetCurrentUser = async (): Promise<void> => {
+  const user = await getUsersCurrent();
+  store.dispatch(addUser(user));
+};
 
 export const signUp = async (credentials: RegisterRequest): Promise<void> => {
   const { token } = await createAuthRegister(credentials);
@@ -16,8 +21,7 @@ export const signUp = async (credentials: RegisterRequest): Promise<void> => {
     setAccessToken(token);
   }
 
-  const user = await getUsersCurrent();
-  store.dispatch(addUser(user));
+  await fetchAndSetCurrentUser();
 };
 
 export const signIn = async (credentials: LoginRequest): Promise<void> => {
@@ -27,11 +31,24 @@ export const signIn = async (credentials: LoginRequest): Promise<void> => {
     setAccessToken(token);
   }
 
-  const user = await getUsersCurrent();
-  store.dispatch(addUser(user));
+  await fetchAndSetCurrentUser();
 };
 
 export const signOut = (): void => {
   setAccessToken(null);
   store.dispatch(addUser(null as never));
+};
+
+export const refreshUser = async (): Promise<void> => {
+  const token = getAccessToken();
+
+  if (!token) {
+    return;
+  }
+
+  try {
+    await fetchAndSetCurrentUser();
+  } catch {
+    setAccessToken(null);
+  }
 };
