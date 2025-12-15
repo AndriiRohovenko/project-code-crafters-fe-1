@@ -274,13 +274,13 @@ export const deleteRecipesByid = async (id: number): Promise<void> => {
  */
 export const createRecipes = async (data: {
   title: string;
-  category: string;
-  area?: string;
+  categoryId?: unknown;
+  areaId?: unknown;
   instructions: string;
   description?: string;
   time?: string;
   ingredients?: {
-    id?: number;
+    ingredientId?: number;
     measure?: string;
   }[];
 }): Promise<Recipe> => {
