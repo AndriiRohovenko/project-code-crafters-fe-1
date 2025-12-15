@@ -8,6 +8,6 @@ export interface RecipeIngredient {
 }
 
 export interface RecipeDetail extends Recipe {
-  owner?: User;
+  author: User;
   ingredients?: RecipeIngredient[];
 }

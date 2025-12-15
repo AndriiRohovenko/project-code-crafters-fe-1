@@ -5,16 +5,16 @@ interface RecipeMainInfoProps {
 }
 
 const RecipeMainInfo = ({ recipe }: RecipeMainInfoProps) => {
-  const { title, time, description, category, owner } = recipe;
+  const { title, time, description, category, author } = recipe;
 
   const handleAuthorClick = () => {
     // TODO: Implement navigation to author profile when user pages are ready
     // if (isLoggedIn) {
-    //   navigate(`/user/${owner?.id}`);
+    //   navigate(`/user/${author?.id}`);
     // } else {
     //   // Show auth modal
     // }
-    console.log('Navigate to author:', owner?.id);
+    console.log('Navigate to author:', author?.id);
   };
 
   return (
@@ -41,14 +41,14 @@ const RecipeMainInfo = ({ recipe }: RecipeMainInfoProps) => {
       </p>
 
       <div className="mt-6">
-        {owner && (
+        {author && (
           <button
             className="mb-8 flex cursor-pointer items-center gap-4 border-none bg-transparent p-0 outline-none md:mb-10"
             onClick={handleAuthorClick}
           >
             <img
-              src={owner?.avatar || '/images/default-avatar.png'}
-              alt={`Avatar ${owner?.name}`}
+              src={author?.avatar || '/images/default-avatar.png'}
+              alt={`Avatar ${author?.name}`}
               className="h-8 w-8 shrink-0 rounded-full bg-[var(--color-placeholder)] object-cover md:h-10 md:w-10"
             />
             <div className="flex flex-col items-start text-[var(--color-text)]">
@@ -56,7 +56,7 @@ const RecipeMainInfo = ({ recipe }: RecipeMainInfoProps) => {
                 Created by:
               </span>
               <p className="font-['Mulish'] text-sm font-bold leading-[1.4] md:text-base">
-                {owner?.name}
+                {author?.name}
               </p>
             </div>
           </button>
