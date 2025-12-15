@@ -5,12 +5,13 @@ interface SubtitleProps {
   children: React.ReactNode;
 }
 
-const Subtitle: React.FC<SubtitleProps> = ({ tag: Tag = 'p', children }) => {
+export const Subtitle: React.FC<SubtitleProps> = ({
+  tag: Tag = 'p',
+  children,
+}) => {
   return (
     <Tag className="mb-8 text-[14px] leading-5 tracking-[-0.28px] text-black md:mb-10 md:text-base">
       {children}
     </Tag>
   );
 };
-
-export default Subtitle;

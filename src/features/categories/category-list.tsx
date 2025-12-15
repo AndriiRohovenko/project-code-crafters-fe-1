@@ -1,16 +1,15 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import CategoryItemAll from '@/components/CategoryItemAll';
+import { CategoryItem } from '@/features/categories/category-item';
+import { CategoryItemAll } from '@/features/categories/category-item-all';
+import styles from '@/features/categories/category-list.module.css';
 import { fetchCategories } from '@/redux/category.slice';
 import { RootState } from '@/redux/store';
 
-import CategoryItem from '../CategoryItem';
-import styles from './CategoryList.module.css';
-
 const CATEGORIES_AMOUNT = 11;
 
-const CategoryList = () => {
+export const CategoryList = () => {
   const dispatch = useDispatch();
   const { items: categories, loading } = useSelector(
     (state: RootState) => state.categories
@@ -39,5 +38,3 @@ const CategoryList = () => {
     </nav>
   );
 };
-
-export default CategoryList;

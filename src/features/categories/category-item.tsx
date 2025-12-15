@@ -4,7 +4,7 @@ interface CategoryItemProps {
   category: string;
 }
 
-const CategoryItem = ({ category }: CategoryItemProps) => {
+export const CategoryItem = ({ category }: CategoryItemProps) => {
   const isRetina = window.devicePixelRatio > 1;
   const backgroundImage: string =
     './public/images/categories/' +
@@ -18,7 +18,7 @@ const CategoryItem = ({ category }: CategoryItemProps) => {
         backgroundImage: `url(${backgroundImage})`,
       }}
     >
-      <div className="absolute inset-0 rounded-[30px] bg-[#050505]/20" />
+      <div className="absolute inset-0 rounded-[30px] bg-[#050505]/30" />
       <div className="relative flex items-center gap-1">
         <p className="flex h-[45px] items-center justify-center rounded-[30px] border border-[#fff]/20 bg-[#fff]/20 px-[14px] py-[10px] text-white">
           {category}
@@ -33,5 +33,3 @@ const CategoryItem = ({ category }: CategoryItemProps) => {
     </div>
   );
 };
-
-export default CategoryItem;

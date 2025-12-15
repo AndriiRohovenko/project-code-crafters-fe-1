@@ -1,4 +1,4 @@
-import Categories from '@/components/Categories';
+import { Categories } from '@/features/categories/categories';
 import { Testimonials } from '@/features/testimonials/testimonials';
 
 const Home = () => {

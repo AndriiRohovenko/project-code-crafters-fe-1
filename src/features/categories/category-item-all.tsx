@@ -1,4 +1,4 @@
-const CategoryItemAll = () => {
+export const CategoryItemAll = () => {
   return (
     <div className="flex h-[250px] w-full flex-col rounded-[30px] bg-[#050505] bg-cover bg-center bg-no-repeat p-6 md:h-[369px]">
       <a className="flex size-full items-center justify-center" href="#">
@@ -9,5 +9,3 @@ const CategoryItemAll = () => {
     </div>
   );
 };
-
-export default CategoryItemAll;

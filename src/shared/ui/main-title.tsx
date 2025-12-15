@@ -5,12 +5,13 @@ interface MainTitleProps {
   children: React.ReactNode;
 }
 
-const MainTitle: React.FC<MainTitleProps> = ({ tag: Tag = 'h1', children }) => {
+export const MainTitle: React.FC<MainTitleProps> = ({
+  tag: Tag = 'h1',
+  children,
+}) => {
   return (
     <Tag className="text-[28px] font-extrabold uppercase text-black md:text-[40px]">
       {children}
     </Tag>
   );
 };
-
-export default MainTitle;
