@@ -13,7 +13,7 @@ export const MainTitle: React.FC<MainTitleProps> = ({
 }) => {
   return (
     <Tag
-      className={`text-[28px] font-extrabold uppercase text-black md:text-[40px] ${className}`}
+      className={`text-[28px] font-extrabold uppercase leading-8 tracking-[-0.56px] text-black md:text-[40px] md:leading-[44px] md:tracking-[-0.8px] ${className}`}
     >
       {children}
     </Tag>

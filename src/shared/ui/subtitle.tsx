@@ -13,7 +13,7 @@ export const Subtitle: React.FC<SubtitleProps> = ({
 }) => {
   return (
     <Tag
-      className={`text-[14px] leading-5 tracking-[-0.28px] text-black md:mb-10 md:text-base ${className}`}
+      className={`text-sm font-medium leading-5 tracking-[-0.28px] text-black md:text-base md:leading-6 md:tracking-[-0.32px] ${className}`}
     >
       {children}
     </Tag>
