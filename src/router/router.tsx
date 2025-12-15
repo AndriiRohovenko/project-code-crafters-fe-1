@@ -4,6 +4,7 @@ import AddRecipe from '@/pages/add-recipe';
 import Layout from '@/pages/base-layout';
 import Categories from '@/pages/categories';
 import Home from '@/pages/home';
+import RecipeView from '@/pages/recipe-view';
 
 import { PrivateRouteGuard } from './PrivateRoutGuard';
 
@@ -20,6 +21,7 @@ const AppRouter = () => {
             </PrivateRouteGuard>
           }
         />
+        <Route path="/recipe/:id" element={<RecipeView />} />
         <Route path="/categories" element={<Categories />} />
         <Route
           path="*"

@@ -49,8 +49,18 @@ export interface Recipe {
   youtube?: string;
   /** Теги рецепта */
   tags?: string[];
+  author?: Author;
   createdAt?: string;
   updatedAt?: string;
+}
+
+export interface Author {
+  /** ID автора */
+  id?: number;
+  /** Ім'я автора */
+  name?: string;
+  /** URL аватара */
+  avatar?: string;
 }
 
 export interface Category {
