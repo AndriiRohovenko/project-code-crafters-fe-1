@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 
 import { getTestimonials, Testimonial } from '../../api/api.gen';
+import { Subtitle } from '@/shared/ui/subtitle';
+import { MainTitle } from '@/shared/ui/main-title';
 
 const AUTO_SLIDE_INTERVAL = 5000;
 
@@ -74,12 +76,10 @@ export const Testimonials = () => {
   return (
     <div className="flex items-center justify-center pt-16 md:pt-[100px] 2xl:pt-[120px]">
       <div className="relative w-full text-center 2xl:mx-auto 2xl:max-w-[822px]">
-        <p className="mb-4 text-sm font-medium leading-5 tracking-[-0.28px] text-black md:text-base md:leading-6 md:tracking-[-0.32px]">
-          What our customers say
-        </p>
-        <h2 className="mb-16 text-center text-[28px] font-extrabold uppercase leading-8 tracking-[-0.56px] text-black md:mb-20 md:text-[40px] md:leading-[44px] md:tracking-[-0.8px]">
+        <Subtitle className="mb-4">What our customers say</Subtitle>
+        <MainTitle className="mb-16 text-center md:mb-20">
           TESTIMONIALS
-        </h2>
+        </MainTitle>
 
         <svg
           className="absolute left-2 top-[80px] h-8 w-10 md:left-10 md:top-[76px] md:h-12 md:w-[59px]"
