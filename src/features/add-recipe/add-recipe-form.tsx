@@ -20,8 +20,10 @@ import { BaseSelect } from '@/shared/ui/base-select';
 import { Button } from '@/shared/ui/button';
 
 interface IngredientFormItem {
+  id?: number;
   name: string;
   measure: string;
+  img?: string;
 }
 
 export const AddRecipeForm = () => {
@@ -111,6 +113,8 @@ export const AddRecipeForm = () => {
     !preparation;
 
   const [isLoading, setIsLoading] = useState(false);
+  const [newIngredientName, setNewIngredientName] = useState('');
+  const [newIngredientMeasure, setNewIngredientMeasure] = useState('');
 
   const handleTimeChange = (delta: number) => {
     const newTime = Math.max(1, (Number(time) || 0) + delta);
@@ -197,9 +201,11 @@ export const AddRecipeForm = () => {
         category: '',
         area: '',
         time: 10,
-        ingredients: [{ name: '', measure: '' }],
+        ingredients: [],
         preparation: '',
       });
+      setNewIngredientName('');
+      setNewIngredientMeasure('');
     } catch (error) {
       console.error('Add recipe error:', error);
     } finally {
@@ -257,146 +263,184 @@ export const AddRecipeForm = () => {
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">
-          <Controller
-            name="category"
-            control={control}
-            render={({ field: { value, onChange } }) => (
-              <BaseSelect
-                label="Category"
-                required
-                options={categoryOptions}
-                value={value}
-                onChange={onChange}
-                error={errors.category?.message}
-              />
-            )}
-          />
-
-          <div className="flex items-center gap-3 rounded-full border border-light-grey bg-white px-6 py-3 text-sm text-black">
-            <span className="text-black/70">Cooking time</span>
-            <div className="ml-auto flex items-center gap-3">
-              <button
-                type="button"
-                onClick={() => handleTimeChange(-5)}
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-light-grey text-xl leading-none text-black transition hover:border-black"
-              >
-                -
-              </button>
-              <span className="min-w-[48px] text-center">{time || 0} min</span>
-              <button
-                type="button"
-                onClick={() => handleTimeChange(5)}
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-light-grey text-xl leading-none text-black transition hover:border-black"
-              >
-                +
-              </button>
-            </div>
+          <div className="space-y-2">
+            <label className="block text-sm font-bold uppercase text-black">
+              Category
+            </label>
+            <Controller
+              name="category"
+              control={control}
+              render={({ field: { value, onChange } }) => (
+                <BaseSelect
+                  placeholder="Select a category"
+                  required
+                  options={categoryOptions}
+                  value={value}
+                  onChange={onChange}
+                  error={errors.category?.message}
+                />
+              )}
+            />
           </div>
-          {errors.time && (
-            <p className="mt-1 px-4 text-sm text-red-500">
-              {errors.time.message}
-            </p>
-          )}
 
-          <Controller
-            name="area"
-            control={control}
-            render={({ field: { value, onChange } }) => (
-              <BaseSelect
-                label="Area"
-                required
-                options={areaOptions}
-                value={value}
-                onChange={onChange}
-                error={errors.area?.message}
-              />
+          <div className="space-y-2">
+            <label className="block text-sm font-bold uppercase text-black">
+              Cooking time
+            </label>
+            <div className="flex gap-3 rounded-full bg-white px-6 py-3 text-sm text-black">
+              <div className="ml-auto flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => handleTimeChange(-5)}
+                  className="flex h-12 w-12 items-center justify-center rounded-full border border-light-grey text-xl leading-none text-black transition hover:border-black"
+                >
+                  -
+                </button>
+                <span className="min-w-[48px] text-center">
+                  {time || 0} min
+                </span>
+                <button
+                  type="button"
+                  onClick={() => handleTimeChange(5)}
+                  className="flex h-12 w-12 items-center justify-center rounded-full border border-light-grey text-xl leading-none text-black transition hover:border-black"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+            {errors.time && (
+              <p className="mt-1 px-4 text-sm text-red-500">
+                {errors.time.message}
+              </p>
             )}
-          />
+          </div>
+
+          <div className="space-y-2">
+            <label className="block text-sm font-bold uppercase text-black">
+              Area
+            </label>
+            <Controller
+              name="area"
+              control={control}
+              render={({ field: { value, onChange } }) => (
+                <BaseSelect
+                  placeholder="Area"
+                  required
+                  options={areaOptions}
+                  value={value}
+                  onChange={onChange}
+                  error={errors.area?.message}
+                />
+              )}
+            />
+          </div>
         </div>
 
         {/* Ingredients */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold uppercase">Ingredients</h3>
+          <h3 className="text-sm font-bold uppercase text-black">
+            Ingredients
+          </h3>
 
           <div className="space-y-3">
-            {ingredients?.map((item, index) => (
-              <div
-                key={index}
-                className="grid gap-3 md:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)_auto]"
-              >
-                <BaseSelect
-                  label="Add the ingredient"
-                  required
-                  options={allIngredients
-                    .filter((ing) => ing.name)
-                    .map((ing) => ({
-                      value: ing.name as string,
-                      label: ing.name as string,
-                    }))}
-                  value={item?.name}
-                  onChange={(value) => {
-                    const next = [
-                      ...(ingredients || []),
-                    ] as IngredientFormItem[];
-                    next[index] = {
-                      ...next[index],
-                      name: value,
-                    };
-                    handleIngredientsChange(next);
-                  }}
-                  error={
-                    Array.isArray(errors.ingredients) &&
-                    errors.ingredients[index]?.name?.message
-                  }
-                />
+            {/* Input row for adding new ingredient */}
+            <div className="grid gap-3 md:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
+              <BaseSelect
+                placeholder="Add the ingredient"
+                options={allIngredients
+                  .filter((ing) => ing.name)
+                  .map((ing) => ({
+                    value: ing.name as string,
+                    label: ing.name as string,
+                  }))}
+                value={newIngredientName}
+                onChange={(value) => setNewIngredientName(value)}
+              />
 
-                <BaseInput
-                  placeholder="Enter quantity"
-                  value={item?.measure}
-                  onChange={(e) => {
-                    const next = [
-                      ...(ingredients || []),
-                    ] as IngredientFormItem[];
-                    next[index] = {
-                      ...next[index],
-                      measure: e.target.value,
-                    };
-                    handleIngredientsChange(next);
-                  }}
-                  error={
-                    Array.isArray(errors.ingredients) &&
-                    errors.ingredients[index]?.measure?.message
-                  }
-                />
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    const next = (ingredients || []).filter(
-                      (_, i) => i !== index
-                    ) as IngredientFormItem[];
-                    handleIngredientsChange(
-                      next.length ? next : [{ name: '', measure: '' }]
-                    );
-                  }}
-                  className="mt-1 flex h-11 w-11 items-center justify-center rounded-full border border-light-grey text-black transition hover:border-black"
-                >
-                  ×
-                </button>
-              </div>
-            ))}
+              <BaseInput
+                placeholder="Quantity"
+                value={newIngredientMeasure}
+                onChange={(e) => setNewIngredientMeasure(e.target.value)}
+              />
+            </div>
 
             <Button
               type="button"
               variant="outline-grey"
-              label="Add ingredient"
+              label="ADD INGREDIENT +"
               className="w-full md:w-auto"
               onClick={() => {
-                const next = [...(ingredients || [])] as IngredientFormItem[];
-                next.push({ name: '', measure: '' });
-                handleIngredientsChange(next);
+                if (!newIngredientName || !newIngredientMeasure) return;
+
+                const selectedIngredient = allIngredients.find(
+                  (ing) => ing.name === newIngredientName
+                );
+
+                if (selectedIngredient) {
+                  const newItem: IngredientFormItem = {
+                    id: selectedIngredient.id,
+                    name: newIngredientName,
+                    measure: newIngredientMeasure,
+                    img: selectedIngredient.img,
+                  };
+
+                  const next = [
+                    ...(ingredients || []),
+                    newItem,
+                  ] as IngredientFormItem[];
+                  handleIngredientsChange(next);
+
+                  // Reset input fields
+                  setNewIngredientName('');
+                  setNewIngredientMeasure('');
+                }
               }}
             />
+
+            {/* List of added ingredients */}
+            {ingredients && ingredients.length > 0 && (
+              <div className="flex flex-wrap gap-3">
+                {ingredients.map((item, index) => {
+                  const ingredientItem = item as IngredientFormItem;
+                  return (
+                    <div
+                      key={index}
+                      className="relative flex items-center gap-3"
+                    >
+                      {ingredientItem.img && (
+                        <div className="flex-shrink-0 rounded-xl border border-light-grey p-4">
+                          <img
+                            src={ingredientItem.img}
+                            alt={ingredientItem.name}
+                            className="h-8 w-8 object-cover"
+                          />
+                        </div>
+                      )}
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-medium text-black">
+                          {ingredientItem.name}
+                        </p>
+                        <p className="text-black/70 text-xs">
+                          {ingredientItem.measure}
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const next = (ingredients || []).filter(
+                            (_, i) => i !== index
+                          ) as IngredientFormItem[];
+                          handleIngredientsChange(next);
+                        }}
+                        className="flex h-6 w-6 flex-shrink-0 items-center justify-center text-black transition hover:opacity-70"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
 
             {typeof errors.ingredients?.message === 'string' && (
               <p className="mt-1 px-4 text-sm text-red-500">
@@ -408,7 +452,7 @@ export const AddRecipeForm = () => {
 
         {/* Preparation */}
         <div className="space-y-3">
-          <h3 className="text-lg font-semibold uppercase">
+          <h3 className="text-sm font-bold uppercase text-black">
             Recipe preparation
           </h3>
           <div>
