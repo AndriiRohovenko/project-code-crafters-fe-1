@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT
  * Generated from Swagger/OpenAPI specification
- *
+ * 
  * To regenerate, run: npm run generate:api
  */
 
@@ -31,10 +31,10 @@ export interface Recipe {
   id?: number;
   /** Назва рецепта */
   title?: string;
-  /** Категорія рецепта */
-  category?: string;
-  /** Регіон кухні */
-  area?: string;
+  /** ID категорії рецепта */
+  categoryId?: number;
+  /** ID регіону кухні */
+  areaId?: number;
   /** Інструкції приготування */
   instructions?: string;
   /** Опис рецепта */
@@ -166,9 +166,7 @@ export const getAreas = async (): Promise<Area[]> => {
 /**
  * Реєстрація нового користувача
  */
-export const createAuthRegister = async (
-  data: RegisterRequest
-): Promise<AuthResponse> => {
+export const createAuthRegister = async (data: RegisterRequest): Promise<AuthResponse> => {
   const response = await apiClient.post('/auth/register', data);
   return response.data;
 };
@@ -176,9 +174,7 @@ export const createAuthRegister = async (
 /**
  * Вхід користувача в систему
  */
-export const createAuthLogin = async (
-  data: LoginRequest
-): Promise<AuthResponse> => {
+export const createAuthLogin = async (data: LoginRequest): Promise<AuthResponse> => {
   const response = await apiClient.post('/auth/login', data);
   return response.data;
 };
@@ -217,12 +213,12 @@ export const getIngredients = async (): Promise<Ingredient[]> => {
  * Пошук рецептів за запитом
  */
 export const getRecipesSearch = async (params?: {
-  query?: string;
-  category?: string;
-  area?: string;
-  page?: number;
-  limit?: number;
-}): Promise<Recipe[]> => {
+    query?: string;
+    categoryId?: number;
+    areaId?: number;
+    page?: number;
+    limit?: number;
+  }): Promise<Recipe[]> => {
   const response = await apiClient.get('/recipes/search', { params });
   return response.data;
 };
@@ -231,8 +227,8 @@ export const getRecipesSearch = async (params?: {
  * Отримати популярні рецепти
  */
 export const getRecipesPopular = async (params?: {
-  limit?: number;
-}): Promise<Recipe[]> => {
+    limit?: number;
+  }): Promise<Recipe[]> => {
   const response = await apiClient.get('/recipes/popular', { params });
   return response.data;
 };
@@ -241,9 +237,9 @@ export const getRecipesPopular = async (params?: {
  * Отримати власні рецепти користувача
  */
 export const getRecipesMyRecipes = async (params?: {
-  page?: number;
-  limit?: number;
-}): Promise<{
+    page?: number;
+    limit?: number;
+  }): Promise<{
   recipes?: Recipe[];
   total?: number;
   page?: number;
@@ -274,15 +270,15 @@ export const deleteRecipesByid = async (id: number): Promise<void> => {
  */
 export const createRecipes = async (data: {
   title: string;
-  categoryId?: unknown;
-  areaId?: unknown;
+  categoryId: number;
+  areaId?: number;
   instructions: string;
   description?: string;
   time?: string;
   ingredients?: {
-    ingredientId?: number;
-    measure?: string;
-  }[];
+  id?: number;
+  measure?: string;
+}[];
 }): Promise<Recipe> => {
   const response = await apiClient.post('/recipes', data);
   return response.data;
@@ -304,10 +300,10 @@ export const getTestimonials = async (): Promise<Testimonial[]> => {
  * Отримати список всіх користувачів
  */
 export const getUsers = async (params?: {
-  page?: number;
-  limit?: number;
-  search?: string;
-}): Promise<{
+    page?: number;
+    limit?: number;
+    search?: string;
+  }): Promise<{
   users?: User[];
   page?: number;
   limit?: number;
@@ -336,9 +332,7 @@ export const getUsersCurrentFollowing = async (): Promise<User[]> => {
 /**
  * Підписатися на користувача
  */
-export const createUsersFollow = async (
-  data: FollowRequest
-): Promise<{
+export const createUsersFollow = async (data: FollowRequest): Promise<{
   message?: string;
 }> => {
   const response = await apiClient.post('/users/follow', data);
@@ -348,9 +342,7 @@ export const createUsersFollow = async (
 /**
  * Відписатися від користувача
  */
-export const deleteUsersUnfollow = async (
-  data: FollowRequest
-): Promise<{
+export const deleteUsersUnfollow = async (data: FollowRequest): Promise<{
   message?: string;
 }> => {
   const response = await apiClient.delete('/users/unfollow', { data });
@@ -382,3 +374,4 @@ export const getUsersByidFollowers = async (id: number): Promise<User[]> => {
   const response = await apiClient.get(`/users/${id}/followers`);
   return response.data;
 };
+
