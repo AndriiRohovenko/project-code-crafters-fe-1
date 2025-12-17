@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 
-import { getTestimonials, Testimonial } from '../../api/api.gen';
-import { Subtitle } from '@/shared/ui/subtitle';
 import { MainTitle } from '@/shared/ui/main-title';
+import { Subtitle } from '@/shared/ui/subtitle';
+
+import { getTestimonials, Testimonial } from '../../api/api.gen';
 
 const AUTO_SLIDE_INTERVAL = 5000;
 
