@@ -131,14 +131,35 @@ export const AddRecipeForm = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const handleImageSelectClick = () => {
+    // Clear current selection before choosing a new one
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview);
+      setImagePreview(null);
+    }
+    setImageFile(null);
     fileInputRef.current?.click();
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
+
+    // Revoke old preview URL before replacing
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview);
+    }
+
     setImageFile(file);
     setImagePreview(file ? URL.createObjectURL(file) : null);
   };
+
+  // Cleanup preview URL on unmount
+  useEffect(() => {
+    return () => {
+      if (imagePreview) {
+        URL.revokeObjectURL(imagePreview);
+      }
+    };
+  }, [imagePreview]);
 
   const handleClearForm = () => {
     reset({
@@ -153,6 +174,9 @@ export const AddRecipeForm = () => {
     setNewIngredientName('');
     setNewIngredientMeasure('');
     setImageFile(null);
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview);
+    }
     setImagePreview(null);
   };
 
@@ -309,6 +333,15 @@ export const AddRecipeForm = () => {
             />
           </div>
         </div>
+        {imagePreview && (
+          <button
+            type="button"
+            onClick={handleImageSelectClick}
+            className="mt-3 text-center text-sm font-medium text-black underline transition hover:opacity-80"
+          >
+            Upload another photo
+          </button>
+        )}
       </div>
 
       {/* Right column – form fields */}
