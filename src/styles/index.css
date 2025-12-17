@@ -14,16 +14,36 @@
   --color-dark-grey: #1a1a1a;
   --color-light-grey: #bfbebe;
   --color-white: #ffffff;
-  
+
   /* Additional colors */
   --color-error: #e44848;
   --color-white-opacity20: rgba(255, 255, 255, 0.2);
-  
+
   /* Semantic aliases (pointing to existing colors) */
   --color-main: var(--color-black);
   --color-text: var(--color-dark-grey);
   --color-secondary: var(--color-light-grey);
   --color-placeholder: var(--color-light-grey);
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background-image: linear-gradient(
+    110deg,
+    rgba(0, 0, 0, 0.06) 25%,
+    rgba(0, 0, 0, 0.12) 37%,
+    rgba(0, 0, 0, 0.06) 63%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.2s ease-in-out infinite;
 }
 
 @tailwind base;

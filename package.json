@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "icons:generate": "node scripts/generate-icon-types.js",
     "icons:watch": "node scripts/generate-icon-types.js --watch",
-    "generate:api": "node scripts/generate-api.js; prettier src/api --write"
+    "generate:api": "node scripts/generate-api.js && prettier src/api --write"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
