@@ -1,6 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect, useRef, useState } from 'react';
 import { Controller, Resolver, useForm, useWatch } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 
 import {
   Area,
@@ -18,6 +19,7 @@ import {
 import { BaseInput } from '@/shared/ui/base-input';
 import { BaseSelect } from '@/shared/ui/base-select';
 import { Button } from '@/shared/ui/button';
+import { Icon } from '@/shared/ui/icon';
 
 interface IngredientFormItem {
   id?: number;
@@ -27,6 +29,7 @@ interface IngredientFormItem {
 }
 
 export const AddRecipeForm = () => {
+  const navigate = useNavigate();
   const resolver: Resolver<AddRecipeFormData> = yupResolver(
     addRecipeSchema
   ) as unknown as Resolver<AddRecipeFormData>;
@@ -137,6 +140,22 @@ export const AddRecipeForm = () => {
     setImagePreview(file ? URL.createObjectURL(file) : null);
   };
 
+  const handleClearForm = () => {
+    reset({
+      title: '',
+      description: '',
+      category: '',
+      area: '',
+      time: 10,
+      ingredients: [],
+      preparation: '',
+    });
+    setNewIngredientName('');
+    setNewIngredientMeasure('');
+    setImageFile(null);
+    setImagePreview(null);
+  };
+
   const handleTimeChange = (delta: number) => {
     const newTime = Math.max(1, (Number(time) || 0) + delta);
     setValue('time', newTime, { shouldValidate: true });
@@ -219,23 +238,31 @@ export const AddRecipeForm = () => {
         formData.append('thumb', imageFile);
       }
 
-      await createRecipes(formData);
+      const response = await createRecipes(formData);
 
       console.log('Recipe created successfully');
 
-      reset({
-        title: '',
-        description: '',
-        category: '',
-        area: '',
-        time: 10,
-        ingredients: [],
-        preparation: '',
-      });
-      setNewIngredientName('');
-      setNewIngredientMeasure('');
-      setImageFile(null);
-      setImagePreview(null);
+      // Extract recipe ID from response and redirect
+      const recipeId = response.data?.recipe?.id;
+      if (recipeId) {
+        // Reset form and redirect to recipe detail page
+        reset({
+          title: '',
+          description: '',
+          category: '',
+          area: '',
+          time: 10,
+          ingredients: [],
+          preparation: '',
+        });
+        setNewIngredientName('');
+        setNewIngredientMeasure('');
+        setImageFile(null);
+        setImagePreview(null);
+        navigate(`/recipe/${recipeId}`);
+      } else {
+        throw new Error('Recipe created but ID not returned');
+      }
     } catch (error) {
       console.error('Add recipe error:', error);
     } finally {
@@ -250,13 +277,13 @@ export const AddRecipeForm = () => {
     >
       {/* Left column – image upload */}
       <div>
-        <div className="flex h-[260px] w-full items-center justify-center rounded-[40px] border border-dashed border-light-grey bg-white md:h-[340px]">
+        <div className="flex h-[260px] w-full items-center justify-center rounded-[40px] border border-dashed border-light-grey bg-white md:h-[300px]">
           <div className="text-black/70 flex flex-col items-center justify-center text-center text-sm">
             {imagePreview ? (
               <img
                 src={imagePreview}
                 alt="Recipe preview"
-                className="h-[220px] w-full max-w-[300px] rounded-3xl object-cover md:h-[300px]"
+                className="w-full rounded-3xl md:h-[300px]"
               />
             ) : (
               <button
@@ -264,9 +291,7 @@ export const AddRecipeForm = () => {
                 onClick={handleImageSelectClick}
                 className="text-black/70 flex flex-col items-center justify-center text-center text-sm"
               >
-                <span className="mb-3 inline-flex h-14 w-14 items-center justify-center rounded-full border border-light-grey text-2xl">
-                  +
-                </span>
+                <Icon name="camera" size={49} className="mb-2" />
                 <span>Upload a photo</span>
               </button>
             )}
@@ -286,7 +311,6 @@ export const AddRecipeForm = () => {
         <div className="space-y-4">
           <BaseInput
             label="The name of the recipe"
-            required
             error={errors.title?.message}
             {...register('title')}
           />
@@ -331,7 +355,7 @@ export const AddRecipeForm = () => {
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="flex flex-col items-start">
             <label className="block text-sm font-bold uppercase text-black">
               Cooking time
             </label>
@@ -523,6 +547,14 @@ export const AddRecipeForm = () => {
         </div>
 
         <div className="flex items-center gap-4 pt-2">
+          <button
+            type="button"
+            onClick={handleClearForm}
+            className="flex h-12 w-12 items-center justify-center rounded-full border border-light-grey bg-white text-black transition hover:border-black"
+            title="Clear form"
+          >
+            <Icon name="trash" size={20} />
+          </button>
           <Button
             type="submit"
             label={isLoading ? 'Publishing...' : 'Publish'}
