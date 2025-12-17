@@ -143,6 +143,20 @@ export interface RecipePreviewDTO {
 export interface FollowUserDTO {}
 
 export interface FollowerUserDTO {}
+  image: string | null;
+}
+
+export interface FollowUserDTO extends User {
+  /** Кількість рецептів користувача */
+  recipesCount: number;
+  /** Превʼю рецептів (до 4) */
+  recipesPreview: RecipePreviewDTO[];
+}
+
+export interface FollowerUserDTO extends FollowUserDTO {
+  /** Чи підписаний поточний користувач на цього юзера */
+  isFollowing: boolean;
+}
 
 export interface PaginationQuery {
   /** Номер сторінки */

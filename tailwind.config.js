@@ -12,9 +12,12 @@ export default {
       fontFamily: {
         sans: ['Mulish', 'sans-serif'],
       },
-      screens: {
-        '2xl': '1440px',
-      },
+    },
+    screens: {
+      xsOnly: { max: '374px' },
+      xs: '375px',
+      md: '768px',
+      '2xl': '1440px',
     },
   },
   plugins: [],
