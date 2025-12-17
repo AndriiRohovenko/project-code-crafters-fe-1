@@ -140,6 +140,15 @@ export const AddRecipeForm = () => {
     setImagePreview(file ? URL.createObjectURL(file) : null);
   };
 
+  // Cleanup imagePreview URL to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (imagePreview) {
+        URL.revokeObjectURL(imagePreview);
+      }
+    };
+  }, [imagePreview]);
+
   const handleClearForm = () => {
     reset({
       title: '',
