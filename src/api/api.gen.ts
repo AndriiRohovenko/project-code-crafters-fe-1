@@ -31,10 +31,10 @@ export interface Recipe {
   id?: number;
   /** Назва рецепта */
   title?: string;
-  /** Категорія рецепта */
-  category?: string;
-  /** Регіон кухні */
-  area?: string;
+  /** ID категорії рецепта */
+  categoryId?: number;
+  /** ID регіону кухні */
+  areaId?: number;
   /** Інструкції приготування */
   instructions?: string;
   /** Опис рецепта */
@@ -131,6 +131,42 @@ export interface FollowRequest {
   followingId: number;
 }
 
+export interface RecipePreviewDTO {
+  /** ID рецепта (превʼю) */
+  id: number;
+  /** Назва рецепта (превʼю) */
+  title: string;
+  /** URL thumb (превʼю) */
+  image: string;
+}
+
+export interface FollowUserDTO {}
+
+export interface FollowerUserDTO {}
+
+export interface PaginationQuery {
+  /** Номер сторінки */
+  page?: number;
+  /** Кількість елементів на сторінці */
+  limit?: number;
+}
+
+export interface PaginatedFollowingResponse {
+  data: FollowUserDTO[];
+  totalItems: number;
+  totalPages: number;
+  currentPage: number;
+  itemsPerPage: number;
+}
+
+export interface PaginatedFollowersResponse {
+  data: FollowerUserDTO[];
+  totalItems: number;
+  totalPages: number;
+  currentPage: number;
+  itemsPerPage: number;
+}
+
 // Additional types
 export interface RecipeIngredient {
   id: number;
@@ -201,6 +237,40 @@ export const getCategories = async (): Promise<Category[]> => {
   return response.data;
 };
 
+// --- Favorites ---
+
+/**
+ * Отримати список улюблених рецептів
+ */
+export const getFavorites = async (): Promise<RecipePreviewDTO[]> => {
+  const response = await apiClient.get('/favorites');
+  return response.data;
+};
+
+/**
+ * Додати рецепт до улюблених
+ */
+export const createFavoritesByrecipeId = async (
+  recipeId: string
+): Promise<{
+  message?: string;
+}> => {
+  const response = await apiClient.post(`/favorites/${recipeId}`, {});
+  return response.data;
+};
+
+/**
+ * Видалити рецепт з улюблених
+ */
+export const deleteFavoritesByrecipeId = async (
+  recipeId: string
+): Promise<{
+  message?: string;
+}> => {
+  const response = await apiClient.delete(`/favorites/${recipeId}`);
+  return response.data;
+};
+
 // --- Ingredients ---
 
 /**
@@ -218,8 +288,8 @@ export const getIngredients = async (): Promise<Ingredient[]> => {
  */
 export const getRecipesSearch = async (params?: {
   query?: string;
-  category?: string;
-  area?: string;
+  categoryId?: number;
+  areaId?: number;
   page?: number;
   limit?: number;
 }): Promise<Recipe[]> => {
@@ -272,19 +342,17 @@ export const deleteRecipesByid = async (id: number): Promise<void> => {
 /**
  * Створити новий рецепт
  */
-export const createRecipes = async (data: {
-  title: string;
-  category: string;
-  area?: string;
-  instructions: string;
-  description?: string;
-  time?: string;
-  ingredients?: {
-    id?: number;
-    measure?: string;
-  }[];
-}): Promise<Recipe> => {
-  const response = await apiClient.post('/recipes', data);
+export const createRecipes = async (
+  data: FormData
+): Promise<{
+  status?: string;
+  data?: {
+    recipe?: Recipe;
+  };
+}> => {
+  const response = await apiClient.post('/recipes', data, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
   return response.data;
 };
 
@@ -328,8 +396,11 @@ export const getUsersCurrent = async (): Promise<User> => {
 /**
  * Отримати список підписок авторизованого користувача
  */
-export const getUsersCurrentFollowing = async (): Promise<User[]> => {
-  const response = await apiClient.get('/users/current/following');
+export const getUsersCurrentFollowing = async (params?: {
+  page?: number;
+  limit?: number;
+}): Promise<PaginatedFollowingResponse> => {
+  const response = await apiClient.get('/users/current/following', { params });
   return response.data;
 };
 
@@ -378,7 +449,13 @@ export const getUsersByid = async (id: number): Promise<User> => {
 /**
  * Отримати список підписників користувача
  */
-export const getUsersByidFollowers = async (id: number): Promise<User[]> => {
-  const response = await apiClient.get(`/users/${id}/followers`);
+export const getUsersByidFollowers = async (
+  id: number,
+  params?: {
+    page?: number;
+    limit?: number;
+  }
+): Promise<PaginatedFollowersResponse> => {
+  const response = await apiClient.get(`/users/${id}/followers`, { params });
   return response.data;
 };
