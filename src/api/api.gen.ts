@@ -131,6 +131,50 @@ export interface FollowRequest {
   followingId: number;
 }
 
+export interface RecipePreviewDTO {
+  /** ID рецепта (превʼю) */
+  id: number;
+  /** Назва рецепта (превʼю) */
+  title: string;
+  /** URL thumb (превʼю) */
+  image: string | null;
+}
+
+export interface FollowUserDTO extends User {
+  /** Кількість рецептів користувача */
+  recipesCount: number;
+  /** Превʼю рецептів (до 4) */
+  recipesPreview: RecipePreviewDTO[];
+}
+
+export interface FollowerUserDTO extends FollowUserDTO {
+  /** Чи підписаний поточний користувач на цього юзера */
+  isFollowing: boolean;
+}
+
+export interface PaginationQuery {
+  /** Номер сторінки */
+  page?: number;
+  /** Кількість елементів на сторінці */
+  limit?: number;
+}
+
+export interface PaginatedFollowingResponse {
+  data: FollowUserDTO[];
+  totalItems: number;
+  totalPages: number;
+  currentPage: number;
+  itemsPerPage: number;
+}
+
+export interface PaginatedFollowersResponse {
+  data: FollowerUserDTO[];
+  totalItems: number;
+  totalPages: number;
+  currentPage: number;
+  itemsPerPage: number;
+}
+
 // Additional types
 export interface RecipeIngredient {
   id: number;
@@ -328,8 +372,11 @@ export const getUsersCurrent = async (): Promise<User> => {
 /**
  * Отримати список підписок авторизованого користувача
  */
-export const getUsersCurrentFollowing = async (): Promise<User[]> => {
-  const response = await apiClient.get('/users/current/following');
+export const getUsersCurrentFollowing = async (params?: {
+  page?: number;
+  limit?: number;
+}): Promise<PaginatedFollowingResponse> => {
+  const response = await apiClient.get('/users/current/following', { params });
   return response.data;
 };
 
@@ -378,7 +425,13 @@ export const getUsersByid = async (id: number): Promise<User> => {
 /**
  * Отримати список підписників користувача
  */
-export const getUsersByidFollowers = async (id: number): Promise<User[]> => {
-  const response = await apiClient.get(`/users/${id}/followers`);
+export const getUsersByidFollowers = async (
+  id: number,
+  params?: {
+    page?: number;
+    limit?: number;
+  }
+): Promise<PaginatedFollowersResponse> => {
+  const response = await apiClient.get(`/users/${id}/followers`, { params });
   return response.data;
 };

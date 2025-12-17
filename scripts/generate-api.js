@@ -59,22 +59,41 @@ async function fetchSwaggerSpec(url) {
 function mapOpenApiTypeToTs(schema, schemas = {}) {
   if (!schema) return 'unknown';
 
+  const withNullable = (t) => (schema?.nullable ? `${t} | null` : t);
+
   if (schema.$ref) {
     const refName = schema.$ref.split('/').pop();
     return refName;
   }
 
+  if (schema.allOf) {
+    const parts = schema.allOf.map((s) => mapOpenApiTypeToTs(s, schemas));
+    return withNullable(parts.join(' & '));
+  }
+  if (schema.oneOf) {
+    const parts = schema.oneOf.map((s) => mapOpenApiTypeToTs(s, schemas));
+    return withNullable(parts.join(' | '));
+  }
+  if (schema.anyOf) {
+    const parts = schema.anyOf.map((s) => mapOpenApiTypeToTs(s, schemas));
+    return withNullable(parts.join(' | '));
+  }
+
   switch (schema.type) {
     case 'integer':
     case 'number':
-      return 'number';
+      return withNullable('number');
+
     case 'string':
-      if (schema.format === 'binary') return 'File';
-      return 'string';
+      if (schema.format === 'binary') return withNullable('File');
+      return withNullable('string');
+
     case 'boolean':
-      return 'boolean';
+      return withNullable('boolean');
+
     case 'array':
-      return `${mapOpenApiTypeToTs(schema.items, schemas)}[]`;
+      return withNullable(`${mapOpenApiTypeToTs(schema.items, schemas)}[]`);
+
     case 'object':
       if (schema.properties) {
         const props = Object.entries(schema.properties)
@@ -83,9 +102,10 @@ function mapOpenApiTypeToTs(schema, schemas = {}) {
             return `  ${key}${required ? '' : '?'}: ${mapOpenApiTypeToTs(val, schemas)};`;
           })
           .join('\n');
-        return `{\n${props}\n}`;
+        return withNullable(`{\n${props}\n}`);
       }
-      return 'Record<string, unknown>';
+      return withNullable('Record<string, unknown>');
+
     default:
       return 'unknown';
   }
@@ -95,6 +115,42 @@ function generateSchemaTypes(schemas) {
   let output = '';
 
   for (const [name, schema] of Object.entries(schemas)) {
+    // --- handle allOf as "extends" interfaces ---
+    if (schema.allOf && Array.isArray(schema.allOf)) {
+      const refs = schema.allOf
+        .filter((s) => s.$ref)
+        .map((s) => s.$ref.split('/').pop());
+
+      const inlineObjects = schema.allOf.filter(
+        (s) => s.type === 'object' && s.properties
+      );
+
+      // merge inline properties
+      const mergedProps = {};
+      const mergedRequired = new Set();
+
+      for (const obj of inlineObjects) {
+        Object.assign(mergedProps, obj.properties || {});
+        (obj.required || []).forEach((r) => mergedRequired.add(r));
+      }
+
+      const props = Object.entries(mergedProps)
+        .map(([key, val]) => {
+          const required = mergedRequired.has(key);
+          const type = mapOpenApiTypeToTs(val, schemas);
+          const description = val.description
+            ? `  /** ${val.description} */\n`
+            : '';
+          return `${description}  ${key}${required ? '' : '?'}: ${type};`;
+        })
+        .join('\n');
+
+      const extendsPart = refs.length ? ` extends ${refs.join(', ')}` : '';
+      output += `export interface ${name}${extendsPart} {\n${props}\n}\n\n`;
+      continue;
+    }
+
+    // --- default: normal object schema ---
     const props = Object.entries(schema.properties || {})
       .map(([key, val]) => {
         const required = schema.required?.includes(key);
