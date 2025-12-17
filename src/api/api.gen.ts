@@ -140,9 +140,7 @@ export interface RecipePreviewDTO {
   image: string;
 }
 
-export interface FollowUserDTO {}
-
-export interface FollowerUserDTO {}
+export interface FollowerUserDTO {
   image: string | null;
 }
 
