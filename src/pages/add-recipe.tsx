@@ -1,9 +1,21 @@
+import { AddRecipeForm } from '@/features/add-recipe/add-recipe-form';
+import Container from '@/shared/ui/container';
+import { MainTitle } from '@/shared/ui/main-title';
+import { Subtitle } from '@/shared/ui/subtitle';
+
 const AddRecipe = () => {
   return (
-    <div className="mx-auto max-w-[1280px] px-4 py-10 md:px-8 2xl:px-0">
-      <h1 className="text-2xl font-bold">Add recipe</h1>
-      <p className="text-black/70 mt-2">This page is a placeholder for now.</p>
-    </div>
+    <Container>
+      <div className="mx-auto w-full py-10 md:max-w-[768px] md:py-14 2xl:py-20">
+        <MainTitle className="mb-2">Add recipe</MainTitle>
+        <Subtitle className="text-black/70 mb-10 max-w-[360px] md:max-w-[480px]">
+          Reveal your culinary art, share your favorite recipe and create
+          gastronomic masterpieces with us.
+        </Subtitle>
+
+        <AddRecipeForm />
+      </div>
+    </Container>
   );
 };
 
