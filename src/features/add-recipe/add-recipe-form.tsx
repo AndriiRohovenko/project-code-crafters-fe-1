@@ -265,6 +265,11 @@ export const AddRecipeForm = () => {
       }
     } catch (error) {
       console.error('Add recipe error:', error);
+      const message =
+        error instanceof Error && error.message
+          ? error.message
+          : 'Failed to add recipe. Please try again.';
+      window.alert(message);
     } finally {
       setIsLoading(false);
     }
