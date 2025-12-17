@@ -31,10 +31,10 @@ export interface Recipe {
   id?: number;
   /** Назва рецепта */
   title?: string;
-  /** Категорія рецепта */
-  category?: string;
-  /** Регіон кухні */
-  area?: string;
+  /** ID категорії рецепта */
+  categoryId?: number;
+  /** ID регіону кухні */
+  areaId?: number;
   /** Інструкції приготування */
   instructions?: string;
   /** Опис рецепта */
@@ -137,6 +137,12 @@ export interface RecipePreviewDTO {
   /** Назва рецепта (превʼю) */
   title: string;
   /** URL thumb (превʼю) */
+  image: string;
+}
+
+export interface FollowUserDTO {}
+
+export interface FollowerUserDTO {}
   image: string | null;
 }
 
@@ -245,6 +251,40 @@ export const getCategories = async (): Promise<Category[]> => {
   return response.data;
 };
 
+// --- Favorites ---
+
+/**
+ * Отримати список улюблених рецептів
+ */
+export const getFavorites = async (): Promise<RecipePreviewDTO[]> => {
+  const response = await apiClient.get('/favorites');
+  return response.data;
+};
+
+/**
+ * Додати рецепт до улюблених
+ */
+export const createFavoritesByrecipeId = async (
+  recipeId: string
+): Promise<{
+  message?: string;
+}> => {
+  const response = await apiClient.post(`/favorites/${recipeId}`, {});
+  return response.data;
+};
+
+/**
+ * Видалити рецепт з улюблених
+ */
+export const deleteFavoritesByrecipeId = async (
+  recipeId: string
+): Promise<{
+  message?: string;
+}> => {
+  const response = await apiClient.delete(`/favorites/${recipeId}`);
+  return response.data;
+};
+
 // --- Ingredients ---
 
 /**
@@ -262,8 +302,8 @@ export const getIngredients = async (): Promise<Ingredient[]> => {
  */
 export const getRecipesSearch = async (params?: {
   query?: string;
-  category?: string;
-  area?: string;
+  categoryId?: number;
+  areaId?: number;
   page?: number;
   limit?: number;
 }): Promise<Recipe[]> => {
@@ -316,19 +356,17 @@ export const deleteRecipesByid = async (id: number): Promise<void> => {
 /**
  * Створити новий рецепт
  */
-export const createRecipes = async (data: {
-  title: string;
-  category: string;
-  area?: string;
-  instructions: string;
-  description?: string;
-  time?: string;
-  ingredients?: {
-    id?: number;
-    measure?: string;
-  }[];
-}): Promise<Recipe> => {
-  const response = await apiClient.post('/recipes', data);
+export const createRecipes = async (
+  data: FormData
+): Promise<{
+  status?: string;
+  data?: {
+    recipe?: Recipe;
+  };
+}> => {
+  const response = await apiClient.post('/recipes', data, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
   return response.data;
 };
 

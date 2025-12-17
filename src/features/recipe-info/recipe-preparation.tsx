@@ -1,3 +1,4 @@
+import { FavoriteButton } from '@/features/favorites/favorite-button';
 import { RecipeDetail } from '@/shared/types/recipe';
 
 interface RecipePreparationProps {
@@ -23,6 +24,10 @@ const RecipePreparation = ({ recipe }: RecipePreparationProps) => {
           {text}
         </p>
       ))}
+
+      <div className="mt-3 md:mt-5">
+        <FavoriteButton recipeId={recipe.id!} className="w-auto self-start" />
+      </div>
     </div>
   );
 };
