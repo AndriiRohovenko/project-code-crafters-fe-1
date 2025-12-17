@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Controller, Resolver, useForm, useWatch } from 'react-hook-form';
 
 import {
@@ -95,13 +95,19 @@ export const AddRecipeForm = () => {
       category: '',
       area: '',
       time: 10,
-      ingredients: [{ name: '', measure: '' }],
+      ingredients: [],
       preparation: '',
     },
   });
 
   const { title, description, category, area, time, ingredients, preparation } =
     useWatch({ control });
+
+  // Only render non-empty ingredient items
+  const activeIngredients = (ingredients || []).filter(
+    (i) => !!i?.name && !!i?.measure
+  );
+  const hasIngredients = activeIngredients.length > 0;
 
   const isFormEmpty =
     !title &&
@@ -115,6 +121,21 @@ export const AddRecipeForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [newIngredientName, setNewIngredientName] = useState('');
   const [newIngredientMeasure, setNewIngredientMeasure] = useState('');
+
+  // Image upload state
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const handleImageSelectClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    setImageFile(file);
+    setImagePreview(file ? URL.createObjectURL(file) : null);
+  };
 
   const handleTimeChange = (delta: number) => {
     const newTime = Math.max(1, (Number(time) || 0) + delta);
@@ -181,17 +202,24 @@ export const AddRecipeForm = () => {
         throw new Error('Invalid area selected');
       }
 
-      const payload = {
-        title: data.title,
-        categoryId,
-        areaId,
-        instructions: data.preparation,
-        description: data.description,
-        time: String(data.time),
-        ingredients: ingredientsPayload.length ? ingredientsPayload : undefined,
-      };
+      // Build multipart/form-data payload
+      const formData = new FormData();
+      formData.append('title', data.title);
+      formData.append('categoryId', String(categoryId));
+      formData.append('areaId', String(areaId));
+      formData.append('instructions', data.preparation);
+      if (data.description) formData.append('description', data.description);
+      if (data.time) formData.append('time', String(data.time));
+      if (ingredientsPayload.length) {
+        formData.append('ingredients', JSON.stringify(ingredientsPayload));
+      }
+      // Attach image file if provided
+      if (imageFile) {
+        // Field name may vary on backend; using 'thumb' by default
+        formData.append('thumb', imageFile);
+      }
 
-      await createRecipes(payload);
+      await createRecipes(formData);
 
       console.log('Recipe created successfully');
 
@@ -206,6 +234,8 @@ export const AddRecipeForm = () => {
       });
       setNewIngredientName('');
       setNewIngredientMeasure('');
+      setImageFile(null);
+      setImagePreview(null);
     } catch (error) {
       console.error('Add recipe error:', error);
     } finally {
@@ -218,18 +248,36 @@ export const AddRecipeForm = () => {
       onSubmit={handleSubmit(onSubmit)}
       className="grid gap-10 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1.2fr)] md:items-start md:gap-14"
     >
-      {/* Left column – image upload placeholder */}
+      {/* Left column – image upload */}
       <div>
         <div className="flex h-[260px] w-full items-center justify-center rounded-[40px] border border-dashed border-light-grey bg-white md:h-[340px]">
-          <button
-            type="button"
-            className="text-black/70 flex flex-col items-center justify-center text-center text-sm"
-          >
-            <span className="mb-3 inline-flex h-14 w-14 items-center justify-center rounded-full border border-light-grey text-2xl">
-              +
-            </span>
-            <span>Upload a photo</span>
-          </button>
+          <div className="text-black/70 flex flex-col items-center justify-center text-center text-sm">
+            {imagePreview ? (
+              <img
+                src={imagePreview}
+                alt="Recipe preview"
+                className="h-[220px] w-full max-w-[300px] rounded-3xl object-cover md:h-[300px]"
+              />
+            ) : (
+              <button
+                type="button"
+                onClick={handleImageSelectClick}
+                className="text-black/70 flex flex-col items-center justify-center text-center text-sm"
+              >
+                <span className="mb-3 inline-flex h-14 w-14 items-center justify-center rounded-full border border-light-grey text-2xl">
+                  +
+                </span>
+                <span>Upload a photo</span>
+              </button>
+            )}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+          </div>
         </div>
       </div>
 
@@ -398,9 +446,9 @@ export const AddRecipeForm = () => {
             />
 
             {/* List of added ingredients */}
-            {ingredients && ingredients.length > 0 && (
+            {hasIngredients && (
               <div className="flex flex-wrap gap-3">
-                {ingredients.map((item, index) => {
+                {activeIngredients.map((item, index) => {
                   const ingredientItem = item as IngredientFormItem;
                   return (
                     <div
