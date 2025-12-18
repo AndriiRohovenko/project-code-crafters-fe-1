@@ -1,5 +1,6 @@
 import { Categories } from '@/features/categories/categories';
 import { ProfileFollowPanel } from '@/features/profile/ui/profile-follow-panel';
+import { CategoryDetails } from '@/features/category-details/category-details';
 import { Testimonials } from '@/features/testimonials/testimonials';
 
 const Home = () => {
@@ -16,6 +17,7 @@ const Home = () => {
         </div>
       </section>
       <Categories />
+      <CategoryDetails />
       <Testimonials />
     </div>
   );
