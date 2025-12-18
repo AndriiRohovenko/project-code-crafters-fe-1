@@ -288,11 +288,11 @@ export const AddRecipeForm = () => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="grid gap-10 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1.2fr)] md:items-start md:gap-14"
+      className="grid grid-cols-1 gap-10 mb[64px] 2xl:grid-cols-2 mb-[79px]"
     >
       {/* Left column – image upload */}
       <div className="flex flex-col items-center">
-        <div className="flex h-[260px] w-full items-center justify-center rounded-[40px] border border-dashed border-light-grey bg-white md:h-[400px]">
+        <div className="h-[260px] w-full items-center justify-center rounded-[40px] border border-dashed border-light-grey bg-white md:h-[400px]">
           <div className="flex h-full w-full flex-col items-center justify-center text-center text-sm text-black">
             {imagePreview ? (
               <img
@@ -304,7 +304,7 @@ export const AddRecipeForm = () => {
               <button
                 type="button"
                 onClick={handleImageSelectClick}
-                className="text-black/70 text-sm"
+                className="text-black/70 flex flex-col items-center justify-center text-center text-sm"
               >
                 <Icon name="camera" size={49} className="mb-2" />
                 <span>Upload a photo</span>
@@ -383,7 +383,7 @@ export const AddRecipeForm = () => {
             <label className="block text-sm font-bold uppercase text-black">
               Cooking time
             </label>
-            <div className="flex gap-3 rounded-full bg-white px-6 py-3 text-sm text-black">
+            <div className="flex gap-3 rounded-full bg-white py-3 text-sm text-black">
               <div className="ml-auto flex items-center gap-3">
                 <button
                   type="button"
