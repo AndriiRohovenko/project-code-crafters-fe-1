@@ -288,17 +288,17 @@ export const AddRecipeForm = () => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="grid grid-cols-1 gap-10 mb[64px] 2xl:grid-cols-2 mb-[79px]"
+      className="mb[64px] mb-[79px] grid grid-cols-1 gap-10 2xl:grid-cols-2"
     >
       {/* Left column – image upload */}
       <div className="flex flex-col items-center">
-        <div className="h-[260px] w-full items-center justify-center rounded-[40px] border border-dashed border-light-grey bg-white md:h-[400px]">
+        <div className="h-[260px] w-full items-center justify-center overflow-hidden rounded-[40px] border border-dashed border-light-grey bg-white md:h-[400px]">
           <div className="flex h-full w-full flex-col items-center justify-center text-center text-sm text-black">
             {imagePreview ? (
               <img
                 src={imagePreview}
                 alt="Recipe preview"
-                className="h-full w-full rounded-3xl object-cover"
+                className="h-full w-full object-cover"
               />
             ) : (
               <button
