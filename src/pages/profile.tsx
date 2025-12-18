@@ -29,6 +29,19 @@ const Profile = () => {
           gastronomic masterpieces with us.
         </p>
       </div>
+
+      {/* Шапка профілю */}
+      <ProfileHeader user={user} />
+
+      {/* Вкладки */}
+      <ProfileTabs activeTab={activeTab} onTabChange={setActiveTab} />
+
+      {/* Контент вкладок */}
+      {activeTab === 'recipes' && <ProfileRecipesList tab="recipes" />}
+      {activeTab === 'favorites' && <ProfileRecipesList tab="favorites" />}
+      {(activeTab === 'followers' || activeTab === 'following') && (
+        <ProfileFollowPanel tab={activeTab} />
+      )}
     </div>
   );
 };
