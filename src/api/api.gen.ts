@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE - DO NOT EDIT
  * Generated from Swagger/OpenAPI specification
- * 
+ *
  * To regenerate, run: npm run generate:api
  */
 
@@ -137,10 +137,6 @@ export interface RecipePreviewDTO {
   /** Назва рецепта (превʼю) */
   title: string;
   /** URL thumb (превʼю) */
-  image: string;
-}
-
-export interface FollowerUserDTO {
   image: string | null;
 }
 
@@ -179,6 +175,18 @@ export interface PaginatedFollowersResponse {
   itemsPerPage: number;
 }
 
+export interface PaginationMeta {
+  totalItems: number;
+  totalPages: number;
+  currentPage: number;
+  itemsPerPage: number;
+}
+
+export interface PaginatedFavoritesResponse {
+  data: Recipe[];
+  meta: PaginationMeta;
+}
+
 // Additional types
 export interface RecipeIngredient {
   id: number;
@@ -214,7 +222,9 @@ export const getAreas = async (): Promise<Area[]> => {
 /**
  * Реєстрація нового користувача
  */
-export const createAuthRegister = async (data: RegisterRequest): Promise<AuthResponse> => {
+export const createAuthRegister = async (
+  data: RegisterRequest
+): Promise<AuthResponse> => {
   const response = await apiClient.post('/auth/register', data);
   return response.data;
 };
@@ -222,7 +232,9 @@ export const createAuthRegister = async (data: RegisterRequest): Promise<AuthRes
 /**
  * Вхід користувача в систему
  */
-export const createAuthLogin = async (data: LoginRequest): Promise<AuthResponse> => {
+export const createAuthLogin = async (
+  data: LoginRequest
+): Promise<AuthResponse> => {
   const response = await apiClient.post('/auth/login', data);
   return response.data;
 };
@@ -248,33 +260,32 @@ export const getCategories = async (): Promise<Category[]> => {
 // --- Favorites ---
 
 /**
- * Отримати список улюблених рецептів
+ * Get a paginated list of the current user's favorite recipes
  */
-export const getFavorites = async (): Promise<RecipePreviewDTO[]> => {
-  const response = await apiClient.get('/favorites');
+export const getFavorites = async (params?: {
+  page?: number;
+  limit?: number;
+}): Promise<PaginatedFavoritesResponse> => {
+  const response = await apiClient.get('/favorites', { params });
   return response.data;
 };
 
 /**
- * Додати рецепт до улюблених
+ * Add a recipe to favorites
  */
 export const createFavoritesByrecipeId = async (
-  recipeId: string
-): Promise<{
-  message?: string;
-}> => {
+  recipeId: number
+): Promise<Recipe> => {
   const response = await apiClient.post(`/favorites/${recipeId}`, {});
   return response.data;
 };
 
 /**
- * Видалити рецепт з улюблених
+ * Remove a recipe from favorites
  */
 export const deleteFavoritesByrecipeId = async (
-  recipeId: string
-): Promise<{
-  message?: string;
-}> => {
+  recipeId: number
+): Promise<void> => {
   const response = await apiClient.delete(`/favorites/${recipeId}`);
   return response.data;
 };
@@ -309,8 +320,8 @@ export const getRecipesSearch = async (params?: {
  * Отримати популярні рецепти
  */
 export const getRecipesPopular = async (params?: {
-    limit?: number;
-  }): Promise<Recipe[]> => {
+  limit?: number;
+}): Promise<Recipe[]> => {
   const response = await apiClient.get('/recipes/popular', { params });
   return response.data;
 };
@@ -319,9 +330,9 @@ export const getRecipesPopular = async (params?: {
  * Отримати власні рецепти користувача
  */
 export const getRecipesMyRecipes = async (params?: {
-    page?: number;
-    limit?: number;
-  }): Promise<{
+  page?: number;
+  limit?: number;
+}): Promise<{
   recipes?: Recipe[];
   total?: number;
   page?: number;
@@ -380,10 +391,10 @@ export const getTestimonials = async (): Promise<Testimonial[]> => {
  * Отримати список всіх користувачів
  */
 export const getUsers = async (params?: {
-    page?: number;
-    limit?: number;
-    search?: string;
-  }): Promise<{
+  page?: number;
+  limit?: number;
+  search?: string;
+}): Promise<{
   users?: User[];
   page?: number;
   limit?: number;
@@ -415,7 +426,9 @@ export const getUsersCurrentFollowing = async (params?: {
 /**
  * Підписатися на користувача
  */
-export const createUsersFollow = async (data: FollowRequest): Promise<{
+export const createUsersFollow = async (
+  data: FollowRequest
+): Promise<{
   message?: string;
 }> => {
   const response = await apiClient.post('/users/follow', data);
@@ -425,7 +438,9 @@ export const createUsersFollow = async (data: FollowRequest): Promise<{
 /**
  * Відписатися від користувача
  */
-export const deleteUsersUnfollow = async (data: FollowRequest): Promise<{
+export const deleteUsersUnfollow = async (
+  data: FollowRequest
+): Promise<{
   message?: string;
 }> => {
   const response = await apiClient.delete('/users/unfollow', { data });
@@ -463,4 +478,3 @@ export const getUsersByidFollowers = async (
   const response = await apiClient.get(`/users/${id}/followers`, { params });
   return response.data;
 };
-

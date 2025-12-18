@@ -28,6 +28,16 @@ interface IngredientFormItem {
   img?: string;
 }
 
+const defaultValues: AddRecipeFormData = {
+  title: '',
+  description: '',
+  category: '',
+  area: '',
+  time: 10,
+  ingredients: [],
+  preparation: '',
+};
+
 export const AddRecipeForm = () => {
   const navigate = useNavigate();
   const resolver: Resolver<AddRecipeFormData> = yupResolver(
@@ -92,15 +102,7 @@ export const AddRecipeForm = () => {
   } = useForm<AddRecipeFormData>({
     mode: 'onSubmit',
     resolver,
-    defaultValues: {
-      title: '',
-      description: '',
-      category: '',
-      area: '',
-      time: 10,
-      ingredients: [],
-      preparation: '',
-    },
+    defaultValues: defaultValues,
   });
 
   const { title, description, category, area, time, ingredients, preparation } =
@@ -162,15 +164,7 @@ export const AddRecipeForm = () => {
   }, [imagePreview]);
 
   const handleClearForm = () => {
-    reset({
-      title: '',
-      description: '',
-      category: '',
-      area: '',
-      time: 10,
-      ingredients: [],
-      preparation: '',
-    });
+    reset(defaultValues);
     setNewIngredientName('');
     setNewIngredientMeasure('');
     setImageFile(null);
@@ -270,15 +264,7 @@ export const AddRecipeForm = () => {
       const recipeId = response.data?.recipe?.id;
       if (recipeId) {
         // Reset form and redirect to recipe detail page
-        reset({
-          title: '',
-          description: '',
-          category: '',
-          area: '',
-          time: 10,
-          ingredients: [],
-          preparation: '',
-        });
+        reset(defaultValues);
         setNewIngredientName('');
         setNewIngredientMeasure('');
         setImageFile(null);
@@ -305,20 +291,20 @@ export const AddRecipeForm = () => {
       className="grid gap-10 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1.2fr)] md:items-start md:gap-14"
     >
       {/* Left column – image upload */}
-      <div>
-        <div className="flex h-[260px] w-full items-center justify-center rounded-[40px] border border-dashed border-light-grey bg-white md:h-[300px]">
-          <div className="text-black/70 flex flex-col items-center justify-center text-center text-sm">
+      <div className="flex flex-col items-center">
+        <div className="flex h-[260px] w-full items-center justify-center rounded-[40px] border border-dashed border-light-grey bg-white md:h-[400px]">
+          <div className="flex h-full w-full flex-col items-center justify-center text-center text-sm text-black">
             {imagePreview ? (
               <img
                 src={imagePreview}
                 alt="Recipe preview"
-                className="w-full rounded-3xl md:h-[300px]"
+                className="h-full w-full rounded-3xl object-cover"
               />
             ) : (
               <button
                 type="button"
                 onClick={handleImageSelectClick}
-                className="text-black/70 flex flex-col items-center justify-center text-center text-sm"
+                className="text-black/70 text-sm"
               >
                 <Icon name="camera" size={49} className="mb-2" />
                 <span>Upload a photo</span>

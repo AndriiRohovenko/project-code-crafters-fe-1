@@ -6,7 +6,7 @@ import { Subtitle } from '@/shared/ui/subtitle';
 const AddRecipe = () => {
   return (
     <Container>
-      <div className="mx-auto w-full py-10 md:max-w-[768px] md:py-14 2xl:py-20">
+      <div>
         <MainTitle className="mb-2">Add recipe</MainTitle>
         <Subtitle className="text-black/70 mb-10 max-w-[360px] md:max-w-[480px]">
           Reveal your culinary art, share your favorite recipe and create
