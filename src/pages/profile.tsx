@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 
 import { ProfileFollowPanel } from '@/features/profile/ui/profile-follow-panel';

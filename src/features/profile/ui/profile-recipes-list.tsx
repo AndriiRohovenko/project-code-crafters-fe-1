@@ -47,38 +47,93 @@ export const ProfileRecipesList = ({ tab }: ProfileRecipesListProps) => {
         fetchMyRecipes({ page: pagination.page, limit: pagination.limit })
       );
     }
-    // Favorites вже завантажуються при логіні
   }, [dispatch, tab, pagination.page, pagination.limit]);
 
   const handlePageChange = (newPage: number) => {
     if (tab === 'recipes') {
       dispatch(setMyRecipesPage(newPage));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
+  // Loading state
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-10">
-        <div className="text-gray-500">Завантаження...</div>
+      <div className="space-y-0">
+        {[...Array(5)].map((_, idx) => (
+          <div
+            key={idx}
+            className="flex items-center gap-3 border-b border-[#bfbebe] py-5 md:gap-4 md:py-6"
+          >
+            <div className="h-[75px] w-[75px] flex-shrink-0 animate-pulse rounded-[15px] bg-gray-200 md:h-[85px] md:w-[85px]"></div>
+            <div className="flex-1 space-y-2">
+              <div className="h-5 w-3/4 animate-pulse rounded bg-gray-200"></div>
+              <div className="h-4 w-full animate-pulse rounded bg-gray-200"></div>
+              <div className="h-4 w-2/3 animate-pulse rounded bg-gray-200"></div>
+            </div>
+            <div className="flex gap-2 md:gap-3">
+              <div className="h-9 w-9 animate-pulse rounded-full bg-gray-200 md:h-11 md:w-11"></div>
+              <div className="h-9 w-9 animate-pulse rounded-full bg-gray-200 md:h-11 md:w-11"></div>
+            </div>
+          </div>
+        ))}
       </div>
     );
   }
 
+  // Error state
   if (error) {
     return (
-      <div className="flex items-center justify-center py-10">
-        <div className="text-red-600">{error}</div>
+      <div className="flex min-h-[300px] items-center justify-center rounded-[15px] border border-[#e44848] bg-red-50 p-8">
+        <div className="text-center">
+          <p className="text-base font-semibold text-[#e44848] md:text-lg">
+            {error}
+          </p>
+          <button
+            onClick={() => {
+              if (tab === 'recipes') {
+                dispatch(fetchMyRecipes({ page: 1, limit: pagination.limit }));
+              }
+            }}
+            className="mt-4 rounded-[30px] border border-[#050505] bg-white px-6 py-2 text-sm font-semibold text-[#050505] transition-colors hover:bg-[#050505] hover:text-white"
+          >
+            Try again
+          </button>
+        </div>
       </div>
     );
   }
 
+  // Empty state
   if (recipes.length === 0) {
     return (
-      <div className="flex items-center justify-center py-10">
-        <div className="text-gray-500">
-          {tab === 'recipes'
-            ? 'У вас ще немає рецептів'
-            : 'У вас ще немає обраних рецептів'}
+      <div className="flex min-h-[300px] items-center justify-center rounded-[15px] border border-dashed border-[#bfbebe] bg-gray-50 p-8">
+        <div className="text-center">
+          <div className="mb-4 flex justify-center">
+            <svg
+              className="h-16 w-16 text-[#bfbebe] md:h-20 md:w-20"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={1.5}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+              />
+            </svg>
+          </div>
+          <p className="mb-2 text-base font-semibold text-[#050505] md:text-lg">
+            {tab === 'recipes'
+              ? 'You have no recipes yet'
+              : 'You have no favorite recipes yet'}
+          </p>
+          <p className="text-sm text-[#1a1a1a]">
+            {tab === 'recipes'
+              ? 'Create your first recipe to share it with others'
+              : 'Add recipes to favorites to quickly find them'}
+          </p>
         </div>
       </div>
     );
@@ -86,37 +141,65 @@ export const ProfileRecipesList = ({ tab }: ProfileRecipesListProps) => {
 
   return (
     <div>
-      <div className="space-y-4 md:space-y-6">
+      {/* Recipe Cards */}
+      <div className="border-t border-[#bfbebe]">
         {recipes.map((recipe) => (
           <ProfileRecipeCard
             key={recipe.id}
             recipe={recipe}
-            showActions={tab === 'recipes'}
+            mode={tab === 'recipes' ? 'myRecipes' : 'favorites'}
           />
         ))}
       </div>
 
-      {/* Пагінація тільки для My Recipes */}
+      {/* Pagination - тільки для My Recipes */}
       {tab === 'recipes' && pagination.totalPages > 1 && (
         <div className="mt-8 flex items-center justify-center gap-2">
+          {/* Previous Button */}
           <button
             onClick={() => handlePageChange(pagination.page - 1)}
             disabled={pagination.page === 1}
-            className="rounded border border-gray-300 px-3 py-2 text-sm disabled:opacity-50 md:px-4"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-[#bfbebe] bg-white text-[#050505] transition-colors hover:border-[#050505] disabled:cursor-not-allowed disabled:opacity-40"
+            aria-label="Previous page"
           >
             ←
           </button>
 
+          {/* Page Numbers */}
           {[...Array(pagination.totalPages)].map((_, idx) => {
             const pageNum = idx + 1;
+            const isActive = pagination.page === pageNum;
+
+            const showPage =
+              pageNum === 1 ||
+              pageNum === pagination.totalPages ||
+              Math.abs(pageNum - pagination.page) <= 1;
+
+            if (!showPage) {
+              if (
+                pageNum === pagination.page - 2 ||
+                pageNum === pagination.page + 2
+              ) {
+                return (
+                  <span
+                    key={pageNum}
+                    className="flex h-10 w-10 items-center justify-center text-[#bfbebe]"
+                  >
+                    ...
+                  </span>
+                );
+              }
+              return null;
+            }
+
             return (
               <button
                 key={pageNum}
                 onClick={() => handlePageChange(pageNum)}
-                className={`rounded px-3 py-2 text-sm md:px-4 ${
-                  pagination.page === pageNum
-                    ? 'bg-black text-white'
-                    : 'border border-gray-300 hover:bg-gray-50'
+                className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold transition-colors ${
+                  isActive
+                    ? 'bg-[#050505] text-white'
+                    : 'border border-[#bfbebe] bg-white text-[#050505] hover:border-[#050505]'
                 }`}
               >
                 {pageNum}
@@ -124,10 +207,12 @@ export const ProfileRecipesList = ({ tab }: ProfileRecipesListProps) => {
             );
           })}
 
+          {/* Next Button */}
           <button
             onClick={() => handlePageChange(pagination.page + 1)}
             disabled={pagination.page === pagination.totalPages}
-            className="rounded border border-gray-300 px-3 py-2 text-sm disabled:opacity-50 md:px-4"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-[#bfbebe] bg-white text-[#050505] transition-colors hover:border-[#050505] disabled:cursor-not-allowed disabled:opacity-40"
+            aria-label="Next page"
           >
             →
           </button>
