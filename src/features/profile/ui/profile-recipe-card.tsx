@@ -47,7 +47,7 @@ export const ProfileRecipeCard = ({ recipe, mode }: ProfileRecipeCardProps) => {
   const description = 'description' in recipe ? recipe.description : '';
 
   return (
-    <div className="group flex items-center gap-3 border-b border-[#bfbebe] py-5 last:border-b-0 md:gap-4 md:py-6">
+    <div className="group flex items-center gap-3 border-b border-light-grey py-5 last:border-b-0 md:gap-4 md:py-6">
       {/* Зображення */}
       <Link
         to={`/recipe/${recipe.id}`}
@@ -67,13 +67,13 @@ export const ProfileRecipeCard = ({ recipe, mode }: ProfileRecipeCardProps) => {
       <div className="flex min-w-0 flex-1 flex-col justify-center">
         <Link
           to={`/recipe/${recipe.id}`}
-          className="mb-1 block font-['Mulish'] text-base font-extrabold uppercase leading-tight tracking-[-0.02em] text-[#050505] transition-colors hover:opacity-70 md:mb-2 md:text-lg"
+          className="mb-1 block font-['Mulish'] text-base font-extrabold uppercase leading-tight tracking-[-0.02em] text-black transition-colors hover:opacity-70 md:mb-2 md:text-lg"
         >
           {recipe.title}
         </Link>
 
         {description && (
-          <p className="line-clamp-2 text-xs leading-relaxed tracking-[-0.02em] text-[#1a1a1a] md:text-sm">
+          <p className="line-clamp-2 text-xs leading-relaxed tracking-[-0.02em] text-dark-grey md:text-sm">
             {description}
           </p>
         )}
@@ -84,7 +84,7 @@ export const ProfileRecipeCard = ({ recipe, mode }: ProfileRecipeCardProps) => {
         {/* Кнопка переходу */}
         <Link
           to={`/recipe/${recipe.id}`}
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-[#bfbebe] bg-white transition-all hover:border-[#050505] hover:bg-[#050505] hover:text-white md:h-11 md:w-11"
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-light-grey bg-white transition-all hover:border-black hover:bg-black hover:text-white md:h-11 md:w-11"
           title="View recipe"
         >
           <svg
@@ -106,7 +106,7 @@ export const ProfileRecipeCard = ({ recipe, mode }: ProfileRecipeCardProps) => {
         <button
           onClick={handleDelete}
           disabled={isDeleting}
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-[#bfbebe] bg-white transition-all hover:border-[#e44848] hover:bg-[#e44848] hover:text-white disabled:cursor-not-allowed disabled:opacity-50 md:h-11 md:w-11"
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-light-grey bg-white transition-all hover:border-[var(--color-error)] hover:bg-[var(--color-error)] hover:text-white disabled:cursor-not-allowed disabled:opacity-50 md:h-11 md:w-11"
           title={
             mode === 'myRecipes' ? 'Delete recipe' : 'Remove from favorites'
           }

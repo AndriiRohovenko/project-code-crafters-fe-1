@@ -29,6 +29,8 @@ export const ProfileHeader = ({ user }: ProfileHeaderProps) => {
     (state) => state.profileFollows.followersMeta
   );
 
+  const favoritesMeta = useAppSelector((state) => state.favorites);
+
   // Завантажуємо статистику при монтуванні
   useEffect(() => {
     if (user?.id) {
@@ -57,45 +59,72 @@ export const ProfileHeader = ({ user }: ProfileHeaderProps) => {
   const recipesCount = myRecipesPagination.total;
   const followingCount = followingMeta.total;
   const followersCount = followersMeta.total;
+  const favoritesCount = favoritesMeta.items.length;
 
   return (
-    <div className="flex flex-col items-center rounded-lg border border-gray-200 bg-white p-6">
-      {/* Аватар */}
-      <div className="mb-4 flex-shrink-0">
-        <img
-          src={user.avatar || 'https://www.gravatar.com/avatar/?d=mp&s=200'}
-          alt={user.name || 'User'}
-          className="h-32 w-32 rounded-full object-cover"
-          onError={(e) => {
-            e.currentTarget.src = 'https://www.gravatar.com/avatar/?d=mp&s=200';
-          }}
-        />
+    <div>
+      <div className="mb-5 flex flex-col items-center rounded-lg border border-light-grey bg-white px-20 py-10">
+        {/* Аватар */}
+        <div className="mb-4 flex-shrink-0">
+          <img
+            src={user.avatar || 'https://www.gravatar.com/avatar/?d=mp&s=200'}
+            alt={user.name || 'User'}
+            className="h-32 w-32 rounded-full object-cover"
+            onError={(e) => {
+              e.currentTarget.src =
+                'https://www.gravatar.com/avatar/?d=mp&s=200';
+            }}
+          />
+          {/* <button
+          className="absolute bottom-0 right-0 flex h-10 w-10 items-center justify-center rounded-full bg-black text-white transition-colors hover:bg-gray-800"
+          aria-label="Edit profile picture"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M10 4V16M4 10H16"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+          </svg>
+        </button> */}
+        </div>
+
+        {/* Ім'я */}
+        <h2 className="mb-1 text-xl font-bold uppercase text-black">
+          {user.name || 'User'}
+        </h2>
+
+        {/* Статистика */}
+        <div className="mb-6 w-full space-y-2 text-sm">
+          <div className="flex gap-2">
+            <span className="font-medium text-light-grey">Email:</span>
+            <span className="font-semibold text-black">{user.email}</span>
+          </div>
+          <div className="flex gap-2">
+            <span className="font-medium text-light-grey">Added recipes:</span>
+            <span className="font-semibold text-black">{recipesCount}</span>
+          </div>
+          <div className="flex gap-2">
+            <span className="font-medium text-light-grey">Favorites:</span>
+            <span className="font-semibold text-black">{favoritesCount}</span>
+          </div>
+          <div className="flex gap-2">
+            <span className="font-medium text-light-grey">Following:</span>
+            <span className="font-semibold text-black">{followingCount}</span>
+          </div>
+          <div className="flex gap-2">
+            <span className="font-medium text-light-grey">Followers:</span>
+            <span className="font-semibold text-black">{followersCount}</span>
+          </div>
+        </div>
       </div>
-
-      {/* Ім'я */}
-      <h2 className="mb-1 text-xl font-bold uppercase">
-        {user.name || 'User'}
-      </h2>
-
-      {/* Email */}
-      <p className="mb-6 text-sm text-gray-600">{user.email}</p>
-
-      {/* Статистика */}
-      <div className="mb-6 w-full space-y-2 text-sm">
-        <div className="flex justify-between">
-          <span className="font-semibold">Recipes:</span>
-          <span className="text-gray-600">{recipesCount}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="font-semibold">Following:</span>
-          <span className="text-gray-600">{followingCount}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="font-semibold">Followers:</span>
-          <span className="text-gray-600">{followersCount}</span>
-        </div>
-      </div>
-
       {/* Кнопка Logout */}
       <Button
         type="button"

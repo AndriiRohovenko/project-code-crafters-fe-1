@@ -14,7 +14,7 @@ export const ProfileTabs = ({ activeTab, onTabChange }: ProfileTabsProps) => {
   ];
 
   return (
-    <div className="mb-6 border-b border-gray-200">
+    <div className="mb-6 border-b border-light-grey">
       <div className="flex gap-6 overflow-x-auto">
         {tabs.map((tab) => (
           <button
@@ -23,7 +23,7 @@ export const ProfileTabs = ({ activeTab, onTabChange }: ProfileTabsProps) => {
             className={`whitespace-nowrap pb-3 text-sm font-semibold transition-colors ${
               activeTab === tab.id
                 ? 'border-b-2 border-black text-black'
-                : 'text-gray-400 hover:text-gray-600'
+                : 'text-light-grey hover:text-dark-grey'
             }`}
           >
             {tab.label}

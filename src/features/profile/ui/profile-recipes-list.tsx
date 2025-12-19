@@ -15,6 +15,7 @@ import {
   setMyRecipesPage,
 } from '@/redux/profile.slice';
 
+import { ListSkeleton } from '../../../shared/ui/loaders/list-skeleton';
 import { ProfileRecipeCard } from './profile-recipe-card';
 
 interface ProfileRecipesListProps {
@@ -58,35 +59,15 @@ export const ProfileRecipesList = ({ tab }: ProfileRecipesListProps) => {
 
   // Loading state
   if (loading) {
-    return (
-      <div className="space-y-0">
-        {[...Array(5)].map((_, idx) => (
-          <div
-            key={idx}
-            className="flex items-center gap-3 border-b border-[#bfbebe] py-5 md:gap-4 md:py-6"
-          >
-            <div className="h-[75px] w-[75px] flex-shrink-0 animate-pulse rounded-[15px] bg-gray-200 md:h-[85px] md:w-[85px]"></div>
-            <div className="flex-1 space-y-2">
-              <div className="h-5 w-3/4 animate-pulse rounded bg-gray-200"></div>
-              <div className="h-4 w-full animate-pulse rounded bg-gray-200"></div>
-              <div className="h-4 w-2/3 animate-pulse rounded bg-gray-200"></div>
-            </div>
-            <div className="flex gap-2 md:gap-3">
-              <div className="h-9 w-9 animate-pulse rounded-full bg-gray-200 md:h-11 md:w-11"></div>
-              <div className="h-9 w-9 animate-pulse rounded-full bg-gray-200 md:h-11 md:w-11"></div>
-            </div>
-          </div>
-        ))}
-      </div>
-    );
+    return <ListSkeleton />;
   }
 
   // Error state
   if (error) {
     return (
-      <div className="flex min-h-[300px] items-center justify-center rounded-[15px] border border-[#e44848] bg-red-50 p-8">
+      <div className="flex min-h-[300px] items-center justify-center rounded-[15px] border border-[var(--color-error)] bg-red-50 p-8">
         <div className="text-center">
-          <p className="text-base font-semibold text-[#e44848] md:text-lg">
+          <p className="text-base font-semibold text-[var(--color-error)] md:text-lg">
             {error}
           </p>
           <button
@@ -95,7 +76,7 @@ export const ProfileRecipesList = ({ tab }: ProfileRecipesListProps) => {
                 dispatch(fetchMyRecipes({ page: 1, limit: pagination.limit }));
               }
             }}
-            className="mt-4 rounded-[30px] border border-[#050505] bg-white px-6 py-2 text-sm font-semibold text-[#050505] transition-colors hover:bg-[#050505] hover:text-white"
+            className="mt-4 rounded-[30px] border border-black bg-white px-6 py-2 text-sm font-semibold text-black transition-colors hover:bg-black hover:text-white"
           >
             Try again
           </button>
@@ -107,11 +88,11 @@ export const ProfileRecipesList = ({ tab }: ProfileRecipesListProps) => {
   // Empty state
   if (recipes.length === 0) {
     return (
-      <div className="flex min-h-[300px] items-center justify-center rounded-[15px] border border-dashed border-[#bfbebe] bg-gray-50 p-8">
+      <div className="flex min-h-[300px] items-center justify-center rounded-[15px] border border-dashed border-light-grey bg-gray-50 p-8">
         <div className="text-center">
           <div className="mb-4 flex justify-center">
             <svg
-              className="h-16 w-16 text-[#bfbebe] md:h-20 md:w-20"
+              className="h-16 w-16 text-light-grey md:h-20 md:w-20"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -124,12 +105,12 @@ export const ProfileRecipesList = ({ tab }: ProfileRecipesListProps) => {
               />
             </svg>
           </div>
-          <p className="mb-2 text-base font-semibold text-[#050505] md:text-lg">
+          <p className="mb-2 text-base font-semibold text-black md:text-lg">
             {tab === 'recipes'
               ? 'You have no recipes yet'
               : 'You have no favorite recipes yet'}
           </p>
-          <p className="text-sm text-[#1a1a1a]">
+          <p className="text-sm text-dark-grey">
             {tab === 'recipes'
               ? 'Create your first recipe to share it with others'
               : 'Add recipes to favorites to quickly find them'}
@@ -142,7 +123,7 @@ export const ProfileRecipesList = ({ tab }: ProfileRecipesListProps) => {
   return (
     <div>
       {/* Recipe Cards */}
-      <div className="border-t border-[#bfbebe]">
+      <div className="border-t border-light-grey">
         {recipes.map((recipe) => (
           <ProfileRecipeCard
             key={recipe.id}
@@ -159,7 +140,7 @@ export const ProfileRecipesList = ({ tab }: ProfileRecipesListProps) => {
           <button
             onClick={() => handlePageChange(pagination.page - 1)}
             disabled={pagination.page === 1}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-[#bfbebe] bg-white text-[#050505] transition-colors hover:border-[#050505] disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-light-grey bg-white text-black transition-colors hover:border-black disabled:cursor-not-allowed disabled:opacity-40"
             aria-label="Previous page"
           >
             ←
@@ -183,7 +164,7 @@ export const ProfileRecipesList = ({ tab }: ProfileRecipesListProps) => {
                 return (
                   <span
                     key={pageNum}
-                    className="flex h-10 w-10 items-center justify-center text-[#bfbebe]"
+                    className="flex h-10 w-10 items-center justify-center text-light-grey"
                   >
                     ...
                   </span>
@@ -198,8 +179,8 @@ export const ProfileRecipesList = ({ tab }: ProfileRecipesListProps) => {
                 onClick={() => handlePageChange(pageNum)}
                 className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold transition-colors ${
                   isActive
-                    ? 'bg-[#050505] text-white'
-                    : 'border border-[#bfbebe] bg-white text-[#050505] hover:border-[#050505]'
+                    ? 'bg-black text-white'
+                    : 'border border-light-grey bg-white text-black hover:border-black'
                 }`}
               >
                 {pageNum}
@@ -211,7 +192,7 @@ export const ProfileRecipesList = ({ tab }: ProfileRecipesListProps) => {
           <button
             onClick={() => handlePageChange(pagination.page + 1)}
             disabled={pagination.page === pagination.totalPages}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-[#bfbebe] bg-white text-[#050505] transition-colors hover:border-[#050505] disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-light-grey bg-white text-black transition-colors hover:border-black disabled:cursor-not-allowed disabled:opacity-40"
             aria-label="Next page"
           >
             →

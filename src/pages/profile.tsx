@@ -20,20 +20,20 @@ const Profile = () => {
   return (
     <div className="lg:px-8 container mx-auto px-4 py-10 md:px-6">
       {/* Заголовок */}
-      <div className="mb-8">
-        <h1 className="mb-2 text-3xl font-bold uppercase md:text-4xl">
+      <div className="mb-8 w-[443px]">
+        <h1 className="mb-5 text-3xl font-bold uppercase text-black md:text-4xl">
           PROFILE
         </h1>
-        <p className="text-sm text-gray-600 md:text-base">
-          Record your culinary art, share your favorite recipes and create
+        <p className="text-sm text-dark-grey md:text-base">
+          Reveal your culinary art, share your favorite recipe and create
           gastronomic masterpieces with us.
         </p>
       </div>
 
       {/* Two column layout */}
-      <div className="lg:flex-row flex gap-8">
+      <div className="lg:flex flex gap-8">
         {/* Left sidebar - Profile Header */}
-        <div className="lg:w-80 lg:flex-shrink-0">
+        <div className="w-[394px]">
           <ProfileHeader user={user} />
         </div>
 
