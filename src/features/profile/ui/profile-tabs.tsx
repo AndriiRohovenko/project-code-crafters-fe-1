@@ -14,13 +14,13 @@ export const ProfileTabs = ({ activeTab, onTabChange }: ProfileTabsProps) => {
   ];
 
   return (
-    <div className="mb-8 border-b border-gray-200">
-      <div className="flex gap-4 overflow-x-auto md:gap-8">
+    <div className="mb-6 border-b border-gray-200">
+      <div className="flex gap-6 overflow-x-auto">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => onTabChange(tab.id)}
-            className={`whitespace-nowrap pb-3 text-xs font-semibold transition-colors md:pb-4 md:text-sm ${
+            className={`whitespace-nowrap pb-3 text-sm font-semibold transition-colors ${
               activeTab === tab.id
                 ? 'border-b-2 border-black text-black'
                 : 'text-gray-400 hover:text-gray-600'

@@ -30,18 +30,26 @@ const Profile = () => {
         </p>
       </div>
 
-      {/* Шапка профілю */}
-      <ProfileHeader user={user} />
+      {/* Two column layout */}
+      <div className="lg:flex-row flex gap-8">
+        {/* Left sidebar - Profile Header */}
+        <div className="lg:w-80 lg:flex-shrink-0">
+          <ProfileHeader user={user} />
+        </div>
 
-      {/* Вкладки */}
-      <ProfileTabs activeTab={activeTab} onTabChange={setActiveTab} />
+        {/* Right side - Tabs and Content */}
+        <div className="flex-1">
+          {/* Вкладки */}
+          <ProfileTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
-      {/* Контент вкладок */}
-      {activeTab === 'recipes' && <ProfileRecipesList tab="recipes" />}
-      {activeTab === 'favorites' && <ProfileRecipesList tab="favorites" />}
-      {(activeTab === 'followers' || activeTab === 'following') && (
-        <ProfileFollowPanel tab={activeTab} />
-      )}
+          {/* Контент вкладок */}
+          {activeTab === 'recipes' && <ProfileRecipesList tab="recipes" />}
+          {activeTab === 'favorites' && <ProfileRecipesList tab="favorites" />}
+          {(activeTab === 'followers' || activeTab === 'following') && (
+            <ProfileFollowPanel tab={activeTab} />
+          )}
+        </div>
+      </div>
     </div>
   );
 };
