@@ -6,10 +6,11 @@ interface CategoryItemProps {
 
 export const CategoryItem = ({ category }: CategoryItemProps) => {
   const isRetina = window.devicePixelRatio > 1;
-  const backgroundImage: string =
-    './public/images/categories/' +
-    (isRetina ? category.toLowerCase() + '@2x' : category.toLowerCase()) +
-    '.jpg';
+
+  // Public assets resolve under BASE_URL in preview/build; normalize name to match files
+  const normalizedName = category.toLowerCase().replace(/\s+/g, '-');
+  const fileName = `${normalizedName}${isRetina ? '@2x' : ''}.jpg`;
+  const backgroundImage = `${import.meta.env.BASE_URL}images/categories/${fileName}`;
 
   return (
     <div
