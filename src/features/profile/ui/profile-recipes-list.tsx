@@ -14,8 +14,9 @@ import {
   selectMyRecipesPagination,
   setMyRecipesPage,
 } from '@/redux/profile.slice';
+import { ListSkeleton } from '@/shared/ui/loaders/list-skeleton';
+import { EmptyState } from '@/shared/ui/states/empty-state';
 
-import { ListSkeleton } from '../../../shared/ui/loaders/list-skeleton';
 import { ProfileRecipeCard } from './profile-recipe-card';
 
 interface ProfileRecipesListProps {
@@ -87,37 +88,12 @@ export const ProfileRecipesList = ({ tab }: ProfileRecipesListProps) => {
 
   // Empty state
   if (recipes.length === 0) {
-    return (
-      <div className="flex min-h-[300px] items-center justify-center rounded-[15px] border border-dashed border-light-grey bg-gray-50 p-8">
-        <div className="text-center">
-          <div className="mb-4 flex justify-center">
-            <svg
-              className="h-16 w-16 text-light-grey md:h-20 md:w-20"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={1.5}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-              />
-            </svg>
-          </div>
-          <p className="mb-2 text-base font-semibold text-black md:text-lg">
-            {tab === 'recipes'
-              ? 'You have no recipes yet'
-              : 'You have no favorite recipes yet'}
-          </p>
-          <p className="text-sm text-dark-grey">
-            {tab === 'recipes'
-              ? 'Create your first recipe to share it with others'
-              : 'Add recipes to favorites to quickly find them'}
-          </p>
-        </div>
-      </div>
-    );
+    const text =
+      tab === 'recipes'
+        ? 'Nothing has been added to your recipes list yet. Please browse our recipes and add your favorites for easy access in the future.'
+        : 'Nothing has been added to your favorite recipes list yet. Please browse our recipes and add your favorites for easy access in the future.';
+
+    return <EmptyState text={text} />;
   }
 
   return (

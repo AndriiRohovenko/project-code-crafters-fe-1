@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 
 import type { User } from '@/api/api.gen';
-import { signOut } from '@/features/auth/auth';
+import { MODAL_TYPES } from '@/modals/modals.const';
+import { useModals } from '@/modals/use-modals.hook';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
   fetchMyRecipes,
@@ -22,6 +23,7 @@ interface ProfileHeaderProps {
 
 export const ProfileHeader = ({ user }: ProfileHeaderProps) => {
   const dispatch = useAppDispatch();
+  const { openModal } = useModals();
 
   // Отримуємо дані з Redux
   const myRecipesPagination = useAppSelector(selectMyRecipesPagination);
@@ -59,8 +61,7 @@ export const ProfileHeader = ({ user }: ProfileHeaderProps) => {
   }, [dispatch, user?.id]);
 
   const handleLogout = () => {
-    signOut();
-    window.location.href = '/';
+    openModal(MODAL_TYPES.LOG_OUT);
   };
 
   const handleAvatarUploadClick = () => {
