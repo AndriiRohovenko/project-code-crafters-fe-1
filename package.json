@@ -8,7 +8,6 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start:web": "vite preview --host 0.0.0.0 --port $PORT --strictPort",
     "icons:generate": "node scripts/generate-icon-types.js",
     "icons:watch": "node scripts/generate-icon-types.js --watch",
     "generate:api": "node scripts/generate-api.js && prettier src/api --write"
