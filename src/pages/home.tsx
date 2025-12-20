@@ -1,3 +1,5 @@
+import { useSearchParams } from 'react-router-dom';
+
 import { Categories } from '@/features/categories/categories';
 // import { ProfileFollowPanel } from '@/features/profile/ui/profile-follow-panel';
 import Hero from '@/features/hero/hero.tsx';
@@ -5,6 +7,9 @@ import Hero from '@/features/hero/hero.tsx';
 import { Testimonials } from '../features/testimonials/testimonials';
 
 const Home = () => {
+  const [searchParams] = useSearchParams();
+  const categoryParam = searchParams.get('category');
+
   return (
     <div>
       <Hero />
@@ -23,7 +28,18 @@ const Home = () => {
           <ProfileFollowPanel tab="following" />
         </div> */}
       </section>
-      <Categories />
+      {categoryParam ? (
+        <section className="xl:pt-[120px] pt-16 md:pt-[100px]">
+          <div className="mx-auto max-w-[1280px] px-4 md:px-8 2xl:px-0">
+            <h2 className="mb-4 text-2xl font-bold">Recipes Filter Section</h2>
+            <p className="text-lg">
+              Showing recipes for category: {categoryParam}
+            </p>
+          </div>
+        </section>
+      ) : (
+        <Categories />
+      )}
       <Testimonials />
     </div>
   );
