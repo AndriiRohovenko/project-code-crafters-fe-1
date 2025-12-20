@@ -1,13 +1,8 @@
-import { useEffect } from 'react';
-
-import styles from '@/features/categories/category-list.module.css';
 import { RecipeCard } from '@/features/category-details/recipe-card';
-import { fetchCategoryDetails } from '@/redux/categoryDetails/categoryDetails.slice';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { useAppSelector } from '@/redux/hooks';
 import { RootState } from '@/redux/store';
 
 export const CategoryDetailsList = () => {
-  const dispatch = useAppDispatch();
 
   const { items: recipes, loading } = useAppSelector(
     (state: RootState) => state.categoryDetails
@@ -15,20 +10,8 @@ export const CategoryDetailsList = () => {
 
   console.log(`recipes: ${JSON.stringify(recipes)}`);
 
-  useEffect(() => {
-    dispatch(
-      fetchCategoryDetails({
-        query: '',
-        categoryId: 6,
-        areaId: 7,
-        page: 1,
-        limit: 12,
-      })
-    );
-  }, [dispatch]);
-
   return (
-    <ul className={styles.list}>
+    <ul className="grid grid-cols-1 gap-6 md:grid-cols-2 2xl:grid-cols-3">
       {loading ? (
         <li>Loading...</li>
       ) : Array.isArray(recipes) && recipes.length > 0 ? (

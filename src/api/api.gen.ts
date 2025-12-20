@@ -307,6 +307,7 @@ export const getIngredients = async (): Promise<Ingredient[]> => {
  */
 export const getRecipesSearch = async (params?: {
   query?: string;
+  ingredientId?: number;
   categoryId?: number;
   areaId?: number;
   page?: number;

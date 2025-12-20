@@ -17,7 +17,7 @@ export const RecipeCard = ({
   author,
 }: RecipePreviewItemProps) => {
   return (
-    <article className="flex w-[275px] flex-col">
+    <article className="flex w-[290px] flex-shrink-0 flex-col">
       {/* IMAGE */}
       <div className="h-[290px] w-full overflow-hidden rounded-[30px]">
         <img src={preview} alt={title} className="h-full w-full object-cover" />

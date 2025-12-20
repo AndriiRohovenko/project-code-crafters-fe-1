@@ -15,7 +15,7 @@ import {
 } from './categoryDetails.constants';
 
 type CategoryDetailsArgs = {
-  query: string;
+  ingredientId: number;
   categoryId: number;
   areaId: number;
   page: number;
@@ -60,9 +60,9 @@ export const fetchCategoryDetails = createAsyncThunk<
   CategoryDetailsArgs
 >(
   'category-details/fetchAll',
-  async ({ query, categoryId, areaId, page, limit }) => {
+  async ({ ingredientId, categoryId, areaId, page, limit }) => {
     const response = (await getRecipesSearch({
-      query,
+      ingredientId,
       categoryId,
       areaId,
       page,
