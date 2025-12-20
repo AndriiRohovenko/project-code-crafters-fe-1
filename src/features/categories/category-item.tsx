@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom';
+
 import { Icon } from '@/shared/ui/icon';
 
 interface CategoryItemProps {
@@ -5,11 +7,18 @@ interface CategoryItemProps {
 }
 
 export const CategoryItem = ({ category }: CategoryItemProps) => {
+  const navigate = useNavigate();
   const isRetina = window.devicePixelRatio > 1;
-  const backgroundImage: string =
-    './public/images/categories/' +
-    (isRetina ? category.toLowerCase() + '@2x' : category.toLowerCase()) +
-    '.jpg';
+
+  // Public assets resolve under BASE_URL in preview/build; normalize name to match files
+  const normalizedName = category.toLowerCase().replace(/\s+/g, '-');
+  const fileName = `${normalizedName}${isRetina ? '@2x' : ''}.jpg`;
+  const backgroundImage = `${import.meta.env.BASE_URL}images/categories/${fileName}`;
+
+  const handleCategoryClick = () => {
+    // Use normalized name as slug
+    navigate(`/?category=${encodeURIComponent(normalizedName)}`);
+  };
 
   return (
     <div
@@ -23,12 +32,12 @@ export const CategoryItem = ({ category }: CategoryItemProps) => {
         <p className="flex h-[45px] items-center justify-center rounded-[30px] border border-[#fff]/20 bg-[#fff]/20 px-[14px] py-[10px] text-white">
           {category}
         </p>
-        <a
-          href="#"
-          className="flex size-[45px] items-center justify-center rounded-[30px] border border-[#fff]/20 text-white"
+        <button
+          onClick={handleCategoryClick}
+          className="flex size-[45px] items-center justify-center rounded-[30px] border border-[#fff]/20 text-white transition-colors hover:bg-[#fff]/10"
         >
           <Icon size={18} name="arrow-up-right" />
-        </a>
+        </button>
       </div>
     </div>
   );

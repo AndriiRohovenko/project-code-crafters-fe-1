@@ -4,14 +4,17 @@ import {
   createFavoritesByrecipeId,
   deleteFavoritesByrecipeId,
   getFavorites,
-  RecipePreviewDTO,
+  PaginatedFavoritesResponse,
+  Recipe,
 } from '@/api/api.gen';
 
 import type { RootState } from './store';
 
 // State shape
+type FavoriteItem = Recipe & { image: string };
+
 interface FavoritesState {
-  items: RecipePreviewDTO[];
+  items: FavoriteItem[];
   loading: boolean;
   error: string | null;
 }
@@ -24,7 +27,7 @@ const initialState: FavoritesState = {
 
 // Async thunks
 export const fetchFavorites = createAsyncThunk<
-  { data: RecipePreviewDTO[] },
+  PaginatedFavoritesResponse,
   void,
   { rejectValue: string }
 >('favorites/fetchFavorites', async (_, { rejectWithValue }) => {
@@ -44,7 +47,7 @@ export const addFavorite = createAsyncThunk<
   { rejectValue: string }
 >('favorites/addFavorite', async (recipeId, { rejectWithValue }) => {
   try {
-    await createFavoritesByrecipeId(String(recipeId));
+    await createFavoritesByrecipeId(recipeId);
     return recipeId;
   } catch (error) {
     return rejectWithValue(
@@ -59,7 +62,7 @@ export const removeFavorite = createAsyncThunk<
   { rejectValue: string }
 >('favorites/removeFavorite', async (recipeId, { rejectWithValue }) => {
   try {
-    await deleteFavoritesByrecipeId(String(recipeId));
+    await deleteFavoritesByrecipeId(recipeId);
     return recipeId;
   } catch (error) {
     return rejectWithValue(
@@ -87,12 +90,11 @@ export const favoritesSlice = createSlice({
       })
       .addCase(
         fetchFavorites.fulfilled,
-        (state, action: PayloadAction<{ data: RecipePreviewDTO[] }>) => {
+        (state, action: PayloadAction<PaginatedFavoritesResponse>) => {
           if (action.payload && Array.isArray(action.payload.data)) {
-            // Map thumb to image for consistency if needed
             state.items = action.payload.data.map((item) => ({
               ...item,
-              image: item.image || item.thumb || '',
+              image: item.image || item.thumb || item.preview || '',
             }));
           } else {
             state.items = [];

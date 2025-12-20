@@ -35,6 +35,7 @@ export interface Recipe {
   categoryId?: number;
   /** ID регіону кухні */
   areaId?: number;
+  image: string;
   /** Інструкції приготування */
   instructions?: string;
   /** Опис рецепта */
