@@ -268,7 +268,7 @@ export const AddRecipeForm = () => {
           <div className="w-full">
             <input
               placeholder="THE NAME OF THE RECIPE"
-              className="placeholder:text-black/30 w-full border-0 bg-transparent px-0 py-3 text-2xl font-extrabold text-black outline-none placeholder:uppercase focus:ring-0"
+              className="placeholder:text-black/30 text-1xl w-full border-0 bg-transparent px-0 py-3 font-extrabold text-black outline-none placeholder:uppercase focus:ring-0 md:text-2xl"
               {...register('title')}
             />
             {errors.title && (
