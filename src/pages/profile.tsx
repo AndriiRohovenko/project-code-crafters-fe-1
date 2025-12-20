@@ -20,25 +20,25 @@ const Profile = () => {
   return (
     <div className="lg:px-8 container mx-auto px-4 py-10 md:px-6">
       {/* Заголовок */}
-      <div className="mb-8 w-[443px]">
+      <div className="lg:w-[443px] mb-8 w-full md:w-[443px]">
         <h1 className="mb-5 text-3xl font-bold uppercase text-black md:text-4xl">
           PROFILE
         </h1>
-        <p className="text-sm text-dark-grey md:text-base">
+        <p className="text-sm font-medium text-light-grey md:text-base">
           Reveal your culinary art, share your favorite recipe and create
           gastronomic masterpieces with us.
         </p>
       </div>
 
       {/* Two column layout */}
-      <div className="lg:flex flex gap-8">
+      <div className="lg:flex-row lg:gap-20 flex w-full flex-col gap-8 md:gap-10">
         {/* Left sidebar - Profile Header */}
-        <div className="w-[394px]">
+        <div className="lg:w-[443px] lg:flex-shrink-0 w-full md:mx-auto md:w-[443px]">
           <ProfileHeader user={user} />
         </div>
 
         {/* Right side - Tabs and Content */}
-        <div className="flex-1">
+        <div className="w-full flex-1">
           {/* Вкладки */}
           <ProfileTabs activeTab={activeTab} onTabChange={setActiveTab} />
 

@@ -12,6 +12,7 @@ import {
   fetchFollowingThunk,
 } from '@/redux/profileFollows/profileFollows.thunks';
 import { Button } from '@/shared/ui/button';
+import PlusProfileButton from '@/shared/ui/profile/plus-profile-button';
 
 interface ProfileHeaderProps {
   user: User;
@@ -65,7 +66,7 @@ export const ProfileHeader = ({ user }: ProfileHeaderProps) => {
     <div>
       <div className="mb-5 flex flex-col items-center rounded-lg border border-light-grey bg-white px-20 py-10">
         {/* Аватар */}
-        <div className="mb-4 flex-shrink-0">
+        <div className="relative mb-5 flex-shrink-0">
           <img
             src={user.avatar || 'https://www.gravatar.com/avatar/?d=mp&s=200'}
             alt={user.name || 'User'}
@@ -75,25 +76,7 @@ export const ProfileHeader = ({ user }: ProfileHeaderProps) => {
                 'https://www.gravatar.com/avatar/?d=mp&s=200';
             }}
           />
-          <button
-            className="absolute bottom-0 right-0 flex h-10 w-10 items-center justify-center rounded-full bg-black text-white transition-colors hover:bg-gray-800"
-            aria-label="Edit profile picture"
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M10 4V16M4 10H16"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
-          </button>
+          <PlusProfileButton />
         </div>
 
         {/* Ім'я */}
