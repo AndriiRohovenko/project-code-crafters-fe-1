@@ -28,6 +28,16 @@ interface IngredientFormItem {
   img?: string;
 }
 
+const defaultValues: AddRecipeFormData = {
+  title: '',
+  description: '',
+  category: '',
+  area: '',
+  time: 10,
+  ingredients: [],
+  preparation: '',
+};
+
 export const AddRecipeForm = () => {
   const navigate = useNavigate();
   const resolver: Resolver<AddRecipeFormData> = yupResolver(
@@ -92,15 +102,7 @@ export const AddRecipeForm = () => {
   } = useForm<AddRecipeFormData>({
     mode: 'onSubmit',
     resolver,
-    defaultValues: {
-      title: '',
-      description: '',
-      category: '',
-      area: '',
-      time: 10,
-      ingredients: [],
-      preparation: '',
-    },
+    defaultValues: defaultValues,
   });
 
   const { title, description, category, area, time, ingredients, preparation } =
@@ -162,15 +164,7 @@ export const AddRecipeForm = () => {
   }, [imagePreview]);
 
   const handleClearForm = () => {
-    reset({
-      title: '',
-      description: '',
-      category: '',
-      area: '',
-      time: 10,
-      ingredients: [],
-      preparation: '',
-    });
+    reset(defaultValues);
     setNewIngredientName('');
     setNewIngredientMeasure('');
     setImageFile(null);
@@ -270,15 +264,7 @@ export const AddRecipeForm = () => {
       const recipeId = response.data?.recipe?.id;
       if (recipeId) {
         // Reset form and redirect to recipe detail page
-        reset({
-          title: '',
-          description: '',
-          category: '',
-          area: '',
-          time: 10,
-          ingredients: [],
-          preparation: '',
-        });
+        reset(defaultValues);
         setNewIngredientName('');
         setNewIngredientMeasure('');
         setImageFile(null);
@@ -302,17 +288,17 @@ export const AddRecipeForm = () => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="grid gap-10 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1.2fr)] md:items-start md:gap-14"
+      className="mb[64px] mb-[79px] grid grid-cols-1 gap-10 2xl:grid-cols-2"
     >
       {/* Left column – image upload */}
-      <div>
-        <div className="flex h-[260px] w-full items-center justify-center rounded-[40px] border border-dashed border-light-grey bg-white md:h-[300px]">
-          <div className="text-black/70 flex flex-col items-center justify-center text-center text-sm">
+      <div className="flex flex-col items-center">
+        <div className="h-[260px] w-full items-center justify-center overflow-hidden rounded-[40px] border border-dashed border-light-grey bg-white md:h-[400px]">
+          <div className="flex h-full w-full flex-col items-center justify-center text-center text-sm text-black">
             {imagePreview ? (
               <img
                 src={imagePreview}
                 alt="Recipe preview"
-                className="w-full rounded-3xl md:h-[300px]"
+                className="h-full w-full object-cover"
               />
             ) : (
               <button
@@ -397,7 +383,7 @@ export const AddRecipeForm = () => {
             <label className="block text-sm font-bold uppercase text-black">
               Cooking time
             </label>
-            <div className="flex gap-3 rounded-full bg-white px-6 py-3 text-sm text-black">
+            <div className="flex gap-3 rounded-full bg-white py-3 text-sm text-black">
               <div className="ml-auto flex items-center gap-3">
                 <button
                   type="button"

@@ -75,25 +75,25 @@ export const ProfileHeader = ({ user }: ProfileHeaderProps) => {
                 'https://www.gravatar.com/avatar/?d=mp&s=200';
             }}
           />
-          {/* <button
-          className="absolute bottom-0 right-0 flex h-10 w-10 items-center justify-center rounded-full bg-black text-white transition-colors hover:bg-gray-800"
-          aria-label="Edit profile picture"
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+          <button
+            className="absolute bottom-0 right-0 flex h-10 w-10 items-center justify-center rounded-full bg-black text-white transition-colors hover:bg-gray-800"
+            aria-label="Edit profile picture"
           >
-            <path
-              d="M10 4V16M4 10H16"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-          </svg>
-        </button> */}
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M10 4V16M4 10H16"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+            </svg>
+          </button>
         </div>
 
         {/* Ім'я */}

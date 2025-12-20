@@ -138,10 +138,6 @@ export interface RecipePreviewDTO {
   /** Назва рецепта (превʼю) */
   title: string;
   /** URL thumb (превʼю) */
-  image: string;
-}
-
-export interface FollowerUserDTO {
   image: string | null;
 }
 
@@ -178,6 +174,18 @@ export interface PaginatedFollowersResponse {
   totalPages: number;
   currentPage: number;
   itemsPerPage: number;
+}
+
+export interface PaginationMeta {
+  totalItems: number;
+  totalPages: number;
+  currentPage: number;
+  itemsPerPage: number;
+}
+
+export interface PaginatedFavoritesResponse {
+  data: Recipe[];
+  meta: PaginationMeta;
 }
 
 // Additional types
@@ -253,33 +261,32 @@ export const getCategories = async (): Promise<Category[]> => {
 // --- Favorites ---
 
 /**
- * Отримати список улюблених рецептів
+ * Get a paginated list of the current user's favorite recipes
  */
-export const getFavorites = async (): Promise<RecipePreviewDTO[]> => {
-  const response = await apiClient.get('/favorites');
+export const getFavorites = async (params?: {
+  page?: number;
+  limit?: number;
+}): Promise<PaginatedFavoritesResponse> => {
+  const response = await apiClient.get('/favorites', { params });
   return response.data;
 };
 
 /**
- * Додати рецепт до улюблених
+ * Add a recipe to favorites
  */
 export const createFavoritesByrecipeId = async (
-  recipeId: string
-): Promise<{
-  message?: string;
-}> => {
+  recipeId: number
+): Promise<Recipe> => {
   const response = await apiClient.post(`/favorites/${recipeId}`, {});
   return response.data;
 };
 
 /**
- * Видалити рецепт з улюблених
+ * Remove a recipe from favorites
  */
 export const deleteFavoritesByrecipeId = async (
-  recipeId: string
-): Promise<{
-  message?: string;
-}> => {
+  recipeId: number
+): Promise<void> => {
   const response = await apiClient.delete(`/favorites/${recipeId}`);
   return response.data;
 };
