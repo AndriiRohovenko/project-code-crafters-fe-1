@@ -1,6 +1,12 @@
-const PlusProfileButton = () => {
+interface PlusProfileButtonProps {
+  onClick?: () => void;
+}
+
+const PlusProfileButton = ({ onClick }: PlusProfileButtonProps) => {
   return (
     <button
+      type="button"
+      onClick={onClick}
       className="absolute -bottom-5 left-1/2 flex h-10 w-10 -translate-x-1/2 items-center justify-center rounded-full bg-black text-white transition-colors hover:bg-gray-800"
       aria-label="Edit profile picture"
     >
