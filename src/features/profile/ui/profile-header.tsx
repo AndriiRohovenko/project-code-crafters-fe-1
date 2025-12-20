@@ -1,7 +1,8 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import type { User } from '@/api/api.gen';
-import { signOut } from '@/features/auth/auth';
+import { MODAL_TYPES } from '@/modals/modals.const';
+import { useModals } from '@/modals/use-modals.hook';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
   fetchMyRecipes,
@@ -14,12 +15,15 @@ import {
 import { Button } from '@/shared/ui/button';
 import PlusProfileButton from '@/shared/ui/profile/plus-profile-button';
 
+import { ProfilePhotoUploadModal } from './profile-photo-upload-modal';
+
 interface ProfileHeaderProps {
   user: User;
 }
 
 export const ProfileHeader = ({ user }: ProfileHeaderProps) => {
   const dispatch = useAppDispatch();
+  const { openModal } = useModals();
 
   // Отримуємо дані з Redux
   const myRecipesPagination = useAppSelector(selectMyRecipesPagination);
@@ -31,6 +35,10 @@ export const ProfileHeader = ({ user }: ProfileHeaderProps) => {
   );
 
   const favoritesMeta = useAppSelector((state) => state.favorites);
+
+  // Avatar and modal state
+  const [avatarUrl, setAvatarUrl] = useState<string | undefined>(user.avatar);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Завантажуємо статистику при монтуванні
   useEffect(() => {
@@ -53,8 +61,19 @@ export const ProfileHeader = ({ user }: ProfileHeaderProps) => {
   }, [dispatch, user?.id]);
 
   const handleLogout = () => {
-    signOut();
-    window.location.href = '/';
+    openModal(MODAL_TYPES.LOG_OUT);
+  };
+
+  const handleAvatarUploadClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleUploadSuccess = (newAvatarUrl: string) => {
+    setAvatarUrl(newAvatarUrl);
   };
 
   const recipesCount = myRecipesPagination.total;
@@ -68,7 +87,7 @@ export const ProfileHeader = ({ user }: ProfileHeaderProps) => {
         {/* Аватар */}
         <div className="relative mb-5 flex-shrink-0">
           <img
-            src={user.avatar || 'https://www.gravatar.com/avatar/?d=mp&s=200'}
+            src={avatarUrl || 'https://www.gravatar.com/avatar/?d=mp&s=200'}
             alt={user.name || 'User'}
             className="h-32 w-32 rounded-full object-cover"
             onError={(e) => {
@@ -76,7 +95,7 @@ export const ProfileHeader = ({ user }: ProfileHeaderProps) => {
                 'https://www.gravatar.com/avatar/?d=mp&s=200';
             }}
           />
-          <PlusProfileButton />
+          <PlusProfileButton onClick={handleAvatarUploadClick} />
         </div>
 
         {/* Ім'я */}
@@ -116,6 +135,14 @@ export const ProfileHeader = ({ user }: ProfileHeaderProps) => {
         onClick={handleLogout}
         className="w-full"
       />
+
+      {/* Photo Upload Modal */}
+      {isModalOpen && (
+        <ProfilePhotoUploadModal
+          onClose={handleCloseModal}
+          onUploadSuccess={handleUploadSuccess}
+        />
+      )}
     </div>
   );
 };

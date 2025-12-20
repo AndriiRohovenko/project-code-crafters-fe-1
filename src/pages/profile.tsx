@@ -7,6 +7,8 @@ import { ProfileRecipesList } from '@/features/profile/ui/profile-recipes-list';
 import { ProfileTabs } from '@/features/profile/ui/profile-tabs';
 import { useAppSelector } from '@/redux/hooks';
 
+import { Breadcrumbs } from '../features/bredcrumbs/breadcrumbs';
+
 type TabType = 'recipes' | 'favorites' | 'followers' | 'following';
 
 const Profile = () => {
@@ -18,9 +20,10 @@ const Profile = () => {
   }
 
   return (
-    <div className="lg:px-8 container mx-auto px-4 py-10 md:px-6">
+    <div className="container mx-auto px-4 py-10 md:px-6 lg:px-8">
       {/* Заголовок */}
-      <div className="lg:w-[443px] mb-8 w-full md:w-[443px]">
+      <div className="mb-8 w-full md:w-[443px] lg:w-[443px]">
+        <Breadcrumbs name={'Profile'} />
         <h1 className="mb-5 text-3xl font-bold uppercase text-black md:text-4xl">
           PROFILE
         </h1>
@@ -31,9 +34,9 @@ const Profile = () => {
       </div>
 
       {/* Two column layout */}
-      <div className="lg:flex-row lg:gap-20 flex w-full flex-col gap-8 md:gap-10">
+      <div className="flex w-full flex-col gap-8 md:gap-10 lg:flex-row lg:gap-20">
         {/* Left sidebar - Profile Header */}
-        <div className="lg:w-[443px] lg:flex-shrink-0 w-full md:mx-auto md:w-[443px]">
+        <div className="w-full md:mx-auto md:w-[443px] lg:w-[443px] lg:flex-shrink-0">
           <ProfileHeader user={user} />
         </div>
 
