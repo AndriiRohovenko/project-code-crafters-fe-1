@@ -2,7 +2,7 @@ services:
   - type: static
     name: foodies-fe
     env: node
-    branch: fe-build-to-render
+    branch: main
     buildCommand: npm install && npm run build
     staticPublishPath: dist
     autoDeploy: true
