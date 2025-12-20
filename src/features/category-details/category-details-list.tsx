@@ -19,8 +19,8 @@ export const CategoryDetailsList = () => {
     dispatch(
       fetchCategoryDetails({
         query: '',
-        categoryId: 1,
-        areaId: 1,
+        categoryId: 6,
+        areaId: 7,
         page: 1,
         limit: 12,
       })
@@ -35,7 +35,7 @@ export const CategoryDetailsList = () => {
         recipes.map((recipe) => (
           <li key={recipe.id}>
             <RecipeCard
-              preview={recipe.preview}
+              preview={recipe.thumb}
               title={recipe.title}
               description={recipe.description}
               author={{

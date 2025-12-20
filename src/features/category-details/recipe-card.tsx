@@ -33,11 +33,13 @@ export const RecipeCard = ({
       <div className="mt-4 flex items-center justify-between">
         {/* LEFT */}
         <div className="flex items-center gap-3">
-          <img
-            src={author.avatar}
-            alt={author.name}
-            className="h-10 w-10 rounded-full object-cover"
-          />
+          {author.avatar && (
+            <img
+              src={author.avatar}
+              alt={author.name}
+              className="h-10 w-10 rounded-full object-cover"
+            />
+          )}
           <span className="text-sm font-medium text-black">{author.name}</span>
         </div>
 
