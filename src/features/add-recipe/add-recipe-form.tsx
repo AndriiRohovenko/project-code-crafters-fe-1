@@ -16,7 +16,6 @@ import {
   AddRecipeFormData,
   addRecipeSchema,
 } from '@/features/add-recipe/add-recipe-validation';
-import { BaseInput } from '@/shared/ui/base-input';
 import { BaseSelect } from '@/shared/ui/base-select';
 import { BaseTextarea } from '@/shared/ui/base-textarea';
 import { Button } from '@/shared/ui/button';
@@ -265,11 +264,19 @@ export const AddRecipeForm = () => {
       {/* Right column – form fields */}
       <div className="flex flex-col gap-8">
         <div className="space-y-4">
-          <BaseInput
-            label="The name of the recipe"
-            error={errors.title?.message}
-            {...register('title')}
-          />
+          {/* Custom borderless input for recipe name */}
+          <div className="w-full">
+            <input
+              placeholder="THE NAME OF THE RECIPE"
+              className="placeholder:text-black/30 w-full border-0 bg-transparent px-0 py-3 text-2xl font-extrabold text-black outline-none placeholder:uppercase focus:ring-0"
+              {...register('title')}
+            />
+            {errors.title && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.title.message}
+              </p>
+            )}
+          </div>
 
           <BaseTextarea
             className="h-[50px]"
@@ -305,7 +312,7 @@ export const AddRecipeForm = () => {
             <label className="block text-sm font-bold uppercase text-black">
               Cooking time
             </label>
-            <div className="flex gap-3 rounded-full bg-white py-3 text-sm text-black">
+            <div className="flex gap-3 rounded-full bg-white py-2 text-sm text-black">
               <div className="ml-auto flex items-center gap-3">
                 <button
                   type="button"
@@ -375,8 +382,9 @@ export const AddRecipeForm = () => {
                 onChange={(value) => setNewIngredientName(value)}
               />
 
-              <BaseInput
-                placeholder="Quantity"
+              <BaseTextarea
+                className="h-[50px]"
+                placeholder="Enter quantity"
                 value={newIngredientMeasure}
                 onChange={(e) => setNewIngredientMeasure(e.target.value)}
               />

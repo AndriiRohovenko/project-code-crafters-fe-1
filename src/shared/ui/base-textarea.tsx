@@ -25,15 +25,18 @@ export const BaseTextarea = React.forwardRef<
     },
     ref
   ) => {
+    const [internalValue, setInternalValue] = useState(value || defaultValue || '');
     const [hasValue, setHasValue] = useState(Boolean(value || defaultValue));
 
-    const displayValue = (value ?? defaultValue ?? '') as string;
+    const displayValue = (value !== undefined ? value : internalValue) as string;
     const count = typeof displayValue === 'string' ? displayValue.length : 0;
 
     const inputPlaceholder = label ?? placeholder;
 
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      setHasValue(e.target.value.length > 0);
+      const newValue = e.target.value;
+      setInternalValue(newValue);
+      setHasValue(newValue.length > 0);
       onChange?.(e);
     };
 
@@ -47,7 +50,7 @@ export const BaseTextarea = React.forwardRef<
             onChange={handleChange}
             maxLength={maxLength}
             placeholder={inputPlaceholder}
-            className={`placeholder:text-black/70 w-full resize-none border-0 border-b bg-white px-6 pb-2 pr-16 pt-3 text-sm text-black outline-none focus:ring-0 ${
+            className={`placeholder:text-black/70 w-full resize-none border-0 border-b bg-white pb-2 pr-16 pt-3 text-sm text-black outline-none focus:ring-0 ${
               hasValue ? 'border-b-black' : 'border-b-light-grey'
             } ${error ? 'border-red-500 focus:border-red-500' : ''} ${className}`}
             {...props}
