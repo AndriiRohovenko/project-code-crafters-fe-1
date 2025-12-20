@@ -7,6 +7,8 @@ import { ProfileRecipesList } from '@/features/profile/ui/profile-recipes-list';
 import { ProfileTabs } from '@/features/profile/ui/profile-tabs';
 import { useAppSelector } from '@/redux/hooks';
 
+import { Breadcrumbs } from '../features/bredcrumbs/breadcrumbs';
+
 type TabType = 'recipes' | 'favorites' | 'followers' | 'following';
 
 const Profile = () => {
@@ -21,6 +23,7 @@ const Profile = () => {
     <div className="container mx-auto px-4 py-10 md:px-6 lg:px-8">
       {/* Заголовок */}
       <div className="mb-8 w-full md:w-[443px] lg:w-[443px]">
+        <Breadcrumbs name={'Profile'} />
         <h1 className="mb-5 text-3xl font-bold uppercase text-black md:text-4xl">
           PROFILE
         </h1>
