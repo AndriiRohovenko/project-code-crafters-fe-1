@@ -25,10 +25,14 @@ export const BaseTextarea = React.forwardRef<
     },
     ref
   ) => {
-    const [internalValue, setInternalValue] = useState(value || defaultValue || '');
+    const [internalValue, setInternalValue] = useState(
+      value || defaultValue || ''
+    );
     const [hasValue, setHasValue] = useState(Boolean(value || defaultValue));
 
-    const displayValue = (value !== undefined ? value : internalValue) as string;
+    const displayValue = (
+      value !== undefined ? value : internalValue
+    ) as string;
     const count = typeof displayValue === 'string' ? displayValue.length : 0;
 
     const inputPlaceholder = label ?? placeholder;
