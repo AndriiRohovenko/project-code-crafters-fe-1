@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, Resolver, useForm, useWatch } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
@@ -16,9 +16,10 @@ import {
   AddRecipeFormData,
   addRecipeSchema,
 } from '@/features/add-recipe/add-recipe-validation';
-import { BaseInput } from '@/shared/ui/base-input';
 import { BaseSelect } from '@/shared/ui/base-select';
+import { BaseTextarea } from '@/shared/ui/base-textarea';
 import { Button } from '@/shared/ui/button';
+import { FileUpload } from '@/shared/ui/file-upload';
 import { Icon } from '@/shared/ui/icon';
 
 interface IngredientFormItem {
@@ -128,50 +129,13 @@ export const AddRecipeForm = () => {
   const [newIngredientMeasure, setNewIngredientMeasure] = useState('');
 
   // Image upload state
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-
-  const handleImageSelectClick = () => {
-    // Clear current selection before choosing a new one
-    if (imagePreview) {
-      URL.revokeObjectURL(imagePreview);
-      setImagePreview(null);
-    }
-    setImageFile(null);
-    fileInputRef.current?.click();
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] ?? null;
-
-    // Revoke old preview URL before replacing
-    if (imagePreview) {
-      URL.revokeObjectURL(imagePreview);
-    }
-
-    setImageFile(file);
-    setImagePreview(file ? URL.createObjectURL(file) : null);
-  };
-
-  // Cleanup preview URL on unmount
-  useEffect(() => {
-    return () => {
-      if (imagePreview) {
-        URL.revokeObjectURL(imagePreview);
-      }
-    };
-  }, [imagePreview]);
 
   const handleClearForm = () => {
     reset(defaultValues);
     setNewIngredientName('');
     setNewIngredientMeasure('');
     setImageFile(null);
-    if (imagePreview) {
-      URL.revokeObjectURL(imagePreview);
-    }
-    setImagePreview(null);
   };
 
   const handleTimeChange = (delta: number) => {
@@ -268,7 +232,6 @@ export const AddRecipeForm = () => {
         setNewIngredientName('');
         setNewIngredientMeasure('');
         setImageFile(null);
-        setImagePreview(null);
         navigate(`/recipe/${recipeId}`);
       } else {
         throw new Error('Recipe created but ID not returned');
@@ -291,71 +254,37 @@ export const AddRecipeForm = () => {
       className="mb[64px] mb-[79px] grid grid-cols-1 gap-10 2xl:grid-cols-2"
     >
       {/* Left column – image upload */}
-      <div className="flex flex-col items-center">
-        <div className="h-[260px] w-full items-center justify-center overflow-hidden rounded-[40px] border border-dashed border-light-grey bg-white md:h-[400px]">
-          <div className="flex h-full w-full flex-col items-center justify-center text-center text-sm text-black">
-            {imagePreview ? (
-              <img
-                src={imagePreview}
-                alt="Recipe preview"
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              <button
-                type="button"
-                onClick={handleImageSelectClick}
-                className="text-black/70 flex flex-col items-center justify-center text-center text-sm"
-              >
-                <Icon name="camera" size={49} className="mb-2" />
-                <span>Upload a photo</span>
-              </button>
-            )}
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="hidden"
-            />
-          </div>
-        </div>
-        {imagePreview && (
-          <button
-            type="button"
-            onClick={handleImageSelectClick}
-            className="mt-3 text-center text-sm font-medium text-black underline transition hover:opacity-80"
-          >
-            Upload another photo
-          </button>
-        )}
-      </div>
+      <FileUpload
+        file={imageFile}
+        onChange={setImageFile}
+        label="Upload a photo"
+        replaceLabel="Upload another photo"
+      />
 
       {/* Right column – form fields */}
       <div className="flex flex-col gap-8">
         <div className="space-y-4">
-          <BaseInput
-            label="The name of the recipe"
-            error={errors.title?.message}
-            {...register('title')}
-          />
-
-          <div>
-            <textarea
-              className={`placeholder:text-black/70 h-[96px] w-full resize-none rounded-3xl border bg-white px-6 py-3 text-sm text-black outline-none focus:border-black focus:ring-1 focus:ring-black ${
-                errors.description
-                  ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
-                  : 'border-light-grey'
-              }`}
-              placeholder="Enter a description of the dish"
-              maxLength={200}
-              {...register('description')}
+          {/* Custom borderless input for recipe name */}
+          <div className="w-full">
+            <input
+              placeholder="THE NAME OF THE RECIPE"
+              className="placeholder:text-black/30 w-full border-0 bg-transparent px-0 py-3 text-2xl font-extrabold text-black outline-none placeholder:uppercase focus:ring-0"
+              {...register('title')}
             />
-            {errors.description && (
-              <p className="mt-1 px-4 text-sm text-red-500">
-                {errors.description.message}
+            {errors.title && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.title.message}
               </p>
             )}
           </div>
+
+          <BaseTextarea
+            className="h-[50px]"
+            label="Enter a description of the dish"
+            maxLength={200}
+            error={errors.description?.message}
+            {...register('description')}
+          />
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">
@@ -383,7 +312,7 @@ export const AddRecipeForm = () => {
             <label className="block text-sm font-bold uppercase text-black">
               Cooking time
             </label>
-            <div className="flex gap-3 rounded-full bg-white py-3 text-sm text-black">
+            <div className="flex gap-3 rounded-full bg-white py-2 text-sm text-black">
               <div className="ml-auto flex items-center gap-3">
                 <button
                   type="button"
@@ -453,8 +382,9 @@ export const AddRecipeForm = () => {
                 onChange={(value) => setNewIngredientName(value)}
               />
 
-              <BaseInput
-                placeholder="Quantity"
+              <BaseTextarea
+                className="h-[50px]"
+                placeholder="Enter quantity"
                 value={newIngredientMeasure}
                 onChange={(e) => setNewIngredientMeasure(e.target.value)}
               />
@@ -551,23 +481,13 @@ export const AddRecipeForm = () => {
           <h3 className="text-sm font-bold uppercase text-black">
             Recipe preparation
           </h3>
-          <div>
-            <textarea
-              className={`placeholder:text-black/70 h-[180px] w-full resize-none rounded-3xl border bg-white px-6 py-3 text-sm text-black outline-none focus:border-black focus:ring-1 focus:ring-black ${
-                errors.preparation
-                  ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
-                  : 'border-light-grey'
-              }`}
-              placeholder="Enter recipe"
-              maxLength={1000}
-              {...register('preparation')}
-            />
-            {errors.preparation && (
-              <p className="mt-1 px-4 text-sm text-red-500">
-                {errors.preparation.message}
-              </p>
-            )}
-          </div>
+          <BaseTextarea
+            className="h-[180px]"
+            label="Enter recipe"
+            maxLength={1000}
+            error={errors.preparation?.message}
+            {...register('preparation')}
+          />
         </div>
 
         <div className="flex items-center gap-4 pt-2">
