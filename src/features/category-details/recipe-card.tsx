@@ -63,6 +63,9 @@ export const RecipeCard = ({
             }
             alt={author.name}
             className="h-8 w-8 rounded-full object-cover md:h-10 md:w-10"
+            onError={(e) => {
+              e.currentTarget.src = 'https://www.gravatar.com/avatar/?d=mp&s=200';
+            }}
           />
 
           <span className="font-sans text-[14px] font-bold leading-[24px] tracking-[-0.02em] text-black md:text-[16px]">

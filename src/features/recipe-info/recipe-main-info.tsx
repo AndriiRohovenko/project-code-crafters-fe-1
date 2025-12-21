@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom';
+
 import { RecipeDetail } from '@/shared/types/recipe';
 
 interface RecipeMainInfoProps {
@@ -6,15 +8,12 @@ interface RecipeMainInfoProps {
 
 const RecipeMainInfo = ({ recipe }: RecipeMainInfoProps) => {
   const { title, time, description, category, author } = recipe;
+  const navigate = useNavigate();
 
   const handleAuthorClick = () => {
-    // TODO: Implement navigation to author profile when user pages are ready
-    // if (isLoggedIn) {
-    //   navigate(`/user/${author?.id}`);
-    // } else {
-    //   // Show auth modal
-    // }
-    console.log('Navigate to author:', author?.id);
+    if (author?.id) {
+      navigate(`/users/${author.id}`);
+    }
   };
 
   return (
@@ -47,9 +46,15 @@ const RecipeMainInfo = ({ recipe }: RecipeMainInfoProps) => {
             onClick={handleAuthorClick}
           >
             <img
-              src={author?.avatar || '/images/default-avatar.png'}
+              src={
+                author?.avatar || 'https://www.gravatar.com/avatar/?d=mp&s=200'
+              }
               alt={`Avatar ${author?.name}`}
               className="h-8 w-8 shrink-0 rounded-full bg-[var(--color-placeholder)] object-cover md:h-10 md:w-10"
+              onError={(e) => {
+                e.currentTarget.src =
+                  'https://www.gravatar.com/avatar/?d=mp&s=200';
+              }}
             />
             <div className="flex flex-col items-start text-[var(--color-text)]">
               <span className="text-xs font-medium leading-[1.5] text-[var(--color-placeholder)] md:text-sm">
