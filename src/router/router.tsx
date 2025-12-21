@@ -70,9 +70,11 @@ const AppRouter = () => {
         <Route
           path="/profile/:id"
           element={
-            <Suspense fallback={<Loader />}>
-              <Profile />
-            </Suspense>
+            <PrivateRouteGuard>
+              <Suspense fallback={<Loader />}>
+                <Profile />
+              </Suspense>
+            </PrivateRouteGuard>
           }
         />
         <Route
