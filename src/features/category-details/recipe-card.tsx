@@ -47,22 +47,27 @@ export const RecipeCard = ({
 
       {/* CONTENT */}
       <div className="mt-4 flex flex-col gap-2">
-        <h3 className="text-lg font-semibold text-black">{title}</h3>
-        <p className="text-black/70 text-sm">{description}</p>
-      </div>
+        <h3 className="line-clamp-1 font-sans text-[18px] font-extrabold uppercase leading-[24px] tracking-[-0.02em] text-black md:text-[20px]">
+          {title}
+        </h3>
 
+        <p className="text-black/70 line-clamp-2 text-sm">{description}</p>
+      </div>
       {/* AUTHOR */}
-      <div className="mt-4 flex items-center justify-between">
+      <div className="mt-2 flex items-center justify-between">
         {/* LEFT */}
-        <div className="flex items-center gap-3">
-          {author.avatar && (
-            <img
-              src={author.avatar}
-              alt={author.name}
-              className="h-10 w-10 rounded-full object-cover"
-            />
-          )}
-          <span className="text-sm font-medium text-black">{author.name}</span>
+        <div className="flex items-center gap-2">
+          <img
+            src={
+              author?.avatar || 'https://www.gravatar.com/avatar/?d=mp&s=200'
+            }
+            alt={author.name}
+            className="h-8 w-8 rounded-full object-cover md:h-10 md:w-10"
+          />
+
+          <span className="font-sans text-[14px] font-bold leading-[24px] tracking-[-0.02em] text-black md:text-[16px]">
+            {author.name}
+          </span>
         </div>
 
         {/* RIGHT */}

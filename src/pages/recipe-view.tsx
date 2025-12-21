@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { getRecipesByid } from '@/api/api.gen';
+import { Breadcrumbs } from '@/features/bredcrumbs/breadcrumbs.tsx';
+import PopularRecipes from '@/features/popular-recipes/popular-recipes.tsx';
 import RecipeInfo from '@/features/recipe-info/recipe-info';
 import { RecipeDetail } from '@/shared/types/recipe';
 import Container from '@/shared/ui/container';
@@ -50,7 +52,10 @@ const RecipeView = () => {
   return (
     <section className="py-8">
       <Container>
+        <Breadcrumbs name={recipe?.title || ''} />
+
         <RecipeInfo recipe={recipe} />
+        <PopularRecipes excludeRecipeId={Number(id)} />
       </Container>
     </section>
   );

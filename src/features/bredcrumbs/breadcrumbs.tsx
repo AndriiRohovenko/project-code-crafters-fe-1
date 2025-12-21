@@ -6,8 +6,8 @@ type BreadcrumbsProps = {
 
 export const Breadcrumbs = ({ name }: BreadcrumbsProps) => {
   return (
-    <div className="mx-auto max-w-[1280px] px-4 md:px-8 2xl:px-0">
-      <nav aria-label="Breadcrumb" className="mb-8 mt-10 md:mb-10 2xl:mt-14">
+    <div className="mx-auto max-w-[1280px] px-0">
+      <nav aria-label="Breadcrumb" className="mb-8 mt-0 md:mb-10">
         <ol className="flex items-center text-[12px] font-bold uppercase">
           <li>
             <Link
