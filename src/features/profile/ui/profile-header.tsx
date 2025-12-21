@@ -44,18 +44,18 @@ export const ProfileHeader = ({ user }: ProfileHeaderProps) => {
   // Завантажуємо статистику при монтуванні
   useEffect(() => {
     if (user?.id) {
-      dispatch(fetchMyRecipes({ page: 1, limit: 1 })); // Тільки для кількості
+      dispatch(fetchMyRecipes({ page: 1, limit: 10 })); // Тільки для кількості
       dispatch(
         fetchFollowingThunk({
           page: 1,
-          limit: 1,
+          limit: 10,
         })
       );
       dispatch(
         fetchFollowersThunk({
           profileUserId: user.id,
           page: 1,
-          limit: 1,
+          limit: 10,
         })
       );
     }

@@ -51,11 +51,13 @@ export const ProfileFollowPanel = ({ tab, profileUserId }: Props) => {
         fetchFollowersThunk({
           profileUserId: effectiveProfileUserId,
           page: meta.page,
-          limit: meta.limit,
+          limit: meta.limit || 10,
         })
       );
     } else {
-      dispatch(fetchFollowingThunk({ page: meta.page, limit: meta.limit }));
+      dispatch(
+        fetchFollowingThunk({ page: meta.page, limit: meta.limit || 10 })
+      );
     }
   }, [dispatch, tab, authUser, effectiveProfileUserId, meta.page, meta.limit]);
 
