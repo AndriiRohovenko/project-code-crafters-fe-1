@@ -3,10 +3,20 @@ interface ProfileTabsProps {
   onTabChange: (
     tab: 'recipes' | 'favorites' | 'followers' | 'following'
   ) => void;
+  tabsOverride?: Array<
+    | { id: 'recipes'; label: string }
+    | { id: 'favorites'; label: string }
+    | { id: 'followers'; label: string }
+    | { id: 'following'; label: string }
+  >;
 }
 
-export const ProfileTabs = ({ activeTab, onTabChange }: ProfileTabsProps) => {
-  const tabs = [
+export const ProfileTabs = ({
+  activeTab,
+  onTabChange,
+  tabsOverride,
+}: ProfileTabsProps) => {
+  const tabs = tabsOverride ?? [
     { id: 'recipes' as const, label: 'MY RECIPES' },
     { id: 'favorites' as const, label: 'MY FAVORITES' },
     { id: 'followers' as const, label: 'FOLLOWERS' },

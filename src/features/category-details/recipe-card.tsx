@@ -14,6 +14,7 @@ interface RecipePreviewItemProps {
   title: string | undefined;
   description: string | undefined;
   author: {
+    id?: number;
     name: string | undefined;
     avatar: string | undefined;
   };
@@ -56,19 +57,38 @@ export const RecipeCard = ({
       {/* AUTHOR */}
       <div className="mt-2 flex items-center justify-between">
         {/* LEFT */}
-        <div className="flex items-center gap-2">
-          <img
-            src={
-              author?.avatar || 'https://www.gravatar.com/avatar/?d=mp&s=200'
-            }
-            alt={author.name}
-            className="h-8 w-8 rounded-full object-cover md:h-10 md:w-10"
-          />
+        {author?.id ? (
+          <Link
+            to={`/profile/${author.id}`}
+            className="flex items-center gap-2 transition-opacity hover:opacity-70"
+          >
+            <img
+              src={
+                author?.avatar || 'https://www.gravatar.com/avatar/?d=mp&s=200'
+              }
+              alt={author.name}
+              className="h-8 w-8 rounded-full object-cover md:h-10 md:w-10"
+            />
 
-          <span className="font-sans text-[14px] font-bold leading-[24px] tracking-[-0.02em] text-black md:text-[16px]">
-            {author.name}
-          </span>
-        </div>
+            <span className="font-sans text-[14px] font-bold leading-[24px] tracking-[-0.02em] text-black md:text-[16px]">
+              {author.name}
+            </span>
+          </Link>
+        ) : (
+          <div className="flex items-center gap-2">
+            <img
+              src={
+                author?.avatar || 'https://www.gravatar.com/avatar/?d=mp&s=200'
+              }
+              alt={author?.name}
+              className="h-8 w-8 rounded-full object-cover md:h-10 md:w-10"
+            />
+
+            <span className="font-sans text-[14px] font-bold leading-[24px] tracking-[-0.02em] text-black md:text-[16px]">
+              {author?.name}
+            </span>
+          </div>
+        )}
 
         {/* RIGHT */}
         <div className="flex gap-2">
