@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 
-import type { User } from '@/api/api.gen';
+import {
+  createUsersFollow,
+  deleteUsersUnfollow,
+  type User,
+} from '@/api/api.gen';
 import { MODAL_TYPES } from '@/modals/modals.const';
 import { useModals } from '@/modals/use-modals.hook';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -20,9 +24,13 @@ import { ProfilePhotoUploadModal } from './profile-photo-upload-modal';
 
 interface ProfileHeaderProps {
   user: User;
+  isOwnProfile?: boolean;
 }
 
-export const ProfileHeader = ({ user }: ProfileHeaderProps) => {
+export const ProfileHeader = ({
+  user,
+  isOwnProfile = true,
+}: ProfileHeaderProps) => {
   const dispatch = useAppDispatch();
   const { openModal } = useModals();
 
@@ -40,6 +48,10 @@ export const ProfileHeader = ({ user }: ProfileHeaderProps) => {
   // Avatar and modal state
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>(user.avatar);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Follow state (for other users' profiles)
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [isFollowLoading, setIsFollowLoading] = useState(false);
 
   // Завантажуємо статистику при монтуванні
   useEffect(() => {
@@ -79,6 +91,26 @@ export const ProfileHeader = ({ user }: ProfileHeaderProps) => {
     dispatch(updateUserAvatar(newAvatarUrl));
   };
 
+  const handleFollowToggle = async () => {
+    if (!user.id || isFollowLoading) return;
+
+    setIsFollowLoading(true);
+    try {
+      if (isFollowing) {
+        await deleteUsersUnfollow({ followingId: user.id });
+        setIsFollowing(false);
+      } else {
+        await createUsersFollow({ followingId: user.id });
+        setIsFollowing(true);
+      }
+    } catch (error) {
+      console.error('Follow/unfollow error:', error);
+      window.alert('Failed to update follow status. Please try again.');
+    } finally {
+      setIsFollowLoading(false);
+    }
+  };
+
   const recipesCount = myRecipesPagination.total;
   const followingCount = followingMeta.total;
   const followersCount = followersMeta.total;
@@ -98,7 +130,9 @@ export const ProfileHeader = ({ user }: ProfileHeaderProps) => {
                 'https://www.gravatar.com/avatar/?d=mp&s=200';
             }}
           />
-          <PlusProfileButton onClick={handleAvatarUploadClick} />
+          {isOwnProfile && (
+            <PlusProfileButton onClick={handleAvatarUploadClick} />
+          )}
         </div>
 
         {/* Ім'я */}
@@ -130,17 +164,29 @@ export const ProfileHeader = ({ user }: ProfileHeaderProps) => {
           </div>
         </div>
       </div>
-      {/* Кнопка Logout */}
-      <Button
-        type="button"
-        variant="base"
-        label="LOG OUT"
-        onClick={handleLogout}
-        className="w-full"
-      />
 
-      {/* Photo Upload Modal */}
-      {isModalOpen && (
+      {/* Action Button - Logout for own profile, Follow for others */}
+      {isOwnProfile ? (
+        <Button
+          type="button"
+          variant="base"
+          label="LOG OUT"
+          onClick={handleLogout}
+          className="w-full"
+        />
+      ) : (
+        <Button
+          type="button"
+          variant={isFollowing ? 'outline-grey' : 'base'}
+          label={isFollowLoading ? '...' : isFollowing ? 'UNFOLLOW' : 'FOLLOW'}
+          onClick={handleFollowToggle}
+          disabled={isFollowLoading}
+          className="w-full"
+        />
+      )}
+
+      {/* Photo Upload Modal - Only for own profile */}
+      {isOwnProfile && isModalOpen && (
         <ProfilePhotoUploadModal
           onClose={handleCloseModal}
           onUploadSuccess={handleUploadSuccess}

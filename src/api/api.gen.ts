@@ -353,6 +353,25 @@ export const getRecipesByid = async (id: number): Promise<Recipe> => {
 };
 
 /**
+ * Отримати рецепти конкретного користувача
+ */
+export const getRecipesByUserId = async (
+  userId: number,
+  params?: {
+    page?: number;
+    limit?: number;
+  }
+): Promise<{
+  recipes?: Recipe[];
+  total?: number;
+  page?: number;
+  totalPages?: number;
+}> => {
+  const response = await apiClient.get(`/users/${userId}/recipes`, { params });
+  return response.data;
+};
+
+/**
  * Видалити власний рецепт
  */
 export const deleteRecipesByid = async (id: number): Promise<void> => {

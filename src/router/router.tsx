@@ -24,6 +24,7 @@ const AppRouter = () => {
         />
         <Route path="/recipe/:id" element={<RecipeView />} />
         <Route path="/categories" element={<Categories />} />
+        <Route path="/profile/:id" element={<Profile />} />
         <Route
           path="/profile"
           element={

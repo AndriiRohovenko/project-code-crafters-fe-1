@@ -8,7 +8,7 @@ import { deleteMyRecipe, fetchMyRecipes } from '@/redux/profile.slice';
 
 interface ProfileRecipeCardProps {
   recipe: Recipe | RecipePreviewDTO;
-  mode: 'myRecipes' | 'favorites';
+  mode: 'myRecipes' | 'favorites' | 'viewOnly';
 }
 
 export const ProfileRecipeCard = ({ recipe, mode }: ProfileRecipeCardProps) => {
@@ -16,7 +16,7 @@ export const ProfileRecipeCard = ({ recipe, mode }: ProfileRecipeCardProps) => {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
-    if (!recipe.id) return;
+    if (!recipe.id || mode === 'viewOnly') return;
 
     const confirmMessage =
       mode === 'myRecipes'
@@ -102,29 +102,31 @@ export const ProfileRecipeCard = ({ recipe, mode }: ProfileRecipeCardProps) => {
           </svg>
         </Link>
 
-        {/* Кнопка видалення */}
-        <button
-          onClick={handleDelete}
-          disabled={isDeleting}
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-light-grey bg-white transition-all hover:border-[var(--color-error)] hover:bg-[var(--color-error)] hover:text-white disabled:cursor-not-allowed disabled:opacity-50 md:h-11 md:w-11"
-          title={
-            mode === 'myRecipes' ? 'Delete recipe' : 'Remove from favorites'
-          }
-        >
-          <svg
-            className="h-4 w-4 md:h-5 md:w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
+        {/* Кнопка видалення - тільки для власних рецептів та обраних */}
+        {mode !== 'viewOnly' && (
+          <button
+            onClick={handleDelete}
+            disabled={isDeleting}
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-light-grey bg-white transition-all hover:border-[var(--color-error)] hover:bg-[var(--color-error)] hover:text-white disabled:cursor-not-allowed disabled:opacity-50 md:h-11 md:w-11"
+            title={
+              mode === 'myRecipes' ? 'Delete recipe' : 'Remove from favorites'
+            }
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-            />
-          </svg>
-        </button>
+            <svg
+              className="h-4 w-4 md:h-5 md:w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              />
+            </svg>
+          </button>
+        )}
       </div>
     </div>
   );
