@@ -95,7 +95,7 @@ const Profile = () => {
           )}
           {isForeign && activeTab === 'recipes' && (
             <div className="rounded-[15px] border border-light-grey bg-white p-6 text-center text-sm text-light-grey">
-              Author recipes listing is not available yet.
+              Feature will come soon.
             </div>
           )}
           {activeTab === 'followers' && (
