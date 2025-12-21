@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { getRecipesPopular, Recipe } from '@/api/api.gen';
+import { RecipeCard } from '@/features/category-details/recipe-card.tsx';
 
 export const PopularRecipes = () => {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -29,10 +30,8 @@ export const PopularRecipes = () => {
     fetchPopular();
   }, []);
 
-  console.log(recipes);
-
   return (
-    <section className="max-w-[1280px]py-[64px] mx-auto md:py-[100px] 2xl:py-[120px]">
+    <section className="mx-auto max-w-[1280px] py-[64px] md:py-[100px] 2xl:py-[120px]">
       <div className="mb-6 md:mb-8">
         <h2 className="font-sans text-[18px] font-extrabold uppercase leading-[28px] tracking-[-0.02em] md:text-[24px]">
           Popular recipes
@@ -61,9 +60,17 @@ export const PopularRecipes = () => {
       {!isLoading && !error && (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8 2xl:grid-cols-4">
           {recipes.map((recipe) => (
-            <div key={recipe.id}>
-              <h1>Hello world</h1>
-            </div>
+            <RecipeCard
+              key={recipe.id}
+              id={recipe.id || 0}
+              preview={recipe.thumb}
+              title={recipe.title}
+              description={recipe.description}
+              author={{
+                name: recipe.author?.name,
+                avatar: recipe.author?.avatar,
+              }}
+            />
           ))}
         </div>
       )}
