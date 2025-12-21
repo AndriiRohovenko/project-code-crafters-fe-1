@@ -311,6 +311,7 @@ export const getRecipesSearch = async (params?: {
   ingredientId?: number;
   categoryId?: number;
   areaId?: number;
+  authorId?: number;
   page?: number;
   limit?: number;
 }): Promise<Recipe[]> => {

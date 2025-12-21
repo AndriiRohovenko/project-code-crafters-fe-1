@@ -117,7 +117,7 @@ export const UserFollowRow = ({
       {/* Mobile */}
       <IconButton
         type="link"
-        href={`/users/${id}`}
+        href={`/profile/${id}`}
         iconName="arrow-up-right"
         size="small"
         className="md:hidden"
@@ -130,7 +130,7 @@ export const UserFollowRow = ({
       {/* Tablet+ */}
       <IconButton
         type="link"
-        href={`/users/${id}`}
+        href={`/profile/${id}`}
         iconName="arrow-up-right"
         size="medium"
         className="hidden md:inline-flex"
