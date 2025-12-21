@@ -6,6 +6,7 @@ import Categories from '@/pages/categories';
 import Home from '@/pages/home';
 import Profile from '@/pages/profile';
 import RecipeView from '@/pages/recipe-view';
+import UserProfile from '@/pages/user-profile';
 
 import { PrivateRouteGuard } from './PrivateRoutGuard';
 
@@ -32,6 +33,7 @@ const AppRouter = () => {
             </PrivateRouteGuard>
           }
         />
+        <Route path="/users/:id" element={<UserProfile />} />
         <Route
           path="*"
           element={
