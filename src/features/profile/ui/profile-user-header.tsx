@@ -37,7 +37,7 @@ export const ProfileUserHeader = ({ user }: ProfileUserHeaderProps) => {
     if (!user?.id) return;
     // Fetch follower count and following list
     dispatch(
-      fetchFollowersThunk({ profileUserId: user.id, page: 1, limit: 1 })
+      fetchFollowersThunk({ profileUserId: user.id, page: 1, limit: 5 })
     );
     dispatch(fetchFollowingThunk({ page: 1, limit: 100 }));
   }, [dispatch, user?.id]);
@@ -53,7 +53,7 @@ export const ProfileUserHeader = ({ user }: ProfileUserHeaderProps) => {
       // Refresh counts and following list
       await Promise.all([
         dispatch(
-          fetchFollowersThunk({ profileUserId: user.id, page: 1, limit: 1 })
+          fetchFollowersThunk({ profileUserId: user.id, page: 1, limit: 5 })
         ),
         dispatch(fetchFollowingThunk({ page: 1, limit: 100 })),
       ]);
