@@ -1,34 +1,69 @@
+import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
-import AddRecipe from '@/pages/add-recipe';
-import Layout from '@/pages/base-layout';
-import Categories from '@/pages/categories';
-import Home from '@/pages/home';
-import Profile from '@/pages/profile';
-import RecipeView from '@/pages/recipe-view';
+import Loader from '@/shared/ui/loader';
+
+const Layout = lazy(() => import('@/pages/base-layout'));
+const Home = lazy(() => import('@/pages/home'));
+const AddRecipe = lazy(() => import('@/pages/add-recipe'));
+const RecipeView = lazy(() => import('@/pages/recipe-view'));
+const Categories = lazy(() => import('@/pages/categories'));
+const Profile = lazy(() => import('@/pages/profile'));
 
 import { PrivateRouteGuard } from './PrivateRoutGuard';
 
 const AppRouter = () => {
   return (
     <Routes>
-      <Route path="/" element={<Layout />}>
-        <Route index element={<Home />} />
+      <Route
+        path="/"
+        element={
+          <Suspense fallback={<Loader />}>
+            <Layout />
+          </Suspense>
+        }
+      >
+        <Route
+          index
+          element={
+            <Suspense fallback={<Loader />}>
+              <Home />
+            </Suspense>
+          }
+        />
         <Route
           path="/add-recipe"
           element={
             <PrivateRouteGuard>
-              <AddRecipe />
+              <Suspense fallback={<Loader />}>
+                <AddRecipe />
+              </Suspense>
             </PrivateRouteGuard>
           }
         />
-        <Route path="/recipe/:id" element={<RecipeView />} />
-        <Route path="/categories" element={<Categories />} />
+        <Route
+          path="/recipe/:id"
+          element={
+            <Suspense fallback={<Loader />}>
+              <RecipeView />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/categories"
+          element={
+            <Suspense fallback={<Loader />}>
+              <Categories />
+            </Suspense>
+          }
+        />
         <Route
           path="/profile"
           element={
             <PrivateRouteGuard>
-              <Profile />
+              <Suspense fallback={<Loader />}>
+                <Profile />
+              </Suspense>
             </PrivateRouteGuard>
           }
         />
