@@ -353,7 +353,7 @@ export const getRecipesByid = async (id: number): Promise<Recipe> => {
 };
 
 /**
- * Отримати рецепти конкретного користувача
+ * Отримати рецепти конкретного користувача (публічний endpoint)
  */
 export const getRecipesByUserId = async (
   userId: number,
@@ -367,7 +367,7 @@ export const getRecipesByUserId = async (
   page?: number;
   totalPages?: number;
 }> => {
-  const response = await apiClient.get(`/users/${userId}/recipes`, { params });
+  const response = await apiClient.get(`/recipes/user/${userId}`, { params });
   return response.data;
 };
 
