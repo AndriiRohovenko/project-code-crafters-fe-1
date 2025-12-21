@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 
+import { getUsersByid } from '@/api/api.gen';
 import { Breadcrumbs } from '@/features/bredcrumbs/breadcrumbs';
 import { ProfileFollowPanel } from '@/features/profile/ui/profile-follow-panel';
 import { ProfileHeader } from '@/features/profile/ui/profile-header';
@@ -26,22 +27,19 @@ const Profile = () => {
 
   useEffect(() => {
     if (!routeId) {
-      setViewUser(user);
       return;
     }
 
     const idNum = Number(routeId);
     if (!idNum || (user && idNum === user.id)) {
-      setViewUser(user);
       return;
     }
 
     // Fetch user by id for foreign profile
-    import('@/api/api.gen')
-      .then(({ getUsersByid }) => getUsersByid(idNum))
+    getUsersByid(idNum)
       .then((u) => setViewUser(u))
       .catch(() => setViewUser(null));
-  }, [routeId, user]);
+  }, [routeId, user?.id, user]);
 
   if (!user) {
     return <Navigate to="/" replace />;
@@ -68,7 +66,7 @@ const Profile = () => {
           {isForeign && viewUser ? (
             <ProfileUserHeader user={viewUser} />
           ) : (
-            <ProfileHeader user={user} />
+            user && <ProfileHeader user={user} />
           )}
         </div>
 
