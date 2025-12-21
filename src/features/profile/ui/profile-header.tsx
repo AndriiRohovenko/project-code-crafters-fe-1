@@ -12,6 +12,7 @@ import {
   fetchFollowersThunk,
   fetchFollowingThunk,
 } from '@/redux/profileFollows/profileFollows.thunks';
+import { updateUserAvatar } from '@/redux/user.slice';
 import { Button } from '@/shared/ui/button';
 import PlusProfileButton from '@/shared/ui/profile/plus-profile-button';
 
@@ -74,6 +75,8 @@ export const ProfileHeader = ({ user }: ProfileHeaderProps) => {
 
   const handleUploadSuccess = (newAvatarUrl: string) => {
     setAvatarUrl(newAvatarUrl);
+    // Update user avatar in Redux store to sync across all components
+    dispatch(updateUserAvatar(newAvatarUrl));
   };
 
   const recipesCount = myRecipesPagination.total;
