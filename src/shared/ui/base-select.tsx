@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { Icon } from './icon';
 
-interface SelectOption {
+export interface SelectOption {
   value: string;
   label: string;
 }
