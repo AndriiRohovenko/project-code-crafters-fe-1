@@ -1,6 +1,6 @@
 const Loader = () => {
   return (
-    <div className="flex justify-center py-4">
+    <div className="flex min-h-[100dvh] w-full items-center justify-center">
       <div className="h-20 w-20">
         <svg
           className="animate-spin"
