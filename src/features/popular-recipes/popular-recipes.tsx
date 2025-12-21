@@ -79,6 +79,7 @@ export const PopularRecipes = ({ excludeRecipeId }: PopularRecipesProps) => {
               title={recipe.title}
               description={recipe.description}
               author={{
+                id: recipe.author?.id,
                 name: recipe.author?.name,
                 avatar: recipe.author?.avatar,
               }}

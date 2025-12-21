@@ -1,19 +1,45 @@
-import { useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { Navigate, useParams } from 'react-router-dom';
 
+import { getUsersByid } from '@/api/api.gen';
+import { Breadcrumbs } from '@/features/bredcrumbs/breadcrumbs';
 import { ProfileFollowPanel } from '@/features/profile/ui/profile-follow-panel';
 import { ProfileHeader } from '@/features/profile/ui/profile-header';
 import { ProfileRecipesList } from '@/features/profile/ui/profile-recipes-list';
 import { ProfileTabs } from '@/features/profile/ui/profile-tabs';
+import { ProfileUserHeader } from '@/features/profile/ui/profile-user-header';
 import { useAppSelector } from '@/redux/hooks';
-
-import { Breadcrumbs } from '../features/bredcrumbs/breadcrumbs';
 
 type TabType = 'recipes' | 'favorites' | 'followers' | 'following';
 
 const Profile = () => {
-  const [activeTab, setActiveTab] = useState<TabType>('recipes');
+  const params = useParams<{ id?: string }>();
+  const { id: routeId } = params;
   const user = useAppSelector((state) => state.user);
+  const [activeTab, setActiveTab] = useState<TabType>('recipes');
+  const [viewUser, setViewUser] = useState(user);
+
+  const isForeign = useMemo(() => {
+    const idNum = routeId ? Number(routeId) : undefined;
+    if (!idNum || !user?.id) return false;
+    return idNum !== user.id;
+  }, [routeId, user?.id]);
+
+  useEffect(() => {
+    if (!routeId) {
+      return;
+    }
+
+    const idNum = Number(routeId);
+    if (!idNum || (user && idNum === user.id)) {
+      return;
+    }
+
+    // Fetch user by id for foreign profile
+    getUsersByid(idNum)
+      .then((u) => setViewUser(u))
+      .catch(() => setViewUser(null));
+  }, [routeId, user?.id, user]);
 
   if (!user) {
     return <Navigate to="/" replace />;
@@ -37,19 +63,49 @@ const Profile = () => {
       <div className="flex w-full flex-col gap-8 md:gap-10 lg:flex-row lg:gap-20">
         {/* Left sidebar - Profile Header */}
         <div className="w-full md:mx-auto md:w-[443px] lg:w-[443px] lg:flex-shrink-0">
-          <ProfileHeader user={user} />
+          {isForeign && viewUser ? (
+            <ProfileUserHeader user={viewUser} />
+          ) : (
+            user && <ProfileHeader user={user} />
+          )}
         </div>
 
         {/* Right side - Tabs and Content */}
         <div className="w-full flex-1">
           {/* Вкладки */}
-          <ProfileTabs activeTab={activeTab} onTabChange={setActiveTab} />
+          <ProfileTabs
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+            tabsOverride={
+              isForeign
+                ? [
+                    { id: 'recipes', label: 'RECIPES' },
+                    { id: 'followers', label: 'FOLLOWERS' },
+                  ]
+                : undefined
+            }
+          />
 
           {/* Контент вкладок */}
-          {activeTab === 'recipes' && <ProfileRecipesList tab="recipes" />}
-          {activeTab === 'favorites' && <ProfileRecipesList tab="favorites" />}
-          {(activeTab === 'followers' || activeTab === 'following') && (
-            <ProfileFollowPanel tab={activeTab} />
+          {!isForeign && activeTab === 'recipes' && (
+            <ProfileRecipesList tab="recipes" />
+          )}
+          {!isForeign && activeTab === 'favorites' && (
+            <ProfileRecipesList tab="favorites" />
+          )}
+          {isForeign && activeTab === 'recipes' && (
+            <div className="rounded-[15px] border border-light-grey bg-white p-6 text-center text-sm text-light-grey">
+              Author recipes listing is not available yet.
+            </div>
+          )}
+          {activeTab === 'followers' && (
+            <ProfileFollowPanel
+              tab="followers"
+              profileUserId={isForeign ? viewUser?.id : user?.id}
+            />
+          )}
+          {!isForeign && activeTab === 'following' && (
+            <ProfileFollowPanel tab="following" />
           )}
         </div>
       </div>

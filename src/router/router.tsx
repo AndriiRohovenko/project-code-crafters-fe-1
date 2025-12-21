@@ -68,6 +68,16 @@ const AppRouter = () => {
           }
         />
         <Route
+          path="/profile/:id"
+          element={
+            <PrivateRouteGuard>
+              <Suspense fallback={<Loader />}>
+                <Profile />
+              </Suspense>
+            </PrivateRouteGuard>
+          }
+        />
+        <Route
           path="*"
           element={
             <div className="p-10 text-center text-xl">404 - Page Not Found</div>

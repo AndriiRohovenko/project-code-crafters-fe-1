@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 
 import {
+  fetchFavorites,
   selectFavorites,
   selectFavoritesError,
   selectFavoritesLoading,
@@ -42,12 +43,23 @@ export const ProfileRecipesList = ({ tab }: ProfileRecipesListProps) => {
   const loading = tab === 'recipes' ? myRecipesLoading : favoritesLoading;
   const error = tab === 'recipes' ? myRecipesError : favoritesError;
 
+  // If after a change the current page becomes empty, auto-step back
+  useEffect(() => {
+    if (tab !== 'recipes') return;
+    if (myRecipesLoading) return;
+    if (pagination.page > 1 && myRecipes.length === 0) {
+      dispatch(setMyRecipesPage(pagination.page - 1));
+    }
+  }, [tab, myRecipesLoading, myRecipes.length, pagination.page, dispatch]);
+
   // Завантажуємо рецепти при зміні сторінки або вкладки
   useEffect(() => {
     if (tab === 'recipes') {
       dispatch(
         fetchMyRecipes({ page: pagination.page, limit: pagination.limit })
       );
+    } else if (tab === 'favorites') {
+      dispatch(fetchFavorites());
     }
   }, [dispatch, tab, pagination.page, pagination.limit]);
 
