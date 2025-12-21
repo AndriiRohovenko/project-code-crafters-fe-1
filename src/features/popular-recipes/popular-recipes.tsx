@@ -1,9 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { getRecipesPopular, Recipe } from '@/api/api.gen';
 import { RecipeCard } from '@/features/category-details/recipe-card.tsx';
 
-export const PopularRecipes = () => {
+type PopularRecipesProps = {
+  excludeRecipeId?: number;
+};
+
+export const PopularRecipes = ({ excludeRecipeId }: PopularRecipesProps) => {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -14,7 +18,7 @@ export const PopularRecipes = () => {
       setError(null);
 
       try {
-        const data = await getRecipesPopular({ limit: 4 });
+        const data = await getRecipesPopular({ limit: 5 });
         setRecipes(data);
       } catch (e) {
         const message =
@@ -29,6 +33,14 @@ export const PopularRecipes = () => {
 
     fetchPopular();
   }, []);
+
+  const visibleRecipes = useMemo(() => {
+    const filtered = excludeRecipeId
+      ? recipes.filter((r) => r.id !== excludeRecipeId)
+      : recipes;
+
+    return filtered.slice(0, 4);
+  }, [recipes, excludeRecipeId]);
 
   return (
     <section className="mx-auto max-w-[1280px] py-[64px] md:py-[100px] 2xl:py-[120px]">
@@ -59,10 +71,10 @@ export const PopularRecipes = () => {
 
       {!isLoading && !error && (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8 2xl:grid-cols-4">
-          {recipes.map((recipe) => (
+          {visibleRecipes.map((recipe) => (
             <RecipeCard
-              key={recipe.id}
-              id={recipe.id || 0}
+              key={recipe.id ?? recipe.title}
+              id={recipe.id ?? 0}
               preview={recipe.thumb}
               title={recipe.title}
               description={recipe.description}

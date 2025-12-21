@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { getRecipesByid } from '@/api/api.gen';
+import { Breadcrumbs } from '@/features/bredcrumbs/breadcrumbs.tsx';
+import PopularRecipes from '@/features/popular-recipes/popular-recipes.tsx';
 import RecipeInfo from '@/features/recipe-info/recipe-info';
 import { RecipeDetail } from '@/shared/types/recipe';
 import Container from '@/shared/ui/container';
 import Loader from '@/shared/ui/loader';
-import { Breadcrumbs } from '@/features/bredcrumbs/breadcrumbs.tsx';
-import PopularRecipes from '@/features/popular-recipes/popular-recipes.tsx';
 
 const RecipeView = () => {
   const { id } = useParams<{ id: string }>();
@@ -55,7 +55,7 @@ const RecipeView = () => {
         <Breadcrumbs name={recipe?.title || ''} />
 
         <RecipeInfo recipe={recipe} />
-        <PopularRecipes />
+        <PopularRecipes excludeRecipeId={Number(id)} />
       </Container>
     </section>
   );
