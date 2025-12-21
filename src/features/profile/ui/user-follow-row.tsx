@@ -99,7 +99,7 @@ export const UserFollowRow = ({
           return (
             <Link
               key={recipeId}
-              to={`/recipes/${recipeId}`}
+              to={`/recipe/${recipeId}`}
               className={`${responsiveClass} block h-[100px] w-[100px] overflow-hidden rounded-xl bg-neutral-100`}
               aria-label="Open recipe"
             >
