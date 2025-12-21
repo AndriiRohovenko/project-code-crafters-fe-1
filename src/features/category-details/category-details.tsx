@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import {
   Area,
@@ -17,6 +18,7 @@ import {
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { BaseSelect, SelectOption } from '@/shared/ui/base-select';
 import Container from '@/shared/ui/container';
+import { Icon } from '@/shared/ui/icon';
 import { MainTitle } from '@/shared/ui/main-title';
 
 import { CategoryDetailsList } from './category-details-list';
@@ -26,6 +28,7 @@ type CategoryDetailsProps = {
 };
 
 export const CategoryDetails = ({ categoryName }: CategoryDetailsProps) => {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const page = useAppSelector(selectCategoryDetailsPage);
@@ -85,13 +88,13 @@ export const CategoryDetails = ({ categoryName }: CategoryDetailsProps) => {
     );
   }, [allCategories, categoryName]);
 
-  // Fetch category details when selects change
+  // Fetch category details when category is selected or filters change
   useEffect(() => {
-    if (!selectedArea && !selectedIngredient) return;
+    if (!selectedCategory?.id) return;
 
     dispatch(
       fetchCategoryDetails({
-        categoryId: selectedCategory?.id ?? 0,
+        categoryId: selectedCategory.id,
         areaId: selectedArea ? Number(selectedArea.value) : 0,
         ingredientId: selectedIngredient ? Number(selectedIngredient.value) : 0,
         page,
@@ -125,17 +128,22 @@ export const CategoryDetails = ({ categoryName }: CategoryDetailsProps) => {
   if (!selectedCategory) return null;
   return (
     <Container>
-      <MainTitle className="mb-16px md:mb-20px text-center">
-        {selectedCategory.name}
-      </MainTitle>
-      <p>
+      <button
+        onClick={() => navigate(-1)}
+        className="text-dark mb-4 flex items-center gap-2 pt-8 text-[14px] font-bold leading-[18px] transition-opacity hover:opacity-70 md:pt-[100px] 2xl:pt-[124px]"
+      >
+        <Icon name="icon-back" size={16} />
+        BACK
+      </button>
+      <MainTitle className="mb-4">{selectedCategory.name}</MainTitle>
+      <p className="text-dark/50 mb-10 md:mb-12">
         Go on a taste journey, where every sip is a sophisticated creative
         chord, and every dessert is an expression of the most refined
         gastronomic desires.
       </p>
 
-      <div className="flex flex-col gap-8 2xl:flex-row 2xl:gap-10">
-        <div className="flex flex-col gap-4 md:flex-row 2xl:w-[260px] 2xl:flex-col">
+      <div className="flex flex-col gap-10 2xl:flex-row 2xl:gap-10">
+        <div className="flex flex-col gap-3 md:flex-row md:gap-4 2xl:w-[260px] 2xl:flex-col">
           <BaseSelect
             placeholder="Ingredients"
             options={ingredientOptions}
@@ -150,7 +158,7 @@ export const CategoryDetails = ({ categoryName }: CategoryDetailsProps) => {
           />
         </div>
 
-        <div className="flex flex-col gap-8">
+        <div className="flex-1">
           <CategoryDetailsList />
         </div>
       </div>
