@@ -14,7 +14,12 @@ export const userSlice = createSlice({
     cleanUser: () => {
       return null;
     },
+    updateUserAvatar: (state, action: PayloadAction<string>) => {
+      if (state) {
+        state.avatar = action.payload;
+      }
+    },
   },
 });
 
-export const { addUser, cleanUser } = userSlice.actions;
+export const { addUser, cleanUser, updateUserAvatar } = userSlice.actions;
