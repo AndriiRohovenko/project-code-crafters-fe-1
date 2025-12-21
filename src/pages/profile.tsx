@@ -41,7 +41,8 @@ const Profile = () => {
       .catch(() => setViewUser(null));
   }, [routeId, user?.id, user]);
 
-  if (!user) {
+  // Only redirect if viewing own profile without authentication
+  if (!routeId && !user) {
     return <Navigate to="/" replace />;
   }
 
