@@ -88,13 +88,13 @@ export const CategoryDetails = ({ categoryName }: CategoryDetailsProps) => {
     );
   }, [allCategories, categoryName]);
 
-  // Fetch category details when selects change
+  // Fetch category details when category is selected or filters change
   useEffect(() => {
-    if (!selectedArea && !selectedIngredient) return;
+    if (!selectedCategory?.id) return;
 
     dispatch(
       fetchCategoryDetails({
-        categoryId: selectedCategory?.id ?? 0,
+        categoryId: selectedCategory.id,
         areaId: selectedArea ? Number(selectedArea.value) : 0,
         ingredientId: selectedIngredient ? Number(selectedIngredient.value) : 0,
         page,
