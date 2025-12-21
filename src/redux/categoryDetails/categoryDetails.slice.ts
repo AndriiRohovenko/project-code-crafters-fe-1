@@ -7,6 +7,7 @@ import {
 
 import { getRecipesSearch, Recipe } from '@/api/api.gen';
 
+import { RootState } from '../store';
 import {
   CATEGORY_DETAILS_DEFAULT_LIMIT,
   CATEGORY_DETAILS_DEFAULT_PAGE,
@@ -103,3 +104,11 @@ export const categoryDetailsSlice = createSlice({
       });
   },
 });
+
+export const { setCategoryDetailsPage, setCategoryDetailsLimit } =
+  categoryDetailsSlice.actions;
+
+export const selectCategoryDetailsPage = (state: RootState) =>
+  state.categoryDetails.itemsMeta.page;
+export const selectCategoryDetailsLimit = (state: RootState) =>
+  state.categoryDetails.itemsMeta.limit;

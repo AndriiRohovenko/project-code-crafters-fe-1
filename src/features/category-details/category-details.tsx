@@ -9,8 +9,12 @@ import {
   getIngredients,
   Ingredient,
 } from '@/api/api.gen';
-import { fetchCategoryDetails } from '@/redux/categoryDetails/categoryDetails.slice';
-import { useAppDispatch } from '@/redux/hooks';
+import {
+  fetchCategoryDetails,
+  selectCategoryDetailsLimit,
+  selectCategoryDetailsPage,
+} from '@/redux/categoryDetails/categoryDetails.slice';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { BaseSelect, SelectOption } from '@/shared/ui/base-select';
 import Container from '@/shared/ui/container';
 import { MainTitle } from '@/shared/ui/main-title';
@@ -24,6 +28,9 @@ type CategoryDetailsProps = {
 export const CategoryDetails = ({ categoryName }: CategoryDetailsProps) => {
   const dispatch = useAppDispatch();
 
+  const page = useAppSelector(selectCategoryDetailsPage);
+  const limit = useAppSelector(selectCategoryDetailsLimit);
+
   const [allCategories, setAllCategories] = useState<Category[]>([]);
   const [allAreas, setAllAreas] = useState<Area[]>([]);
   const [allIngredients, setAllIngredients] = useState<Ingredient[]>([]);
@@ -32,8 +39,6 @@ export const CategoryDetails = ({ categoryName }: CategoryDetailsProps) => {
   const [ingredientOptions, setIngredientOptions] = useState<SelectOption[]>(
     []
   );
-  console.log(`areaOptions: ${areaOptions}`);
-  console.log(`ingredientOptions: ${ingredientOptions}`);
 
   const [selectedArea, setSelectedArea] = useState<SelectOption | null>(null);
   const [selectedIngredient, setSelectedIngredient] =
@@ -89,11 +94,18 @@ export const CategoryDetails = ({ categoryName }: CategoryDetailsProps) => {
         categoryId: selectedCategory?.id ?? 0,
         areaId: selectedArea ? Number(selectedArea.value) : 0,
         ingredientId: selectedIngredient ? Number(selectedIngredient.value) : 0,
-        page: 1,
-        limit: 12,
+        page,
+        limit,
       })
     );
-  }, [selectedCategory?.id, dispatch, selectedArea, selectedIngredient]);
+  }, [
+    selectedCategory?.id,
+    dispatch,
+    selectedArea,
+    selectedIngredient,
+    limit,
+    page,
+  ]);
 
   // Handle BaseSelect changes
   const handleAreaChange = (value: string) => {
