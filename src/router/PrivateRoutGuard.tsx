@@ -1,26 +1,25 @@
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
 
+import { getAccessToken } from '@/api/bootstrap-fetch-client';
 import { MODAL_TYPES } from '@/modals/modals.const';
 import { useModals } from '@/modals/use-modals.hook';
-import { RootState } from '@/redux/store';
 
 export const PrivateRouteGuard = ({
   children,
 }: {
   children: React.ReactNode;
 }) => {
-  const user = useSelector((state: RootState) => state.user);
+  const token = getAccessToken();
   const { openModal } = useModals();
 
   useEffect(() => {
-    if (!user) {
+    if (!token) {
       openModal(MODAL_TYPES.SIGN_IN);
     }
-  }, [user, openModal]);
+  }, [token, openModal]);
 
-  if (!user) {
+  if (!token) {
     return <Navigate to="/" replace />;
   }
 
