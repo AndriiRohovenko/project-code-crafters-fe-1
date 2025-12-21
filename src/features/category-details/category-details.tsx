@@ -14,6 +14,7 @@ import {
   fetchCategoryDetails,
   selectCategoryDetailsLimit,
   selectCategoryDetailsPage,
+  setCategoryDetailsPage,
 } from '@/redux/categoryDetails/categoryDetails.slice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { BaseSelect, SelectOption } from '@/shared/ui/base-select';
@@ -81,6 +82,10 @@ export const CategoryDetails = ({ categoryName }: CategoryDetailsProps) => {
   }, []);
 
   const selectedCategory = useMemo(() => {
+    // Handle "all" category case
+    if (categoryName === 'all') {
+      return { id: 0, name: 'All categories' };
+    }
     return allCategories.find(
       (c): c is Required<Pick<Category, 'id' | 'name'>> =>
         Boolean(c.id && c.name) &&
@@ -88,9 +93,17 @@ export const CategoryDetails = ({ categoryName }: CategoryDetailsProps) => {
     );
   }, [allCategories, categoryName]);
 
+  // Reset page and filters when category changes
+  useEffect(() => {
+    dispatch(setCategoryDetailsPage(1));
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSelectedArea(null);
+    setSelectedIngredient(null);
+  }, [categoryName, dispatch]);
+
   // Fetch category details when category is selected or filters change
   useEffect(() => {
-    if (!selectedCategory?.id) return;
+    if (!selectedCategory) return;
 
     dispatch(
       fetchCategoryDetails({
@@ -102,7 +115,7 @@ export const CategoryDetails = ({ categoryName }: CategoryDetailsProps) => {
       })
     );
   }, [
-    selectedCategory?.id,
+    selectedCategory,
     dispatch,
     selectedArea,
     selectedIngredient,
@@ -113,17 +126,21 @@ export const CategoryDetails = ({ categoryName }: CategoryDetailsProps) => {
   // Handle BaseSelect changes
   const handleAreaChange = (value: string) => {
     const area = allAreas.find((a) => String(a.id) === value);
-    if (area)
+    if (area) {
       setSelectedArea({ value: String(area.id), label: String(area.name) });
+      dispatch(setCategoryDetailsPage(1));
+    }
   };
 
   const handleIngredientChange = (value: string) => {
     const ingredient = allIngredients.find((i) => String(i.id) === value);
-    if (ingredient)
+    if (ingredient) {
       setSelectedIngredient({
         value: String(ingredient.id),
         label: String(ingredient.name),
       });
+      dispatch(setCategoryDetailsPage(1));
+    }
   };
   if (!selectedCategory) return null;
   return (
@@ -136,11 +153,13 @@ export const CategoryDetails = ({ categoryName }: CategoryDetailsProps) => {
         BACK
       </button>
       <MainTitle className="mb-4">{selectedCategory.name}</MainTitle>
-      <p className="text-dark/50 mb-10 md:mb-12">
-        Go on a taste journey, where every sip is a sophisticated creative
-        chord, and every dessert is an expression of the most refined
-        gastronomic desires.
-      </p>
+      {categoryName !== 'all' && (
+        <p className="text-dark/50 mb-10 md:mb-12">
+          Go on a taste journey, where every sip is a sophisticated creative
+          chord, and every dessert is an expression of the most refined
+          gastronomic desires.
+        </p>
+      )}
 
       <div className="flex flex-col gap-10 2xl:flex-row 2xl:gap-10">
         <div className="flex flex-col gap-3 md:flex-row md:gap-4 2xl:w-[260px] 2xl:flex-col">
