@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 
-import { Area, getAreas, getIngredients, Ingredient } from '@/api/api.gen';
+import {
+  Area,
+  Category,
+  getAreas,
+  getCategories,
+  getIngredients,
+  Ingredient,
+} from '@/api/api.gen';
 import { fetchCategoryDetails } from '@/redux/categoryDetails/categoryDetails.slice';
 import { useAppDispatch } from '@/redux/hooks';
 import { BaseSelect, SelectOption } from '@/shared/ui/base-select';
@@ -10,16 +18,13 @@ import { MainTitle } from '@/shared/ui/main-title';
 import { CategoryDetailsList } from './category-details-list';
 
 type CategoryDetailsProps = {
-  categoryName?: string;
-  categoryId?: number;
+  categoryName: string;
 };
 
-export const CategoryDetails = ({
-  categoryName = 'CATEGORY NAME',
-  categoryId = 6,
-}: CategoryDetailsProps) => {
+export const CategoryDetails = ({ categoryName }: CategoryDetailsProps) => {
   const dispatch = useAppDispatch();
 
+  const [allCategories, setAllCategories] = useState<Category[]>([]);
   const [allAreas, setAllAreas] = useState<Area[]>([]);
   const [allIngredients, setAllIngredients] = useState<Ingredient[]>([]);
 
@@ -38,10 +43,12 @@ export const CategoryDetails = ({
   useEffect(() => {
     const loadOptions = async () => {
       try {
-        const [areas, ingredients] = await Promise.all([
+        const [categories, areas, ingredients] = await Promise.all([
+          getCategories(),
           getAreas(),
           getIngredients(),
         ]);
+        setAllCategories(categories);
 
         setAllAreas(areas);
         setAllIngredients(ingredients);
@@ -65,20 +72,28 @@ export const CategoryDetails = ({
     void loadOptions();
   }, []);
 
+  const selectedCategory = useMemo(() => {
+    return allCategories.find(
+      (c): c is Required<Pick<Category, 'id' | 'name'>> =>
+        Boolean(c.id && c.name) &&
+        c.name?.toLowerCase().replace(/\s+/g, '-') === categoryName
+    );
+  }, [allCategories, categoryName]);
+
   // Fetch category details when selects change
   useEffect(() => {
     if (!selectedArea && !selectedIngredient) return;
 
     dispatch(
       fetchCategoryDetails({
-        categoryId,
+        categoryId: selectedCategory?.id ?? 0,
         areaId: selectedArea ? Number(selectedArea.value) : 0,
         ingredientId: selectedIngredient ? Number(selectedIngredient.value) : 0,
         page: 1,
         limit: 12,
       })
     );
-  }, [categoryId, dispatch, selectedArea, selectedIngredient]);
+  }, [selectedCategory?.id, dispatch, selectedArea, selectedIngredient]);
 
   // Handle BaseSelect changes
   const handleAreaChange = (value: string) => {
@@ -95,11 +110,11 @@ export const CategoryDetails = ({
         label: String(ingredient.name),
       });
   };
-
+  if (!selectedCategory) return null;
   return (
     <Container>
       <MainTitle className="mb-16px md:mb-20px text-center">
-        {categoryName}
+        {selectedCategory.name}
       </MainTitle>
       <p>
         Go on a taste journey, where every sip is a sophisticated creative
