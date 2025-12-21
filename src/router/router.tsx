@@ -14,46 +14,67 @@ import { PrivateRouteGuard } from './PrivateRoutGuard';
 
 const AppRouter = () => {
   return (
-    <Suspense fallback={<Loader />}>
-      <Routes>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <Suspense fallback={<Loader />}>
+            <Layout />
+          </Suspense>
+        }
+      >
         <Route
-          path="/"
+          index
           element={
             <Suspense fallback={<Loader />}>
-              <Layout />
+              <Home />
             </Suspense>
           }
-        >
-          <Route index element={<Home />} />
-          <Route
-            path="/add-recipe"
-            element={
-              <PrivateRouteGuard>
+        />
+        <Route
+          path="/add-recipe"
+          element={
+            <PrivateRouteGuard>
+              <Suspense fallback={<Loader />}>
                 <AddRecipe />
-              </PrivateRouteGuard>
-            }
-          />
-          <Route path="/recipe/:id" element={<RecipeView />} />
-          <Route path="/categories" element={<Categories />} />
-          <Route
-            path="/profile"
-            element={
-              <PrivateRouteGuard>
+              </Suspense>
+            </PrivateRouteGuard>
+          }
+        />
+        <Route
+          path="/recipe/:id"
+          element={
+            <Suspense fallback={<Loader />}>
+              <RecipeView />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/categories"
+          element={
+            <Suspense fallback={<Loader />}>
+              <Categories />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <PrivateRouteGuard>
+              <Suspense fallback={<Loader />}>
                 <Profile />
-              </PrivateRouteGuard>
-            }
-          />
-          <Route
-            path="*"
-            element={
-              <div className="p-10 text-center text-xl">
-                404 - Page Not Found
-              </div>
-            }
-          />
-        </Route>
-      </Routes>
-    </Suspense>
+              </Suspense>
+            </PrivateRouteGuard>
+          }
+        />
+        <Route
+          path="*"
+          element={
+            <div className="p-10 text-center text-xl">404 - Page Not Found</div>
+          }
+        />
+      </Route>
+    </Routes>
   );
 };
 
