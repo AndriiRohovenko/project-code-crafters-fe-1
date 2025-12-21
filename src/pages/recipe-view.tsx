@@ -6,6 +6,8 @@ import RecipeInfo from '@/features/recipe-info/recipe-info';
 import { RecipeDetail } from '@/shared/types/recipe';
 import Container from '@/shared/ui/container';
 import Loader from '@/shared/ui/loader';
+import { Breadcrumbs } from '@/features/bredcrumbs/breadcrumbs.tsx';
+import PopularRecipes from '@/features/popular-recipes/popular-recipes.tsx';
 
 const RecipeView = () => {
   const { id } = useParams<{ id: string }>();
@@ -50,7 +52,10 @@ const RecipeView = () => {
   return (
     <section className="py-8">
       <Container>
+        <Breadcrumbs name={recipe?.title || ''} />
+
         <RecipeInfo recipe={recipe} />
+        <PopularRecipes />
       </Container>
     </section>
   );
