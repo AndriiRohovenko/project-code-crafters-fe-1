@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { getRecipesByUserId, type Recipe } from '@/api/api.gen';
+import { getRecipesSearch, type Recipe } from '@/api/api.gen';
 import {
   selectFavorites,
   selectFavoritesError,
@@ -85,21 +85,25 @@ export const ProfileRecipesList = ({
           fetchMyRecipes({ page: pagination.page, limit: pagination.limit })
         );
       } else if (userId) {
-        // Fetch other user's recipes
+        // Fetch other user's recipes using search endpoint
         const fetchOtherUserRecipes = async () => {
           setOtherUserLoading(true);
           setOtherUserError(null);
           try {
-            const response = await getRecipesByUserId(userId, {
+            const recipesData = await getRecipesSearch({
+              userId,
               page: otherUserPage,
-              limit: otherUserPagination.limit,
+              limit: 12, // Default limit as per backend spec
             });
-            setOtherUserRecipes(response.recipes || []);
+            setOtherUserRecipes(recipesData);
+            // Note: Search endpoint returns Recipe[] without pagination metadata
+            // Calculate pagination based on returned results
+            const hasMore = recipesData.length === 12;
             setOtherUserPagination({
-              total: response.total || 0,
-              page: response.page || 1,
-              totalPages: response.totalPages || 1,
-              limit: otherUserPagination.limit,
+              total: recipesData.length,
+              page: otherUserPage,
+              totalPages: hasMore ? otherUserPage + 1 : otherUserPage,
+              limit: 12,
             });
           } catch (err) {
             console.error('Error fetching user recipes:', err);
@@ -111,7 +115,16 @@ export const ProfileRecipesList = ({
         fetchOtherUserRecipes();
       }
     }
-  }, [dispatch, tab, pagination.page, pagination.limit, isOwnProfile, userId, otherUserPage, otherUserPagination.limit]);
+  }, [
+    dispatch,
+    tab,
+    pagination.page,
+    pagination.limit,
+    isOwnProfile,
+    userId,
+    otherUserPage,
+    otherUserPagination.limit,
+  ]);
 
   const handlePageChange = (newPage: number) => {
     if (tab === 'recipes') {
@@ -141,7 +154,9 @@ export const ProfileRecipesList = ({
             onClick={() => {
               if (tab === 'recipes') {
                 if (isOwnProfile) {
-                  dispatch(fetchMyRecipes({ page: 1, limit: pagination.limit }));
+                  dispatch(
+                    fetchMyRecipes({ page: 1, limit: pagination.limit })
+                  );
                 } else {
                   setOtherUserPage(1);
                 }

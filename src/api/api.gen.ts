@@ -308,6 +308,7 @@ export const getIngredients = async (): Promise<Ingredient[]> => {
  */
 export const getRecipesSearch = async (params?: {
   query?: string;
+  userId?: number;
   ingredientId?: number;
   categoryId?: number;
   areaId?: number;
@@ -349,25 +350,6 @@ export const getRecipesMyRecipes = async (params?: {
  */
 export const getRecipesByid = async (id: number): Promise<Recipe> => {
   const response = await apiClient.get(`/recipes/${id}`);
-  return response.data;
-};
-
-/**
- * Отримати рецепти конкретного користувача (публічний endpoint)
- */
-export const getRecipesByUserId = async (
-  userId: number,
-  params?: {
-    page?: number;
-    limit?: number;
-  }
-): Promise<{
-  recipes?: Recipe[];
-  total?: number;
-  page?: number;
-  totalPages?: number;
-}> => {
-  const response = await apiClient.get(`/recipes/user/${userId}`, { params });
   return response.data;
 };
 
