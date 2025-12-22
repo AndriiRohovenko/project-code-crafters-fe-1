@@ -40,8 +40,7 @@ const RecipeMainInfo = ({ recipe }: RecipeMainInfoProps) => {
           >
             <img
               src={
-                author?.avatar ||
-                'https://www.gravatar.com/avatar/?d=mp&s=200'
+                author?.avatar || 'https://www.gravatar.com/avatar/?d=mp&s=200'
               }
               alt={`Avatar ${author?.name}`}
               className="h-8 w-8 shrink-0 rounded-full bg-[var(--color-placeholder)] object-cover md:h-10 md:w-10"

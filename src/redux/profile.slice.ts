@@ -48,18 +48,19 @@ export const fetchMyRecipes = createAsyncThunk<
   async ({ page = 1, limit = 10 }, { rejectWithValue }) => {
     try {
       const response = await getRecipesMyRecipes({ page, limit });
-    return {
+      return {
         recipes: response.recipes || [],
         total: response.total || 0,
         page: response.page || page,
         totalPages: response.totalPages || 0,
-    };
-  } catch (error) {
-    return rejectWithValue(
-      error instanceof Error ? error.message : 'Failed to fetch recipes'
-    );
+      };
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : 'Failed to fetch recipes'
+      );
+    }
   }
-});
+);
 
 export const deleteMyRecipe = createAsyncThunk<
   number,
@@ -140,7 +141,8 @@ export const profileSlice = createSlice({
 export const { setMyRecipesPage, clearMyRecipes } = profileSlice.actions;
 
 // Selectors
-export const selectMyRecipes = (state: RootState) => state.profile.myRecipes.items;
+export const selectMyRecipes = (state: RootState) =>
+  state.profile.myRecipes.items;
 export const selectMyRecipesLoading = (state: RootState) =>
   state.profile.myRecipes.loading;
 export const selectMyRecipesError = (state: RootState) =>
