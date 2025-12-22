@@ -35,7 +35,6 @@ export interface Recipe {
   categoryId?: number;
   /** ID регіону кухні */
   areaId?: number;
-  image: string;
   /** Інструкції приготування */
   instructions?: string;
   /** Опис рецепта */
@@ -308,9 +307,9 @@ export const getIngredients = async (): Promise<Ingredient[]> => {
  */
 export const getRecipesSearch = async (params?: {
   query?: string;
-  ingredientId?: number;
   categoryId?: number;
   areaId?: number;
+  userId?: number;
   page?: number;
   limit?: number;
 }): Promise<Recipe[]> => {
