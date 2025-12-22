@@ -306,13 +306,18 @@ export const getIngredients = async (): Promise<Ingredient[]> => {
  * Пошук рецептів за запитом
  */
 export const getRecipesSearch = async (params?: {
-  query?: string;
+  ingredientId?: number;
   categoryId?: number;
   areaId?: number;
   userId?: number;
   page?: number;
   limit?: number;
-}): Promise<Recipe[]> => {
+}): Promise<{
+  recipes?: Recipe[];
+  total?: number;
+  page?: number;
+  totalPages?: number;
+}> => {
   const response = await apiClient.get('/recipes/search', { params });
   return response.data;
 };
