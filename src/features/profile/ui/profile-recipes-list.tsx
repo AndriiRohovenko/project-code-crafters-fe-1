@@ -1,5 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
+import type { Recipe } from '@/api/api.gen';
+import { getRecipesSearch } from '@/api/api.gen';
 import {
   fetchFavorites,
   selectFavorites,
@@ -22,9 +24,15 @@ import { ProfileRecipeCard } from './profile-recipe-card';
 
 interface ProfileRecipesListProps {
   tab: 'recipes' | 'favorites';
+  isForeign?: boolean;
+  userId?: number;
 }
 
-export const ProfileRecipesList = ({ tab }: ProfileRecipesListProps) => {
+export const ProfileRecipesList = ({
+  tab,
+  isForeign = false,
+  userId,
+}: ProfileRecipesListProps) => {
   const dispatch = useAppDispatch();
 
   // My Recipes
@@ -38,22 +46,105 @@ export const ProfileRecipesList = ({ tab }: ProfileRecipesListProps) => {
   const favoritesLoading = useAppSelector(selectFavoritesLoading);
   const favoritesError = useAppSelector(selectFavoritesError);
 
+  // Foreign user recipes state
+  const [foreignRecipes, setForeignRecipes] = useState<Recipe[]>([]);
+  const [foreignLoading, setForeignLoading] = useState(false);
+  const [foreignError, setForeignError] = useState<string | null>(null);
+  const [foreignPagination, setForeignPagination] = useState({
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPages: 0,
+  });
+
   // Визначаємо активні дані
-  const recipes = tab === 'recipes' ? myRecipes : favorites;
-  const loading = tab === 'recipes' ? myRecipesLoading : favoritesLoading;
-  const error = tab === 'recipes' ? myRecipesError : favoritesError;
+  const recipes =
+    isForeign && tab === 'recipes'
+      ? foreignRecipes
+      : tab === 'recipes'
+        ? myRecipes
+        : favorites;
+  const loading =
+    isForeign && tab === 'recipes'
+      ? foreignLoading
+      : tab === 'recipes'
+        ? myRecipesLoading
+        : favoritesLoading;
+  const error =
+    isForeign && tab === 'recipes'
+      ? foreignError
+      : tab === 'recipes'
+        ? myRecipesError
+        : favoritesError;
+
+  // Fetch foreign user recipes
+  useEffect(() => {
+    if (!isForeign || tab !== 'recipes' || !userId) return;
+
+    const fetchUserRecipes = async () => {
+      setForeignLoading(true);
+      setForeignError(null);
+      try {
+        const data = await getRecipesSearch({
+          userId,
+          page: foreignPagination.page,
+          limit: foreignPagination.limit,
+        });
+        // Handle both array and paginated response formats
+        const recipes = Array.isArray(data)
+          ? data
+          : (
+              data as {
+                recipes?: Recipe[];
+                total?: number;
+                totalPages?: number;
+              }
+            ).recipes || [];
+        const total = Array.isArray(data)
+          ? recipes.length
+          : (data as { total?: number }).total || recipes.length;
+        const totalPages = Array.isArray(data)
+          ? 1
+          : (data as { totalPages?: number }).totalPages ||
+            Math.ceil(total / foreignPagination.limit);
+
+        setForeignRecipes(recipes);
+        setForeignPagination((prev) => ({
+          ...prev,
+          total,
+          totalPages,
+        }));
+      } catch (err) {
+        console.error('Failed to fetch user recipes:', err);
+        setForeignError('Failed to load recipes. Please try again.');
+      } finally {
+        setForeignLoading(false);
+      }
+    };
+
+    fetchUserRecipes();
+  }, [isForeign, tab, userId, foreignPagination.page, foreignPagination.limit]);
 
   // If after a change the current page becomes empty, auto-step back
   useEffect(() => {
-    if (tab !== 'recipes') return;
+    if (isForeign || tab !== 'recipes') return;
     if (myRecipesLoading) return;
     if (pagination.page > 1 && myRecipes.length === 0) {
       dispatch(setMyRecipesPage(pagination.page - 1));
     }
-  }, [tab, myRecipesLoading, myRecipes.length, pagination.page, dispatch]);
+  }, [
+    tab,
+    myRecipesLoading,
+    myRecipes.length,
+    pagination.page,
+    dispatch,
+    isForeign,
+  ]);
 
   // Завантажуємо рецепти при зміні сторінки або вкладки
   useEffect(() => {
+    if (isForeign) return;
+
     if (tab === 'recipes') {
       dispatch(
         fetchMyRecipes({ page: pagination.page, limit: pagination.limit })
@@ -61,11 +152,14 @@ export const ProfileRecipesList = ({ tab }: ProfileRecipesListProps) => {
     } else if (tab === 'favorites') {
       dispatch(fetchFavorites());
     }
-  }, [dispatch, tab, pagination.page, pagination.limit]);
+  }, [dispatch, tab, pagination.page, pagination.limit, isForeign]);
 
   const handlePageChange = (newPage: number) => {
-    if (tab === 'recipes') {
+    if (tab === 'recipes' && !isForeign) {
       dispatch(setMyRecipesPage(newPage));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (tab === 'recipes' && isForeign) {
+      setForeignPagination((prev) => ({ ...prev, page: newPage }));
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
@@ -85,8 +179,23 @@ export const ProfileRecipesList = ({ tab }: ProfileRecipesListProps) => {
           </p>
           <button
             onClick={() => {
-              if (tab === 'recipes') {
+              if (tab === 'recipes' && !isForeign) {
                 dispatch(fetchMyRecipes({ page: 1, limit: pagination.limit }));
+              } else if (isForeign && userId) {
+                setForeignLoading(true);
+                setForeignError(null);
+                getRecipesSearch({ userId })
+                  .then((data) => {
+                    // Handle both array and paginated response formats
+                    const recipes = Array.isArray(data)
+                      ? data
+                      : (data as { recipes?: Recipe[] }).recipes || [];
+                    setForeignRecipes(recipes);
+                  })
+                  .catch(() =>
+                    setForeignError('Failed to load recipes. Please try again.')
+                  )
+                  .finally(() => setForeignLoading(false));
               }
             }}
             className="mt-4 rounded-[30px] border border-black bg-white px-6 py-2 text-sm font-semibold text-black transition-colors hover:bg-black hover:text-white"
@@ -102,7 +211,9 @@ export const ProfileRecipesList = ({ tab }: ProfileRecipesListProps) => {
   if (recipes.length === 0) {
     const text =
       tab === 'recipes'
-        ? 'Nothing has been added to your recipes list yet. Please browse our recipes and add your favorites for easy access in the future.'
+        ? isForeign
+          ? "This user hasn't created any recipes yet."
+          : 'Nothing has been added to your recipes list yet. Please browse our recipes and add your favorites for easy access in the future.'
         : 'Nothing has been added to your favorite recipes list yet. Please browse our recipes and add your favorites for easy access in the future.';
 
     return <EmptyState text={text} />;
@@ -116,77 +227,110 @@ export const ProfileRecipesList = ({ tab }: ProfileRecipesListProps) => {
           <ProfileRecipeCard
             key={recipe.id}
             recipe={recipe}
-            mode={tab === 'recipes' ? 'myRecipes' : 'favorites'}
+            mode={
+              isForeign
+                ? 'favorites'
+                : tab === 'recipes'
+                  ? 'myRecipes'
+                  : 'favorites'
+            }
           />
         ))}
       </div>
 
-      {/* Pagination - тільки для My Recipes */}
-      {tab === 'recipes' && pagination.totalPages > 1 && (
-        <div className="mt-8 flex items-center justify-center gap-2">
-          {/* Previous Button */}
-          <button
-            onClick={() => handlePageChange(pagination.page - 1)}
-            disabled={pagination.page === 1}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-light-grey bg-white text-black transition-colors hover:border-black disabled:cursor-not-allowed disabled:opacity-40"
-            aria-label="Previous page"
-          >
-            ←
-          </button>
-
-          {/* Page Numbers */}
-          {[...Array(pagination.totalPages)].map((_, idx) => {
-            const pageNum = idx + 1;
-            const isActive = pagination.page === pageNum;
-
-            const showPage =
-              pageNum === 1 ||
-              pageNum === pagination.totalPages ||
-              Math.abs(pageNum - pagination.page) <= 1;
-
-            if (!showPage) {
-              if (
-                pageNum === pagination.page - 2 ||
-                pageNum === pagination.page + 2
-              ) {
-                return (
-                  <span
-                    key={pageNum}
-                    className="flex h-10 w-10 items-center justify-center text-light-grey"
-                  >
-                    ...
-                  </span>
-                );
+      {/* Pagination - for own My Recipes and foreign user recipes */}
+      {tab === 'recipes' &&
+        (isForeign
+          ? foreignPagination.totalPages > 1
+          : pagination.totalPages > 1) && (
+          <div className="mt-8 flex items-center justify-center gap-2">
+            {/* Previous Button */}
+            <button
+              onClick={() =>
+                handlePageChange(
+                  isForeign ? foreignPagination.page - 1 : pagination.page - 1
+                )
               }
-              return null;
-            }
+              disabled={
+                isForeign ? foreignPagination.page === 1 : pagination.page === 1
+              }
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-light-grey bg-white text-black transition-colors hover:border-black disabled:cursor-not-allowed disabled:opacity-40"
+              aria-label="Previous page"
+            >
+              ←
+            </button>
 
-            return (
-              <button
-                key={pageNum}
-                onClick={() => handlePageChange(pageNum)}
-                className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold transition-colors ${
-                  isActive
-                    ? 'bg-black text-white'
-                    : 'border border-light-grey bg-white text-black hover:border-black'
-                }`}
-              >
-                {pageNum}
-              </button>
-            );
-          })}
+            {/* Page Numbers */}
+            {[
+              ...Array(
+                isForeign ? foreignPagination.totalPages : pagination.totalPages
+              ),
+            ].map((_, idx) => {
+              const pageNum = idx + 1;
+              const currentPage = isForeign
+                ? foreignPagination.page
+                : pagination.page;
+              const totalPages = isForeign
+                ? foreignPagination.totalPages
+                : pagination.totalPages;
+              const isActive = currentPage === pageNum;
 
-          {/* Next Button */}
-          <button
-            onClick={() => handlePageChange(pagination.page + 1)}
-            disabled={pagination.page === pagination.totalPages}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-light-grey bg-white text-black transition-colors hover:border-black disabled:cursor-not-allowed disabled:opacity-40"
-            aria-label="Next page"
-          >
-            →
-          </button>
-        </div>
-      )}
+              const showPage =
+                pageNum === 1 ||
+                pageNum === totalPages ||
+                Math.abs(pageNum - currentPage) <= 1;
+
+              if (!showPage) {
+                if (
+                  pageNum === currentPage - 2 ||
+                  pageNum === currentPage + 2
+                ) {
+                  return (
+                    <span
+                      key={pageNum}
+                      className="flex h-10 w-10 items-center justify-center text-light-grey"
+                    >
+                      ...
+                    </span>
+                  );
+                }
+                return null;
+              }
+
+              return (
+                <button
+                  key={pageNum}
+                  onClick={() => handlePageChange(pageNum)}
+                  className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold transition-colors ${
+                    isActive
+                      ? 'bg-black text-white'
+                      : 'border border-light-grey bg-white text-black hover:border-black'
+                  }`}
+                >
+                  {pageNum}
+                </button>
+              );
+            })}
+
+            {/* Next Button */}
+            <button
+              onClick={() =>
+                handlePageChange(
+                  isForeign ? foreignPagination.page + 1 : pagination.page + 1
+                )
+              }
+              disabled={
+                isForeign
+                  ? foreignPagination.page === foreignPagination.totalPages
+                  : pagination.page === pagination.totalPages
+              }
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-light-grey bg-white text-black transition-colors hover:border-black disabled:cursor-not-allowed disabled:opacity-40"
+              aria-label="Next page"
+            >
+              →
+            </button>
+          </div>
+        )}
     </div>
   );
 };

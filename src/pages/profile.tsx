@@ -87,16 +87,15 @@ const Profile = () => {
           />
 
           {/* Контент вкладок */}
-          {!isForeign && activeTab === 'recipes' && (
-            <ProfileRecipesList tab="recipes" />
+          {activeTab === 'recipes' && (
+            <ProfileRecipesList
+              tab="recipes"
+              isForeign={isForeign}
+              userId={viewUser?.id}
+            />
           )}
           {!isForeign && activeTab === 'favorites' && (
             <ProfileRecipesList tab="favorites" />
-          )}
-          {isForeign && activeTab === 'recipes' && (
-            <div className="rounded-[15px] border border-light-grey bg-white p-6 text-center text-sm text-light-grey">
-              Feature will come soon.
-            </div>
           )}
           {activeTab === 'followers' && (
             <ProfileFollowPanel
