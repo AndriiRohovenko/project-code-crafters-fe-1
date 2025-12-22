@@ -12,7 +12,7 @@ const Home = () => {
   const categoryParam = searchParams.get('category');
 
   return (
-    <div>
+    <div className={'mb-[64px] md:mb-[79px] 2xl:mb-[120px]'}>
       <Hero />
 
       {categoryParam ? (

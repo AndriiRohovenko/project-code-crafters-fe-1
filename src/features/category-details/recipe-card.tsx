@@ -39,6 +39,7 @@ export const RecipeCard = ({
       dispatch(addFavorite(id));
     }
   };
+
   return (
     <article className="flex w-[290px] flex-shrink-0 flex-col">
       {/* IMAGE */}
@@ -52,7 +53,9 @@ export const RecipeCard = ({
           {title}
         </h3>
 
-        <p className="text-black/70 line-clamp-2 text-sm">{description}</p>
+        <p className="text-black/70 line-clamp-2 min-h-[40px] text-sm">
+          {description}
+        </p>
       </div>
       {/* AUTHOR */}
       <div className="mt-2 flex items-center justify-between">

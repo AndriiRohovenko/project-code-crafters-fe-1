@@ -46,7 +46,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-10 md:px-6 lg:px-8">
+    <div className="container mx-auto mb-[64px] max-w-[1280px] px-5 pt-16 md:mb-[79px] md:px-8 2xl:mb-[120px] 2xl:px-0 2xl:pt-20">
       {/* Заголовок */}
       <div className="mb-8 w-full md:w-[443px] lg:w-[443px]">
         <Breadcrumbs name={'Profile'} />
