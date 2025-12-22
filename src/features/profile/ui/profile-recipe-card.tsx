@@ -43,8 +43,10 @@ export const ProfileRecipeCard = ({ recipe, mode }: ProfileRecipeCardProps) => {
     }
   };
 
-  const imageUrl = 'thumb' in recipe ? recipe.thumb : recipe.image || '';
-  const description = 'description' in recipe ? recipe.description : '';
+  const imageUrl =
+    'thumb' in recipe ? recipe.thumb || '' : 'image' in recipe ? recipe.image || '' : '';
+  const description =
+    'description' in recipe ? recipe.description : '';
 
   return (
     <div className="group flex items-center gap-3 border-b border-light-grey py-5 last:border-b-0 md:gap-4 md:py-6">

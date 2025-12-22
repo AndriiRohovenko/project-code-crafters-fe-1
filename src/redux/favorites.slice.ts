@@ -94,7 +94,7 @@ export const favoritesSlice = createSlice({
           if (action.payload && Array.isArray(action.payload.data)) {
             state.items = action.payload.data.map((item) => ({
               ...item,
-              image: item.image || item.thumb || item.preview || '',
+              image: item.thumb || item.preview || '',
             }));
           } else {
             state.items = [];
