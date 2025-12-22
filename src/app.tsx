@@ -1,6 +1,9 @@
+import 'react-toastify/dist/ReactToastify.css';
+
 import { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 
 import { refreshUser } from '@/features/auth/auth';
 import { store } from '@/redux/store';
@@ -20,6 +23,7 @@ export const App = () => {
         <BrowserRouter>
           <AppRouter />
           <Modals />
+          <ToastContainer />
         </BrowserRouter>
       </Provider>
     </ModalsProvider>
