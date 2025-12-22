@@ -1,11 +1,6 @@
 import { Link } from 'react-router-dom';
 
-import {
-  addFavorite,
-  removeFavorite,
-  selectIsFavorite,
-} from '@/redux/favorites.slice';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { FavoriteButton } from '@/features/favorites/favorite-button';
 import { Icon } from '@/shared/ui/icon';
 
 interface RecipePreviewItemProps {
@@ -27,19 +22,6 @@ export const RecipeCard = ({
   description,
   author,
 }: RecipePreviewItemProps) => {
-  const dispatch = useAppDispatch();
-
-  const isFavorite = useAppSelector(selectIsFavorite(id));
-
-  const handleFavoriteClick = () => {
-    if (!id) return;
-    if (isFavorite) {
-      dispatch(removeFavorite(id));
-    } else {
-      dispatch(addFavorite(id));
-    }
-  };
-
   return (
     <article className="flex w-[290px] flex-shrink-0 flex-col">
       {/* IMAGE */}
@@ -95,18 +77,11 @@ export const RecipeCard = ({
 
         {/* RIGHT */}
         <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={handleFavoriteClick}
-            aria-label="Add to favorites"
+          <FavoriteButton
+            recipeId={id}
+            variant="icon"
             className="border-black/10 hover:bg-black/5 flex size-[45px] items-center justify-center rounded-[30px] border transition-colors"
-          >
-            <Icon
-              size={18}
-              name="heart"
-              className={isFavorite ? 'fill-red-500 text-red-500' : ''}
-            />
-          </button>
+          />
           <Link
             to={`/recipe/${id}`}
             aria-label="Open recipe"

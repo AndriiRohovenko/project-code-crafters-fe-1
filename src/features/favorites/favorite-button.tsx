@@ -8,6 +8,7 @@ import {
   selectIsFavorite,
 } from '@/redux/favorites.slice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { Icon } from '@/shared/ui/icon';
 
 interface FavoriteButtonProps {
   recipeId: number;
@@ -25,7 +26,10 @@ export const FavoriteButton: React.FC<FavoriteButtonProps> = ({
   const user = useAppSelector((state) => state.user);
   const isFavorite = useAppSelector(selectIsFavorite(recipeId));
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
     if (!user) {
       // Guest user - show sign-in modal
       openModal(MODAL_TYPES.SIGN_IN);
@@ -41,7 +45,6 @@ export const FavoriteButton: React.FC<FavoriteButtonProps> = ({
   };
 
   if (variant === 'icon') {
-    // TODO: Icon variant for future use on recipe cards
     return (
       <button
         type="button"
@@ -49,7 +52,11 @@ export const FavoriteButton: React.FC<FavoriteButtonProps> = ({
         className={className}
         aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
       >
-        {/* Icon implementation will go here */}
+        <Icon
+          size={18}
+          name="heart"
+          className={isFavorite ? 'fill-red-500 text-red-500' : ''}
+        />
       </button>
     );
   }
