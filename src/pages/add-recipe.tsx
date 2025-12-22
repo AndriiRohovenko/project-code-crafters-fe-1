@@ -7,7 +7,7 @@ import { Subtitle } from '@/shared/ui/subtitle';
 const AddRecipe = () => {
   return (
     <Container>
-      <div className="mt-8">
+      <div className="pt-16 2xl:pt-20">
         <Breadcrumbs name={'Add recipe'} />
         <MainTitle className="mb-2">Add recipe</MainTitle>
         <Subtitle className="text-black/70 mb-10 max-w-[360px] md:max-w-[480px]">

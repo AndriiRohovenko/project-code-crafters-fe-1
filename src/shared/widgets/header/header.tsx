@@ -61,7 +61,7 @@ export const Header: React.FC = () => {
             <button
               type="button"
               aria-label="Open menu"
-              className={'text-white'}
+              className={isHomePage ? 'text-white' : 'text-black'}
               onClick={() => openModal(MODAL_TYPES.NAVIGATION)}
             >
               <Icon name="burger" size={28} />

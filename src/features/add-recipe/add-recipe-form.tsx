@@ -251,7 +251,7 @@ export const AddRecipeForm = () => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="mb[64px] mb-[79px] grid grid-cols-1 gap-10 2xl:grid-cols-2"
+      className="mb-[64px] grid grid-cols-1 gap-10 md:mb-[79px] 2xl:mb-[120px] 2xl:grid-cols-2"
     >
       {/* Left column – image upload */}
       <FileUpload

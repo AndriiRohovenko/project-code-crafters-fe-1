@@ -16,7 +16,6 @@ export const CategoryDetailsList = () => {
   const onPageChange = (nextPage: number) => {
     dispatch(setCategoryDetailsPage(nextPage));
   };
-
   return (
     <div>
       <ul className="grid grid-cols-1 gap-6 md:grid-cols-2 2xl:grid-cols-3">
@@ -33,6 +32,7 @@ export const CategoryDetailsList = () => {
                 author={{
                   name: recipe.author?.name,
                   avatar: recipe.author?.avatar,
+                  id: recipe.author?.id,
                 }}
               />
             </li>

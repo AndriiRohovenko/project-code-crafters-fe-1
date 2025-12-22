@@ -50,7 +50,7 @@ const RecipeView = () => {
   }
 
   return (
-    <section className="py-8">
+    <section className="pt-16 2xl:pt-20">
       <Container>
         <Breadcrumbs name={recipe?.title || ''} />
 
