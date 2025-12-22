@@ -60,9 +60,9 @@ export const ProfileRecipesList = ({
   const recipes =
     tab === 'recipes'
       ? isOwnProfile
-        ? myRecipes
-        : otherUserRecipes
-      : favorites;
+        ? myRecipes || []
+        : otherUserRecipes || []
+      : favorites || [];
   const loading =
     tab === 'recipes'
       ? isOwnProfile
@@ -95,12 +95,14 @@ export const ProfileRecipesList = ({
               page: otherUserPage,
               limit: 12, // Default limit as per backend spec
             });
-            setOtherUserRecipes(recipesData);
+            // Ensure recipesData is an array
+            const recipesArray = Array.isArray(recipesData) ? recipesData : [];
+            setOtherUserRecipes(recipesArray);
             // Note: Search endpoint returns Recipe[] without pagination metadata
             // Calculate pagination based on returned results
-            const hasMore = recipesData.length === 12;
+            const hasMore = recipesArray.length === 12;
             setOtherUserPagination({
-              total: recipesData.length,
+              total: recipesArray.length,
               page: otherUserPage,
               totalPages: hasMore ? otherUserPage + 1 : otherUserPage,
               limit: 12,
@@ -108,6 +110,7 @@ export const ProfileRecipesList = ({
           } catch (err) {
             console.error('Error fetching user recipes:', err);
             setOtherUserError('Failed to load recipes');
+            setOtherUserRecipes([]); // Set empty array on error
           } finally {
             setOtherUserLoading(false);
           }
