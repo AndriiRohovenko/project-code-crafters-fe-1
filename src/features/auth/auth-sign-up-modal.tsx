@@ -1,6 +1,8 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import { AxiosError } from 'axios';
 import React, { useCallback, useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 import { MODAL_TYPES } from '@/modals/modals.const';
 import { useModals } from '@/modals/use-modals.hook';
@@ -49,7 +51,11 @@ export const SignUpModal: React.FC = () => {
       await signUp(data);
       close();
     } catch (error) {
-      console.error('Sign up error:', error);
+      const axiosError = error as AxiosError<{ message?: string }>;
+      const message =
+        axiosError.response?.data?.message ||
+        'Failed to sign up. Please try again.';
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }
@@ -61,7 +67,11 @@ export const SignUpModal: React.FC = () => {
         Sign up
       </h2>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col gap-4"
+        noValidate
+      >
         <BaseInput
           label="Name"
           required
@@ -71,7 +81,7 @@ export const SignUpModal: React.FC = () => {
 
         <BaseInput
           label="Email"
-          type="email"
+          type="text"
           required
           error={errors.email?.message}
           {...register('email')}

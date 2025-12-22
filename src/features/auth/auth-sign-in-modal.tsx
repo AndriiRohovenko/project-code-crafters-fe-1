@@ -1,6 +1,8 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import { AxiosError } from 'axios';
 import React, { useCallback, useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 import { MODAL_TYPES } from '@/modals/modals.const';
 import { useModals } from '@/modals/use-modals.hook';
@@ -48,7 +50,11 @@ export const SignInModal: React.FC = () => {
       await signIn(data);
       close();
     } catch (error) {
-      console.error('Sign in error:', error);
+      const axiosError = error as AxiosError<{ message?: string }>;
+      const message =
+        axiosError.response?.data?.message ||
+        'Failed to sign in. Please check your credentials.';
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }
