@@ -20,6 +20,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { BaseSelect, SelectOption } from '@/shared/ui/base-select';
 import Container from '@/shared/ui/container';
 import { Icon } from '@/shared/ui/icon';
+import Loader from '@/shared/ui/loader';
 import { MainTitle } from '@/shared/ui/main-title';
 
 import { CategoryDetailsList } from './category-details-list';
@@ -48,10 +49,13 @@ export const CategoryDetails = ({ categoryName }: CategoryDetailsProps) => {
   const [selectedIngredient, setSelectedIngredient] =
     useState<SelectOption | null>(null);
 
+  const [isOptionsLoading, setIsOptionsLoading] = useState(false);
+
   // Load options for selects
   useEffect(() => {
     const loadOptions = async () => {
       try {
+        setIsOptionsLoading(true);
         const [categories, areas, ingredients] = await Promise.all([
           getCategories(),
           getAreas(),
@@ -75,6 +79,8 @@ export const CategoryDetails = ({ categoryName }: CategoryDetailsProps) => {
         );
       } catch (error) {
         console.error('Failed to load select options', error);
+      } finally {
+        setIsOptionsLoading(false);
       }
     };
 
@@ -96,7 +102,6 @@ export const CategoryDetails = ({ categoryName }: CategoryDetailsProps) => {
   // Reset page and filters when category changes
   useEffect(() => {
     dispatch(setCategoryDetailsPage(1));
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedArea(null);
     setSelectedIngredient(null);
   }, [categoryName, dispatch]);
@@ -142,7 +147,12 @@ export const CategoryDetails = ({ categoryName }: CategoryDetailsProps) => {
       dispatch(setCategoryDetailsPage(1));
     }
   };
+  if (isOptionsLoading) {
+    return <Loader />;
+  }
+
   if (!selectedCategory) return null;
+
   return (
     <Container>
       <button

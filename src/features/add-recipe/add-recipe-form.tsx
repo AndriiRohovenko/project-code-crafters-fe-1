@@ -21,6 +21,7 @@ import { BaseTextarea } from '@/shared/ui/base-textarea';
 import { Button } from '@/shared/ui/button';
 import { FileUpload } from '@/shared/ui/file-upload';
 import { Icon } from '@/shared/ui/icon';
+import Loader from '@/shared/ui/loader';
 
 interface IngredientFormItem {
   id?: number;
@@ -58,6 +59,7 @@ export const AddRecipeForm = () => {
   useEffect(() => {
     const loadOptions = async () => {
       try {
+        setIsOptionsLoading(true);
         const [categories, areas, ingredients] = await Promise.all([
           getCategories(),
           getAreas(),
@@ -87,6 +89,8 @@ export const AddRecipeForm = () => {
         );
       } catch (error) {
         console.error('Failed to load select options', error);
+      } finally {
+        setIsOptionsLoading(false);
       }
     };
 
@@ -125,6 +129,7 @@ export const AddRecipeForm = () => {
     !preparation;
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isOptionsLoading, setIsOptionsLoading] = useState(false);
   const [newIngredientName, setNewIngredientName] = useState('');
   const [newIngredientMeasure, setNewIngredientMeasure] = useState('');
 
@@ -247,6 +252,10 @@ export const AddRecipeForm = () => {
       setIsLoading(false);
     }
   };
+
+  if (isOptionsLoading) {
+    return <Loader fullPage={false} />;
+  }
 
   return (
     <form

@@ -1,6 +1,15 @@
-const Loader = () => {
+interface LoaderProps {
+  fullPage?: boolean;
+  className?: string;
+}
+
+const Loader = ({ fullPage = true, className = '' }: LoaderProps) => {
   return (
-    <div className="flex min-h-[100dvh] w-full items-center justify-center">
+    <div
+      className={`${
+        fullPage ? 'min-h-[100dvh]' : 'py-10'
+      } flex w-full items-center justify-center ${className}`}
+    >
       <div className="h-20 w-20">
         <svg
           className="animate-spin"

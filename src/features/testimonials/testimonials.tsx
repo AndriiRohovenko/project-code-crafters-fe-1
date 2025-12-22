@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import Loader from '@/shared/ui/loader';
 import { MainTitle } from '@/shared/ui/main-title';
 import { Subtitle } from '@/shared/ui/subtitle';
 
@@ -55,9 +56,7 @@ export const Testimonials = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex justify-center py-20 text-black">Loading...</div>
-    );
+    return <Loader fullPage={false} />;
   }
 
   if (error) {

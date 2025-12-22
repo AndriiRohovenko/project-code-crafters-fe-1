@@ -2,6 +2,7 @@ import { RecipeCard } from '@/features/category-details/recipe-card';
 import { setCategoryDetailsPage } from '@/redux/categoryDetails/categoryDetails.slice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { RootState } from '@/redux/store';
+import Loader from '@/shared/ui/loader';
 import { Pagination } from '@/shared/ui/pagination/pagination';
 
 export const CategoryDetailsList = () => {
@@ -20,7 +21,9 @@ export const CategoryDetailsList = () => {
     <div>
       <ul className="grid grid-cols-1 gap-6 md:grid-cols-2 2xl:grid-cols-3">
         {loading ? (
-          <li>Loading...</li>
+          <li className="col-span-full">
+            <Loader fullPage={false} />
+          </li>
         ) : Array.isArray(recipes) && recipes.length > 0 ? (
           recipes.map((recipe) => (
             <li key={recipe.id}>
